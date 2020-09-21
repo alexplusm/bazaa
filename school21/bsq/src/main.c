@@ -3,8 +3,8 @@
 #include <fcntl.h>
 #include <stdlib.h>
 
-#include "shared.h"
-#include "utils.h"
+#include "../includes/shared.h"
+#include "../includes/utils.h"
 
 typedef struct	s_grid {
 	unsigned int	max_j;
