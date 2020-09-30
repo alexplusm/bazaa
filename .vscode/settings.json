@@ -8,6 +8,8 @@
         "locale": "c",
         "__locale": "c",
         "chrono": "c",
-        "cstddef": "c"
+        "cstddef": "c",
+        "memory": "c",
+        "utility": "c"
     }
 }
