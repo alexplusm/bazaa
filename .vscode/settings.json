@@ -5,6 +5,9 @@
     "python.pythonPath": "venv/bin/python",
     "files.associations": {
         "__config": "c",
-        "locale": "c"
+        "locale": "c",
+        "__locale": "c",
+        "chrono": "c",
+        "cstddef": "c"
     }
 }
