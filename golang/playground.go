@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/Alexplusm/bazaa/golang/my-package"
 )
 
 func slicesPart1() {
@@ -196,5 +197,7 @@ func main() {
 	// maps()
 	// iterations()
 	// sswitch()
-	runes()
+	// runes()
+
+	fmt.Println()
 }
