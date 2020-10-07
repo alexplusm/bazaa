@@ -2,8 +2,8 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
+	"net/http"
 )
 
 type person struct {
@@ -11,25 +11,49 @@ type person struct {
 }
 
 func main() {
-	p1 := person{First: "Alex"}
-	p2 := person{First: "Lee"}
-
-	persons1 := []person{p1, p2}
-
-	bs, err := json.Marshal(persons1)
+	http.HandleFunc("/encode", foo)
+	http.HandleFunc("/decode", decodeListPerson)
+	err := http.ListenAndServe(":8080", nil)
 
 	if err != nil {
-		log.Panic(err)
+		log.Panic("Server doesn't start", err)
+	}
+}
+
+func foo(w http.ResponseWriter, r *http.Request) {
+	p1 := person{
+		First: "Alex",
+	}
+	p2 := person{
+		First: "Lee",
 	}
 
-	fmt.Println("JSON", string(bs))
+	people := []person{p1, p2}
 
-	persons2 := []person{}
-	err = json.Unmarshal(bs, &persons2)
+	err := json.NewEncoder(w).Encode(people)
+	if err != nil {
+		log.Println("Encoded bad data!", err)
+	}
+}
+
+func decodeListPerson(w http.ResponseWriter, r *http.Request) {
+	var people []person
+	err := json.NewDecoder(r.Body).Decode(&people)
 
 	if err != nil {
-		log.Panic(err)
+		log.Println("Decoded bad data", err)
 	}
 
-	fmt.Println("Go struct", persons2)
+	log.Println("Request body", people)
+}
+
+func decodeOnePerson(w http.ResponseWriter, r *http.Request) {
+	var p1 person
+	err := json.NewDecoder(r.Body).Decode(&p1)
+
+	if err != nil {
+		log.Println("Decoded bad data", err)
+	}
+
+	log.Println("Request body", p1)
 }
