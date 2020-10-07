@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/Alexplusm/bazaa/golang/my-package"
+	"github.com/Alexplusm/bazaa/golang/mypackage"
 )
 
 func slicesPart1() {
@@ -188,7 +188,10 @@ func runes() {
 	for index, value := range bytes {
 		fmt.Println("byte value", index, value)
 	}
+}
 
+func packageTest() {
+	fmt.Println(mypackage.Kek)
 }
 
 func main() {
@@ -199,5 +202,5 @@ func main() {
 	// sswitch()
 	// runes()
 
-	fmt.Println()
+	packageTest()
 }
