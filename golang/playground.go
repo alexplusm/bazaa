@@ -171,10 +171,30 @@ func sswitch() {
 	}
 }
 
+func runes() {
+
+	// str1 := "Привет"
+	str1 := "你好，世界"
+
+	fmt.Println("one byte of rune", str1[1])
+	// iteration on symbols
+	for index, runeValue := range str1 {
+		fmt.Println(index, runeValue)
+	}
+
+	bytes := []byte(str1)
+
+	for index, value := range bytes {
+		fmt.Println("byte value", index, value)
+	}
+
+}
+
 func main() {
 	// slicesPart1()
 	// slicesPart2()
 	// maps()
 	// iterations()
-	sswitch()
+	// sswitch()
+	runes()
 }
