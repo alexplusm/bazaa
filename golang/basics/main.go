@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/Alexplusm/bazaa/golang/my-package"
+
+	"github.com/Alexplusm/bazaa/golang/mypackage"
 )
 
 func slicesPart1() {
@@ -188,6 +189,55 @@ func runes() {
 	for index, value := range bytes {
 		fmt.Println("byte value", index, value)
 	}
+}
+
+func packageTest() {
+	fmt.Println(mypackage.Kek)
+}
+
+// arguments typing shortcut and result variable shortcut
+func multiply(i, j int) (res int) {
+	res = i * j
+	return
+}
+
+func bigSum(nums ...int) int {
+	var sum int
+
+	for _, value := range nums {
+		sum = sum + value
+	}
+
+	return sum
+}
+
+type person struct {
+	age  int32
+	name string
+}
+
+func structs() {
+	var p person
+
+	fmt.Println(p)
+
+	p.age = 12
+	p.name = "alex"
+	fmt.Println(p)
+
+	p1 := person{
+		age:  47,
+		name: "kek",
+	}
+	fmt.Println(p1)
+
+	p2 := person{
+		age: 666,
+	}
+	fmt.Println(p2)
+
+	p3 := person{123, "fast init"}
+	fmt.Println(p3)
 
 }
 
@@ -198,6 +248,16 @@ func main() {
 	// iterations()
 	// sswitch()
 	// runes()
+	// packageTest()
 
-	fmt.Println()
+	// ---
+	// res := bigSum(1, 2, 3, 5, 6)
+	// arr := []int{1, 2, 3, 4, 5}
+	// res := bigSum(arr...)
+	// fmt.Println(res)
+	// ---
+	// res := multiply(3, 7)
+	// fmt.Println(res)
+	// ---
+	structs()
 }
