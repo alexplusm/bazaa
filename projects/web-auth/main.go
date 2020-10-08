@@ -109,6 +109,30 @@ func keyGen() []byte {
 	return key
 }
 
+func signMessage(msg []byte) ([]byte, error) {
+	h := hmac.New(sha512.New, keyGen())
+
+	_, err := h.Write(msg)
+	if err != nil {
+		return nil, fmt.Errorf("Error in signMessage while hasign message: %w", err)
+	}
+
+	signature := h.Sum(nil)
+	return signature, nil
+}
+
+func checkSignature(msg, signature []byte) (bool, error) {
+	newSignature, err := signMessage(msg)
+
+	if err != nil {
+		return false, fmt.Errorf("Error in checkSignature while getting signature if msg: %w", err)
+	}
+
+	same := hmac.Equal(newSignature, signature)
+
+	return same, nil
+}
+
 func main() {
 	// base64Test()
 	// runServer()
