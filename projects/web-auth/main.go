@@ -5,11 +5,10 @@ import (
 	"crypto/sha512"
 	"encoding/base64"
 	"encoding/json"
+	"golang.org/x/crypto/bcrypt"
 	"fmt"
 	"log"
 	"net/http"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 type person struct {
