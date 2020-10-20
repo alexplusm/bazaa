@@ -6,3 +6,6 @@ venv
 
 # C/C++
 *.out
+
+# projects
+.env
