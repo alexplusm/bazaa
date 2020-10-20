@@ -9,3 +9,5 @@ venv
 
 # projects
 .env
+*/go-db/*/media_temp/
+*/go-db/*/media_root/
