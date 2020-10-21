@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"archive/zip"
+	"strconv"
 
-	"github.com/google/uuid"
 	"github.com/labstack/echo"
 )
 
@@ -89,6 +89,22 @@ func addTimestampToFilename(filename string, unixTS int64) string {
 	return strings.Join(filePartsNew[:len(filePartsNew)-1], "-") + "." + expansion
 }
 
+// todo: refactor
+func getTimestampFromFilename(filename string) int64 {
+	fileParts := strings.Split(filename, ".")
+	filePartsWithoutExpansion := fileParts[len(fileParts)-2]
+	filePartsWithoutExpansion2 := strings.Split(filePartsWithoutExpansion, "-")
+	ts := filePartsWithoutExpansion2[len(filePartsWithoutExpansion2)-1]
+
+	tsInt, err := strconv.ParseInt(ts, 10, 0)
+	// todo: proccess error
+	if err != nil {
+		return -1
+	}
+
+	return tsInt
+}
+
 func unzipFiles() error {
 	dir, err := os.Open(mediaTempDir)
 	if err != nil {
@@ -110,49 +126,11 @@ func unzipFiles() error {
 	return nil
 }
 
-func unzip(archive, target string) error {
-	reader, err := zip.OpenReader(archive)
-	if err != nil {
-		return err
-	}
-
-	if err := os.MkdirAll(target, 0755); err != nil {
-		return err
-	}
-
-	for _, file := range reader.File {
-		path := filepath.Join(target, file.Name)
-		if file.FileInfo().IsDir() {
-			os.MkdirAll(path, file.Mode())
-			continue
-		}
-
-		fileReader, err := file.Open()
-		if err != nil {
-			return err
-		}
-		defer fileReader.Close()
-
-		targetFile, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
-		if err != nil {
-			return err
-		}
-		defer targetFile.Close()
-
-		if _, err := io.Copy(targetFile, fileReader); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 // Unzip will decompress a zip archived file,
 // copying all files and folders
 // within the zip file (parameter 1)
 // to an output directory (parameter 2).
 func Unzip(src string, destination string) ([]string, error) {
-
 	// a variable that will store any
 	//file names available in a array of strings
 	var filenames []string
@@ -164,32 +142,33 @@ func Unzip(src string, destination string) ([]string, error) {
 	// It returns two values:
 	// 1. a pointer value to ReadCloser
 	// 2. an error message (if any)
-	r, err := zip.OpenReader(src)
+	reader, err := zip.OpenReader(src)
 
 	if err != nil {
 		return filenames, err
 	}
-	defer r.Close()
+	defer reader.Close()
 
-	for _, f := range r.File {
+	timestamp := getTimestampFromFilename(src)
+	rootFolder := filepath.Join(destination, fmt.Sprint(timestamp))
+	os.MkdirAll(rootFolder, os.ModePerm)
 
-		fmt.Println("FileInfo().Name()", f.FileInfo().Name(), "f.Name", f.Name)
-
+	for _, f := range reader.File {
 		// this loop will run until there are
 		// files in the source directory & will
 		// keep storing the filenames and then
 		// extracts into destination folder until an err arises
 
-		// Store "path/filename" for returning and using later on
-		fpath := filepath.Join(destination, f.Name)
+		fname := f.FileInfo().Name()
+		fpath := filepath.Join(rootFolder, f.Name)
 
-		id, err := uuid.NewRandom()
-		if err != nil {
-			return filenames, err
+		if isInvalidFileName(fname) {
+			continue
 		}
-		fmt.Println("id", id)
 
-		// Checking for any invalid file paths
+		fmt.Println("fname", fname)
+
+		// TODO: Checking for any invalid file paths
 		if !strings.HasPrefix(fpath, filepath.Clean(destination)+string(os.PathSeparator)) {
 			return filenames, fmt.Errorf("%s is an illegal filepath", fpath)
 		}
@@ -198,9 +177,8 @@ func Unzip(src string, destination string) ([]string, error) {
 		// into the filenames string array with its path
 		filenames = append(filenames, fpath)
 
+		// for nested dirs
 		if f.FileInfo().IsDir() {
-
-			// Creating a new Folder
 			os.MkdirAll(fpath, os.ModePerm)
 			continue
 		}
@@ -264,4 +242,8 @@ func Unzip(src string, destination string) ([]string, error) {
 	// successfully without any errors*
 	// *only if it reaches until here.
 	return filenames, nil
+}
+
+func isInvalidFileName(name string) bool {
+	return strings.HasPrefix(name, "._") || name == ".DS_Store"
 }
