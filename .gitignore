@@ -6,3 +6,8 @@ venv
 
 # C/C++
 *.out
+
+# projects
+.env
+*/go-db/*/media_temp/
+*/go-db/*/media_root/
