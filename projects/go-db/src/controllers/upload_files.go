@@ -12,6 +12,7 @@ import (
 	"archive/zip"
 	"strconv"
 
+	"github.com/Alexplusm/bazaa/projects/go-db/src/configs"
 	"github.com/labstack/echo"
 )
 
@@ -38,14 +39,14 @@ func UploadFiles(c echo.Context) error {
 		}
 		defer src.Close()
 
-		createDir(mediaTempDir)
+		createDir(configs.MediaTempDir)
 
 		// update file name with timestamp
 		ts := time.Now().Unix()
 		filename := addTimestampToFilename(filepath.Base(file.Filename), ts)
 		fmt.Println(filename)
 
-		fp := filepath.Join(mediaTempDir, filename)
+		fp := filepath.Join(configs.MediaTempDir, filename)
 
 		// Destination
 		dst, err := os.Create(fp)
@@ -106,7 +107,7 @@ func getTimestampFromFilename(filename string) int64 {
 }
 
 func unzipFiles() error {
-	dir, err := os.Open(mediaTempDir)
+	dir, err := os.Open(configs.MediaTempDir)
 	if err != nil {
 		return err
 	}
@@ -115,12 +116,12 @@ func unzipFiles() error {
 		return err
 	}
 
-	createDir(mediaRoot)
+	createDir(configs.MediaRoot)
 
 	for _, fileInfo := range filesInfo {
 		fmt.Println("to unzip", fileInfo.Name(), fileInfo.Size())
 
-		Unzip(filepath.Join(mediaTempDir, fileInfo.Name()), mediaRoot)
+		Unzip(filepath.Join(configs.MediaTempDir, fileInfo.Name()), configs.MediaRoot)
 	}
 
 	return nil
@@ -244,6 +245,10 @@ func Unzip(src string, destination string) ([]string, error) {
 	return filenames, nil
 }
 
+func isDSStoreFile(name string) bool {
+	return name == ".DS_Store"
+}
+
 func isInvalidFileName(name string) bool {
-	return strings.HasPrefix(name, "._") || name == ".DS_Store"
+	return strings.HasPrefix(name, "._") || isDSStoreFile(name)
 }
