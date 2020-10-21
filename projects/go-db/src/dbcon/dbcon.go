@@ -1,17 +1,17 @@
 package dbcon
 
 import (
-	// "context"
+	"context"
 	"fmt"
 	"os"
 
-	// "github.com/jackc/pgx"
+	"github.com/jackc/pgx/pgxpool"
 )
 
 // Connect to db
-func Connect() {
+func Connect() (*pgxpool.Pool, error) {
 	dbURL := os.Getenv("DATABASE_URL")
 	fmt.Println("DatabaseUrl", dbURL)
-	// conn, err := pgx.Connect(context.Background(), dataBaseUrl)
-	// fmt.Println("db connect", conn, err)
+
+	return pgxpool.Connect(context.Background(), dbURL)
 }
