@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 
+	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/labstack/echo"
+
 	"github.com/Alexplusm/bazaa/projects/go-db/src/controllers"
 	"github.com/Alexplusm/bazaa/projects/go-db/src/dbcon"
 	"github.com/Alexplusm/bazaa/projects/go-db/src/models"
-	"github.com/labstack/echo"
-
-	"github.com/jackc/pgx/pgxpool"
 )
 
 func main() {
@@ -21,6 +21,8 @@ func main() {
 	fmt.Println("Connected to database!")
 
 	dbTest(conn) // test
+
+	dbcon.RedisConnect()
 
 	e := echo.New()
 

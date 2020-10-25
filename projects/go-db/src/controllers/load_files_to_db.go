@@ -1,15 +1,16 @@
 package controllers
 
 import (
-	"github.com/jackc/pgx/pgxpool"
 	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
 
+	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/labstack/echo"
+
 	"github.com/Alexplusm/bazaa/projects/go-db/src/configs"
 	"github.com/Alexplusm/bazaa/projects/go-db/src/models"
-	"github.com/labstack/echo"
 )
 
 // todo: remove from controllers?
@@ -52,7 +53,7 @@ func findAllImagesPath(fpath string, strs []string) []string {
 
 	for _, fileInfo := range filesInfo {
 		if isDSStoreFile(fileInfo.Name()) {
-			 continue
+			continue
 		}
 		if fileInfo.IsDir() {
 			strs = findAllImagesPath(filepath.Join(fpath, fileInfo.Name()), strs)
@@ -66,11 +67,11 @@ func findAllImagesPath(fpath string, strs []string) []string {
 
 // LoadFilesToDBWrapper load to DB
 func LoadFilesToDBWrapper(p *pgxpool.Pool) func(echo.Context) error {
-	return func (c echo.Context) error {
+	return func(c echo.Context) error {
 		r := kek()
-	
+
 		for _, ff := range r {
-			img := models.ImageDao{URL: ff, Category: "1" }
+			img := models.ImageDao{URL: ff, Category: "1"}
 			models.InsertImage(p, img)
 		}
 		return c.String(http.StatusOK, "loaded")
