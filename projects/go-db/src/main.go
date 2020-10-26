@@ -22,7 +22,7 @@ func main() {
 
 	dbTest(conn) // test
 
-	dbcon.RedisConnect()
+	// dbcon.RedisConnect()
 
 	e := echo.New()
 
