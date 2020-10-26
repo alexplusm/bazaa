@@ -27,7 +27,8 @@ func main() {
 	e := echo.New()
 
 	e.POST("/upload/images", controllers.UploadFiles)
-	e.GET("/upload/check", controllers.LoadFilesToDBWrapper(conn))
+	e.GET("/upload/images/test", controllers.LoadFilesToDBWrapper(conn))
+	e.GET("/check/alive", controllers.ItsAlive)
 
 	// todo: PORT from .env
 	e.Logger.Fatal(e.Start(":1234"))
