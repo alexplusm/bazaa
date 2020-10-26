@@ -8,14 +8,11 @@ Run this in resource directory
 * mkdir .tmp
 * tar -xf dvdrental.tar -C .tmp/
 
-
 ### Install PostgreSQL on ubuntu 20.04
 https://www.postgresqltutorial.com/install-postgresql-linux/
 
-
 ### Install PostgreSQL on macOS
 https://www.postgresqltutorial.com/install-postgresql-macos/
-
 
 ### Access the postgreSQL
 // switch over postgres account
@@ -27,7 +24,10 @@ https://www.postgresqltutorial.com/install-postgresql-macos/
 // logout postgres account
 * exit
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> (psql) fill bs with sample data
 ### Load sample database (ubuntu 20.04)
 
 * sudo -i -u postgres
