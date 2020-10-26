@@ -11,8 +11,10 @@ Run this in resource directory
 ### Install PostgreSQL on ubuntu 20.04
 https://www.postgresqltutorial.com/install-postgresql-linux/
 
+
 ### Install PostgreSQL on macOS
 https://www.postgresqltutorial.com/install-postgresql-macos/
+
 
 ### Access the postgreSQL
 // switch over postgres account
@@ -25,9 +27,13 @@ https://www.postgresqltutorial.com/install-postgresql-macos/
 * exit
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> (psql) fill bs with sample data
+=======
+
+>>>>>>> (psql) complete basic select examples
 ### Load sample database (ubuntu 20.04)
 
 * sudo -i -u postgres
