@@ -7,6 +7,9 @@ venv
 # C/C++
 *.out
 
+# redis
+dump.rdb
+
 # projects
 .env
 */go-db/*/media_temp/

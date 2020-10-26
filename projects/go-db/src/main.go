@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 
+	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/labstack/echo"
+
 	"github.com/Alexplusm/bazaa/projects/go-db/src/controllers"
 	"github.com/Alexplusm/bazaa/projects/go-db/src/dbcon"
 	"github.com/Alexplusm/bazaa/projects/go-db/src/models"
-	"github.com/labstack/echo"
-
-	"github.com/jackc/pgx/pgxpool"
 )
 
 func main() {
@@ -22,10 +22,12 @@ func main() {
 
 	dbTest(conn) // test
 
+	// dbcon.RedisConnect()
+
 	e := echo.New()
 
 	e.POST("/upload/images", controllers.UploadFiles)
-	e.GET("/upload/check", controllers.LoadFilesToDB)
+	e.GET("/upload/check", controllers.LoadFilesToDBWrapper(conn))
 
 	// todo: PORT from .env
 	e.Logger.Fatal(e.Start(":1234"))
