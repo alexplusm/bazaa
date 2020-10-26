@@ -11,7 +11,7 @@ attribs:
 	* start_date // TIMESTAMP NOT NULL
 	* answer_type (answer_type_enum)
 	* O2M task (one game, many task)
-    * question (+ options) (TODO)
+    * question (+ options)
 	
 
 - external_system
