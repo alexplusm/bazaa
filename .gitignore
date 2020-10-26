@@ -13,6 +13,9 @@ venv
 # redis
 dump.rdb
 
+# JavaScript
+/node_modules
+
 # projects
 .env
 */go-db/media_temp/
