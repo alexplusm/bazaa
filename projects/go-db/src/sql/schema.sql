@@ -7,6 +7,8 @@
 -- 	'4'  -- Полигональный
 -- );
 
+-- TODO: schedules (see docs)
+
 -- games
 CREATE TABLE IF NOT EXISTS games (
 	"game_id" uuid DEFAULT uuid_generate_v4(),
@@ -22,10 +24,8 @@ CREATE TABLE IF NOT EXISTS games (
 
 -- external_systems
 CREATE TABLE IF NOT EXISTS external_systems (
-	-- "external_system_id" VARCHAR NOT NULL,
-	"external_system_id" uuid DEFAULT uuid_generate_v4(),
-	"post_task_results_url" VARCHAR,
-	"description" TEXT, -- TODO: тужно ли нам это поле?
+	"external_system_id" VARCHAR DEFAULT uuid_generate_v4(),
+	"post_task_results_url" VARCHAR DEFAULT NULL,
 
 	PRIMARY KEY ("external_system_id")
 );
