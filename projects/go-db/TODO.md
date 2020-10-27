@@ -16,8 +16,9 @@ go get golang.org/x/tools/cmd/goimports
 io/ioutil.ReadFile
 
 How work with them?
-* go.sum
-* go.mod
+* go.sum & go.mod
+
+* Create Makefile with reload
 
 Tasks:
 * (Go Kernighan p.29, ex 1.3)
