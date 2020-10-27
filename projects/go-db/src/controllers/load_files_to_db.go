@@ -11,6 +11,7 @@ import (
 
 	"github.com/Alexplusm/bazaa/projects/go-db/src/configs"
 	"github.com/Alexplusm/bazaa/projects/go-db/src/models"
+	"github.com/Alexplusm/bazaa/projects/go-db/src/utils/errors"
 )
 
 // todo: remove from controllers?
@@ -82,13 +83,15 @@ func LoadFilesToDBWrapper(p *pgxpool.Pool) func(echo.Context) error {
 func ItsAlive(c echo.Context) error {
 	msg := "*** I'm ALIVE! ***"
 	fmt.Println(msg)
-	return c.String(http.StatusOK, msg)
+
+	m := errors.GetErrorResponseJSONStr(http.StatusOK, "kekys")
+
+	return c.String(http.StatusOK, m)
 }
 
 // LoadFilesToDB load to DB
 // func LoadFilesToDB(c echo.Context) error {
 // 	r := kek()
-
 // 	for _, ff := range r {
 // 		img := models.ImageDao{URL: ff, Category: "1" }
 // 		models.InsertImage(, img)
