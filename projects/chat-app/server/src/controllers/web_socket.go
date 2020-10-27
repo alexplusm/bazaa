@@ -25,6 +25,13 @@ func createClient(conn *websocket.Conn) *Client {
 
 // WebSocketHandler handle websocket request
 func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Request handled!")
+
+	// TODO: remove
+	upgrader.CheckOrigin = func(r *http.Request) bool {
+		fmt.Println("CheckOrigin!")
+		return true
+	}
 
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
