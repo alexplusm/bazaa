@@ -53,9 +53,11 @@ func findAllImagesPath(fpath string, strs []string) []string {
 	}
 
 	for _, fileInfo := range filesInfo {
-		if isDSStoreFile(fileInfo.Name()) {
-			continue
-		}
+		// TODO: need?
+		// if isDSStoreFile(fileInfo.Name()) {
+		// 	continue
+		// }
+
 		if fileInfo.IsDir() {
 			strs = findAllImagesPath(filepath.Join(fpath, fileInfo.Name()), strs)
 		} else {

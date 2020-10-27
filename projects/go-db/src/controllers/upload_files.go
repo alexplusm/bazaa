@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"archive/zip"
 	"fmt"
 	"io"
 	"net/http"
@@ -8,12 +9,29 @@ import (
 	"path/filepath"
 	"strings"
 
-	"archive/zip"
-	"strconv"
-
 	"github.com/Alexplusm/bazaa/projects/go-db/src/configs"
+	"github.com/Alexplusm/bazaa/projects/go-db/src/utils/files"
 	"github.com/labstack/echo"
 )
+
+const (
+	undefinedDir     = "undefined"
+	withViolationDir = "withViolation"
+	noViolationDir   = "noViolation"
+)
+
+type categoryType int8
+
+const (
+	withViolationCategory categoryType = iota
+	noViolationCategory
+	undefinedCategory
+)
+
+type fileParsingResult struct {
+	filename string
+	category categoryType
+}
 
 // UploadFiles controller
 func UploadFiles(c echo.Context) error {
@@ -23,13 +41,11 @@ func UploadFiles(c echo.Context) error {
 	}
 
 	/*
-	* Не смотря на то, что поле называется "files"
-	* мы ожидаем только один файл - zip архив.
-	* Массив сделан на будущее.
+	* Although the field is called "files"
+	* expected only one file - zip archive
+	* The array is made for the future.
 	 */
 	files := form.File["files"]
-
-	// ---
 
 	for _, file := range files {
 		fmt.Println("file:", file.Filename, file.Size)
@@ -57,42 +73,9 @@ func UploadFiles(c echo.Context) error {
 		}
 	}
 
-	//
 	unzipFiles()
 
 	return c.String(http.StatusOK, "OK")
-}
-
-// todo: move ?
-// add timestamp to file
-func addTimestampToFilename(filename string, unixTS int64) string {
-	fileParts := strings.Split(filename, ".")
-	length := len(fileParts)
-	expansion := fileParts[length-1]
-
-	filePartsNew := make([]string, 0, length+1)
-
-	filePartsNew = append(filePartsNew, fileParts[:length-1]...)
-	filePartsNew = append(filePartsNew, fmt.Sprint(unixTS))
-	filePartsNew = append(filePartsNew, expansion)
-
-	return strings.Join(filePartsNew[:len(filePartsNew)-1], "-") + "." + expansion
-}
-
-// todo: refactor
-func getTimestampFromFilename(filename string) int64 {
-	fileParts := strings.Split(filename, ".")
-	filePartsWithoutExpansion := fileParts[len(fileParts)-2]
-	filePartsWithoutExpansion2 := strings.Split(filePartsWithoutExpansion, "-")
-	ts := filePartsWithoutExpansion2[len(filePartsWithoutExpansion2)-1]
-
-	tsInt, err := strconv.ParseInt(ts, 10, 0)
-	// todo: proccess error
-	if err != nil {
-		return -1
-	}
-
-	return tsInt
 }
 
 func unzipFiles() error {
@@ -106,77 +89,61 @@ func unzipFiles() error {
 	}
 
 	for _, fileInfo := range filesInfo {
-		fmt.Println("to unzip", fileInfo.Name(), fileInfo.Size())
+		fmt.Println("zip archive", fileInfo.Name(), fileInfo.Size())
 
-		// todo: params
-		Unzip(filepath.Join(configs.MediaTempDir, fileInfo.Name()), configs.MediaRoot)
+		r, _ := unzip(filepath.Join(configs.MediaTempDir, fileInfo.Name()), configs.MediaRoot)
+		fmt.Println("RESULT", r, len(r)) // todo: error
 	}
 
 	return nil
 }
 
-// Unzip will decompress a zip archived file,
-// copying all files and folders
-// within the zip file (parameter 1)
-// to an output directory (parameter 2).
-func Unzip(src string, destination string) ([]string, error) {
-	// a variable that will store any
-	//file names available in a array of strings
-	var filenames []string
+// unzip will decompress a zip archived file
+func unzip(src string, destination string) ([]fileParsingResult, error) {
+	/*
+		source: https://www.geeksforgeeks.org/how-to-uncompress-a-file-in-golang/
+	*/
 
-	// OpenReader will open the Zip file
-	// specified by name and return a ReadCloser
-	// Readcloser closes the Zip file,
-	// rendering it unusable for I/O
-	// It returns two values:
-	// 1. a pointer value to ReadCloser
-	// 2. an error message (if any)
+	var parsingResults []fileParsingResult
+
 	reader, err := zip.OpenReader(src)
-
 	if err != nil {
-		return filenames, err
+		return parsingResults, err
 	}
 	defer reader.Close()
 
-	// TODO !!!
-
-	// timestamp := getTimestampFromFilename(src)
-	rootFolder := filepath.Join(destination, src)
-	// os.MkdirAll(rootFolder, os.ModePerm)
+	rootFolder := destination
 
 	for _, f := range reader.File {
-		// this loop will run until there are
-		// files in the source directory & will
-		// keep storing the filenames and then
-		// extracts into destination folder until an err arises
-
 		fname := f.FileInfo().Name()
-		fpath := filepath.Join(rootFolder, f.Name)
-
-		if isInvalidFileName(fname) {
-			continue
-		}
-
-		fmt.Println("fname", fname)
-
-		// TODO: Checking for any invalid file paths
-		if !strings.HasPrefix(fpath, filepath.Clean(destination)+string(os.PathSeparator)) {
-			return filenames, fmt.Errorf("%s is an illegal filepath", fpath)
-		}
-
-		// the filename that is accessed is now appended
-		// into the filenames string array with its path
-		filenames = append(filenames, fpath)
+		fpath := filepath.Join(rootFolder, fname)
 
 		// for nested dirs
-		if f.FileInfo().IsDir() {
-			os.MkdirAll(fpath, os.ModePerm)
+		if f.FileInfo().IsDir() || files.IsInvalidImageFileName(fname) {
 			continue
 		}
+
+		withViolation := strings.HasSuffix(f.Name, filepath.Join(withViolationDir, fname))
+		noViolation := strings.HasSuffix(f.Name, filepath.Join(noViolationDir, fname))
+
+		var result fileParsingResult
+
+		// TODO: after testing refactor with switch
+		if withViolation {
+			result = fileParsingResult{fname, withViolationCategory}
+		} else if noViolation {
+			result = fileParsingResult{fname, noViolationCategory}
+		} else {
+			result = fileParsingResult{fname, undefinedCategory}
+		}
+
+		fmt.Println(result)
+
+		parsingResults = append(parsingResults, result)
 
 		// Creating the files in the target directory
 		if err = os.MkdirAll(filepath.Dir(fpath), os.ModePerm); err != nil {
-			return filenames, err
+			return parsingResults, err
 		}
 
 		// The created file will be stored in
@@ -184,63 +151,26 @@ func Unzip(src string, destination string) ([]string, error) {
 		outFile, err := os.OpenFile(fpath,
 			os.O_WRONLY|os.O_CREATE|os.O_TRUNC,
 			f.Mode())
-
-		// again if there is any error this block
-		// will be executed and process
-		// will return to main function
 		if err != nil {
-			// with filenames gathered so far
-			// and err message
-			return filenames, err
+			return parsingResults, err
 		}
 
 		rc, err := f.Open()
-
-		// again if there is any error this block
-		// will be executed and process
-		// will return to main function
 		if err != nil {
-			// with filenames gathered so far
-			// and err message back to main function
-			return filenames, err
+			return parsingResults, err
 		}
 
 		_, err = io.Copy(outFile, rc)
 
-		// Close the file without defer so that
-		// it closes the outfile before the loop
-		// moves to the next iteration. this kinda
-		// saves an iteration of memory & time in
-		// the worst case scenario.
+		// Close the file without defer so that it closes the outfile
+		// before the loop moves to the next iteration.
 		outFile.Close()
 		rc.Close()
 
-		// again if there is any error this block
-		// will be executed and process
-		// will return to main function
 		if err != nil {
-			// with filenames gathered so far
-			// and err message back to main function
-			return filenames, err
+			return parsingResults, err
 		}
 	}
 
-	// Finally after every file has been appended
-	// into the filenames string[] and all the
-	// files have been extracted into the
-	// target directory, we return filenames
-	// and nil as error value as the process executed
-	// successfully without any errors*
-	// *only if it reaches until here.
-	return filenames, nil
-}
-
-// move to fileUtils
-func isDSStoreFile(name string) bool {
-	return name == ".DS_Store"
-}
-
-// move to fileUtils
-func isInvalidFileName(name string) bool {
-	return strings.HasPrefix(name, "._") || isDSStoreFile(name)
+	return parsingResults, nil
 }
