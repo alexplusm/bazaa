@@ -6,12 +6,16 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/labstack/echo"
 
+	"github.com/Alexplusm/bazaa/projects/go-db/src/configs"
 	"github.com/Alexplusm/bazaa/projects/go-db/src/controllers"
 	"github.com/Alexplusm/bazaa/projects/go-db/src/dbcon"
 	"github.com/Alexplusm/bazaa/projects/go-db/src/models"
+	"github.com/Alexplusm/bazaa/projects/go-db/src/utils/files"
 )
 
 func main() {
+	initDirs()
+
 	conn, err := dbcon.Connect()
 	if err != nil {
 		// logger
@@ -37,4 +41,11 @@ func main() {
 func dbTest(p *pgxpool.Pool) {
 	img := models.ImageDao{URL: "url/kekus", Category: "no"}
 	models.InsertImage(p, img)
+}
+
+func initDirs() {
+	dirs := []string{configs.MediaRoot, configs.MediaTempDir}
+	for _, dir := range dirs {
+		files.CreateDirIfNotExists(dir)
+	}
 }

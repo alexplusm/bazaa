@@ -7,7 +7,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"archive/zip"
 	"strconv"
@@ -16,18 +15,21 @@ import (
 	"github.com/labstack/echo"
 )
 
-const (
-	mediaTempDir = "media_temp"
-	mediaRoot    = "media_root"
-)
-
 // UploadFiles controller
 func UploadFiles(c echo.Context) error {
 	form, err := c.MultipartForm()
 	if err != nil {
 		return err
 	}
+
+	/*
+	* Не смотря на то, что поле называется "files"
+	* мы ожидаем только один файл - zip архив.
+	* Массив сделан на будущее.
+	 */
 	files := form.File["files"]
+
+	// ---
 
 	for _, file := range files {
 		fmt.Println("file:", file.Filename, file.Size)
@@ -39,13 +41,7 @@ func UploadFiles(c echo.Context) error {
 		}
 		defer src.Close()
 
-		createDir(configs.MediaTempDir)
-
-		// update file name with timestamp
-		ts := time.Now().Unix()
-		filename := addTimestampToFilename(filepath.Base(file.Filename), ts)
-		fmt.Println(filename)
-
+		filename := filepath.Base(file.Filename)
 		fp := filepath.Join(configs.MediaTempDir, filename)
 
 		// Destination
@@ -61,17 +57,10 @@ func UploadFiles(c echo.Context) error {
 		}
 	}
 
-	// ? request to MessageQueue: unzip archive and fill db
+	//
 	unzipFiles()
 
 	return c.String(http.StatusOK, "OK")
-}
-
-// todo: move to fileutils
-func createDir(path string) {
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		os.Mkdir(path, 0777)
-	}
 }
 
 // todo: move ?
@@ -116,11 +105,10 @@ func unzipFiles() error {
 		return err
 	}
 
-	createDir(configs.MediaRoot)
-
 	for _, fileInfo := range filesInfo {
 		fmt.Println("to unzip", fileInfo.Name(), fileInfo.Size())
 
+		// todo: params
 		Unzip(filepath.Join(configs.MediaTempDir, fileInfo.Name()), configs.MediaRoot)
 	}
 
@@ -150,9 +138,11 @@ func Unzip(src string, destination string) ([]string, error) {
 	}
 	defer reader.Close()
 
-	timestamp := getTimestampFromFilename(src)
-	rootFolder := filepath.Join(destination, fmt.Sprint(timestamp))
-	os.MkdirAll(rootFolder, os.ModePerm)
+	// TODO !!!
+
+	// timestamp := getTimestampFromFilename(src)
+	rootFolder := filepath.Join(destination, src)
+	// os.MkdirAll(rootFolder, os.ModePerm)
 
 	for _, f := range reader.File {
 		// this loop will run until there are
@@ -245,10 +235,12 @@ func Unzip(src string, destination string) ([]string, error) {
 	return filenames, nil
 }
 
+// move to fileUtils
 func isDSStoreFile(name string) bool {
 	return name == ".DS_Store"
 }
 
+// move to fileUtils
 func isInvalidFileName(name string) bool {
 	return strings.HasPrefix(name, "._") || isDSStoreFile(name)
 }
