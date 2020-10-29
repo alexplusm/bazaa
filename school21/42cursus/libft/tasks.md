@@ -1,3 +1,5 @@
+https://code.woboq.org/gcc/
+
 Part 1:
 1) powerfull Makefile for C lib
 2) full understanding C complitation and lab creating ( >> *.md )
