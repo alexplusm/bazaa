@@ -34,6 +34,8 @@ func main() {
 	e.GET("/upload/images/test", controllers.LoadFilesToDBWrapper(conn))
 	e.GET("/check/alive", controllers.ItsAlive)
 
+	e.POST("api/v1/game", controllers.CreateGame(conn))
+
 	// todo: PORT from .env
 	e.Logger.Fatal(e.Start(":1234"))
 }
