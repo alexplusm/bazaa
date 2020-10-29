@@ -5,6 +5,7 @@ package errors
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 )
 
 // BaseResponse base response
@@ -41,4 +42,9 @@ func GetErrorResponseJSONStr(code int, msg string) string {
 	}
 
 	return string(value)
+}
+
+// GetBadRequestErrorResponseJSONStr get bad request error in JSON string
+func GetBadRequestErrorResponseJSONStr() string {
+	return GetErrorResponseJSONStr(http.StatusBadRequest, "bad request")
 }
