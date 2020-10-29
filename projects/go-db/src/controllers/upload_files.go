@@ -146,17 +146,16 @@ func unzip(src string, destination string) ([]fileParsingResult, error) {
 			return parsingResults, err
 		}
 
-		// The created file will be stored in
-		// outFile with permissions to write &/or truncate
-		outFile, err := os.OpenFile(fpath,
-			os.O_WRONLY|os.O_CREATE|os.O_TRUNC,
-			f.Mode())
+		// The created file will be stored in outFile with permissions to read
+		outFile, err := os.OpenFile(fpath, os.O_RDONLY, f.Mode())
 		if err != nil {
+			// todo: log error and continue
 			return parsingResults, err
 		}
 
 		rc, err := f.Open()
 		if err != nil {
+			// todo: log error and continue
 			return parsingResults, err
 		}
 
@@ -168,6 +167,7 @@ func unzip(src string, destination string) ([]fileParsingResult, error) {
 		rc.Close()
 
 		if err != nil {
+			// todo: log error and continue
 			return parsingResults, err
 		}
 	}
