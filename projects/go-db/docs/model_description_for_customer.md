@@ -32,6 +32,7 @@
 ---
 Игры
 * game_id	- id игры
+* name - название игры
 * start_date - дата начала игры (ISO timestamp)
 * end_date - дата конца игры (ISO timestamp)
 * answer_type - тип ответа на вопрос 
