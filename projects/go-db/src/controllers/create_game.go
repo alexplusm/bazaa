@@ -2,73 +2,80 @@ package controllers
 
 import (
 	"fmt"
-	"net/http"
-	"strings"
+	"time"
 
-	"github.com/Alexplusm/bazaa/projects/go-db/src/utils/errors"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/labstack/echo"
 )
 
-type schedule struct {
-	ID string `json:"id"`
+type createGameRequestBody struct {
+	Name       string `json:"name"`
+	AnswerType int    `json:"answer_type"`
+	StartDate  string `json:"start_date"`
+	EndDate    string `json:"end_date"`
+	Question   string `json:"question"`
+	Options    string `json:"options"`
 }
 
-type gameRequestBody struct {
-	AnswerType string     `json:"answer_type" form:"answer_type"`
-	StartDate  string     `json:"start_date" form:"start_date"`
-	EndDate    string     `json:"end_date" form:"end_date"`
-	Shedules   []schedule `json:"schedules" form:"schedules"`
+type timestamp time.Time
+
+type game struct {
+	Name       string
+	AnswerType int
+	StartDate  timestamp
+	EndDate    timestamp
+	Question   string
+	Options    string
 }
 
-// multipart/form-data
-// application/json
+func (g *game) createGame(src createGameRequestBody) error {
+	startDate, err := time.Parse(time.RFC3339, src.StartDate)
+	if err != nil {
+		return fmt.Errorf("CreateGame: %v", err)
+	}
+	endDate, err := time.Parse(time.RFC3339, src.EndDate)
+	if err != nil {
+		return fmt.Errorf("CreateGame: %v", err)
+	}
+
+	g.StartDate = timestamp(startDate)
+	g.EndDate = timestamp(endDate)
+	g.Name = src.Name
+	g.Question = src.Question
+	g.Options = src.Options
+
+	// todo: validate
+
+	fmt.Printf("startDate %+v | %+v\n", g, err)
+
+	// todo: log game creation
+
+	return nil
+}
+
+// func (t *Timestamp) UnmarshalParam(src string) error {
+// 	ts, err := time.Parse(time.RFC3339, src)
+// 	*t = Timestamp(ts)
+// 	return err
+// }
 
 // source: https://medium.com/cuddle-ai/building-microservice-using-golang-echo-framework-ff10ba06d508
 
 // CreateGame create game controller
-func CreateGame(p *pgxpool.Pool) func(ctx echo.Context) error {
+// application/json only - make middleware
+func CreateGame(p *pgxpool.Pool) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
-		fmt.Println("Request accepted!")
+		gameRaw := new(createGameRequestBody)
 
-		// TODO: may be stdlib func this same functional exsists?
-		contentTypeRaw := ctx.Request().Header["Content-Type"][0]
-		contentType := strings.Split(contentTypeRaw, ";")[0]
-
-		// temp: testing
-		if contentType == "application/json" {
-			test(ctx)
-		}
-		// temp: testing end
-
-		// TODO: process type "application/json" (use c.Bind() echo func)
-		if contentType != "multipart/form-data" {
-			errMsg := errors.GetBadRequestErrorResponseJSONStr()
-
-			// ctx.JSON() // TODO
-			ctx.String(http.StatusOK, errMsg)
-			return nil
+		if err := ctx.Bind(gameRaw); err != nil {
+			fmt.Printf("CreateGame controller: %v\n", err)
 		}
 
-		// bisness logic
-		form, err := ctx.MultipartForm()
-		if err != nil {
-			return fmt.Errorf("CreateGame controller: %v", err) // TODO: log this error
-		}
+		fmt.Printf("Game Raw val %+v\n", gameRaw)
 
-		archives := form.File["archives"]
+		g := new(game)
 
-		if len(archives) == 0 {
-			// todo: schedules branch logic
-		} else {
-			// todo: files branch logic
-		}
-
-		// --- testing
-		v := form.Value
-		fmt.Printf("FormValue: %+v\n", v)
-		fmt.Println(v["id"])
-		test(ctx)
+		g.createGame(*gameRaw)
 
 		// TODO: validate Game: if error -> bad request
 		// (check on default values all fields)
@@ -82,7 +89,7 @@ func CreateGame(p *pgxpool.Pool) func(ctx echo.Context) error {
 
 func test(ctx echo.Context) {
 
-	game := new(gameRequestBody)
+	game := new(createGameRequestBody)
 
 	if err := ctx.Bind(game); err != nil {
 		fmt.Printf("CreateGame controller: %v\n", err)
