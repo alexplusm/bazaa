@@ -2,13 +2,15 @@ package controllers
 
 import (
 	"fmt"
+	"net/http"
+	"strings"
 	"time"
 
+	"github.com/Alexplusm/bazaa/projects/go-db/src/utils/errors"
+	"github.com/go-playground/validator/v10"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/labstack/echo"
 )
-
-// undefined - правильный ответ (for statisctics)
 
 type createGameRequestBody struct {
 	Name       string `json:"name"`
@@ -20,15 +22,19 @@ type createGameRequestBody struct {
 }
 
 type game struct {
-	Name       string
-	AnswerType int
-	StartDate  time.Time
-	EndDate    time.Time
-	Question   string
-	Options    string
+	Name       string    `validate:"required"`
+	AnswerType int       `validate:"gte=0,lte=2"`
+	StartDate  time.Time `validate:"required"`
+	EndDate    time.Time `validate:"required,gtcsfield=StartDate"`
+	Question   string    `validate:"required"`
+	Options    string    `validate:"required"`
 }
 
+var validate *validator.Validate
+
 func (g *game) createGame(src createGameRequestBody) error {
+	validate = validator.New()
+
 	startDate, err := time.Parse(time.RFC3339, src.StartDate)
 	if err != nil {
 		return fmt.Errorf("CreateGame: %v", err)
@@ -39,23 +45,42 @@ func (g *game) createGame(src createGameRequestBody) error {
 	}
 
 	g.StartDate = startDate
+	g.AnswerType = src.AnswerType
 	g.EndDate = endDate
 	g.Name = src.Name
 	g.Question = src.Question
-	g.Options = src.Options // custom check: has more or equal than 2 options
+	g.Options = src.Options
 
-	// todo: validate structure with lib (choose lib)
+	if err := validate.Struct(g); err != nil {
+		return fmt.Errorf("CreateGame validation: %v", err)
+	}
+	if err := g.validate(); err != nil {
+		return fmt.Errorf("CreateGame validation: %v", err)
+	}
 
-	fmt.Printf("startDate %+v | %+v\n", g, err)
+	fmt.Printf("Created game: %+v\n", g) // TODO: log game creation
+	return nil
+}
 
-	// todo: log game creation
+func (g *game) validate() error {
+	options := strings.Split(g.Options, ",")
+
+	if len(options) < 2 {
+		return fmt.Errorf("required 2 options or more")
+	}
+	for _, s := range options {
+		if s == "" {
+			return fmt.Errorf("required option value")
+		}
+	}
+
 	return nil
 }
 
 // source: https://medium.com/cuddle-ai/building-microservice-using-golang-echo-framework-ff10ba06d508
 
 // CreateGame create game controller
-// application/json only - make middleware
+// "application/json" content-type only - make middleware?
 func CreateGame(p *pgxpool.Pool) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 		gameRaw := new(createGameRequestBody)
@@ -64,30 +89,16 @@ func CreateGame(p *pgxpool.Pool) echo.HandlerFunc {
 			fmt.Printf("CreateGame controller: %v\n", err)
 		}
 
-		fmt.Printf("Game Raw val %+v\n", gameRaw)
-
 		g := new(game)
+		err := g.createGame(*gameRaw)
+		if err != nil {
+			ctx.String(http.StatusOK, errors.GetBadRequestErrorResponseJSONStr())
+			return fmt.Errorf("Create Game controller: %v", err)
+		}
 
-		g.createGame(*gameRaw)
-
-		// TODO: validate Game: if error -> bad request
-		// (check on default values all fields)
-		// https://echo.labstack.com/guide/request | search "Validate Data"
+		// pgx -> create game in DB
+		// proccess error
 
 		return nil
 	}
-}
-
-// func formDataWithFiles(f c.Form) {}
-
-func test(ctx echo.Context) {
-
-	game := new(createGameRequestBody)
-
-	if err := ctx.Bind(game); err != nil {
-		fmt.Printf("CreateGame controller: %v\n", err)
-	}
-
-	fmt.Printf("Game val %+v\n", game)
-
 }
