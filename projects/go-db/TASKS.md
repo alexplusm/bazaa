@@ -15,3 +15,5 @@
 
 n) Use codegen for interface generation
    * write openAPI spec for each endpoint
+
+// undefined - правильный ответ (for statisctics) !!! answer
