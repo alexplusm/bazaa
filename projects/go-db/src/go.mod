@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.0
+	github.com/go-playground/validator/v10 v10.4.1
 	github.com/go-redis/redis/v8 v8.3.2
 	github.com/jackc/pgx/v4 v4.9.0
 	github.com/labstack/echo v3.3.10+incompatible
