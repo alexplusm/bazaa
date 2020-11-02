@@ -8,6 +8,8 @@ import (
 	"github.com/labstack/echo"
 )
 
+// undefined - правильный ответ (for statisctics)
+
 type createGameRequestBody struct {
 	Name       string `json:"name"`
 	AnswerType int    `json:"answer_type"`
@@ -17,13 +19,11 @@ type createGameRequestBody struct {
 	Options    string `json:"options"`
 }
 
-type timestamp time.Time
-
 type game struct {
 	Name       string
 	AnswerType int
-	StartDate  timestamp
-	EndDate    timestamp
+	StartDate  time.Time
+	EndDate    time.Time
 	Question   string
 	Options    string
 }
@@ -38,26 +38,19 @@ func (g *game) createGame(src createGameRequestBody) error {
 		return fmt.Errorf("CreateGame: %v", err)
 	}
 
-	g.StartDate = timestamp(startDate)
-	g.EndDate = timestamp(endDate)
+	g.StartDate = startDate
+	g.EndDate = endDate
 	g.Name = src.Name
 	g.Question = src.Question
-	g.Options = src.Options
+	g.Options = src.Options // custom check: has more or equal than 2 options
 
-	// todo: validate
+	// todo: validate structure with lib (choose lib)
 
 	fmt.Printf("startDate %+v | %+v\n", g, err)
 
 	// todo: log game creation
-
 	return nil
 }
-
-// func (t *Timestamp) UnmarshalParam(src string) error {
-// 	ts, err := time.Parse(time.RFC3339, src)
-// 	*t = Timestamp(ts)
-// 	return err
-// }
 
 // source: https://medium.com/cuddle-ai/building-microservice-using-golang-echo-framework-ff10ba06d508
 
