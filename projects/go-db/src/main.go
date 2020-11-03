@@ -3,13 +3,11 @@ package main
 import (
 	"fmt"
 
-	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/labstack/echo"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/src/configs"
 	"github.com/Alexplusm/bazaa/projects/go-db/src/controllers"
 	"github.com/Alexplusm/bazaa/projects/go-db/src/dbcon"
-	"github.com/Alexplusm/bazaa/projects/go-db/src/models"
 	"github.com/Alexplusm/bazaa/projects/go-db/src/utils/files"
 )
 
@@ -24,20 +22,17 @@ func main() {
 	defer conn.Close()
 	fmt.Println("Connected to database!")
 
-	dbTest(conn) // test
-
 	// dbcon.RedisConnect()
 
 	// todo: REMOVE TRAILING SLASH IN URLS (Rewrite midddleware in "e.Pre()")
 
 	e := echo.New()
-	g := e.Group("api/v1/game")
 
-	g.Use(middle2)
-	e.Use(middle1)
-	e.Use(middle2)
+	// g := e.Group("api/v1/game")
+	// g.Use(middle2)
+	// e.Use(middle1)
+	// e.Use(middle2)
 
-	e.POST("/upload/images", controllers.UploadFiles)
 	e.GET("/upload/images/test", controllers.LoadFilesToDBWrapper(conn))
 	e.GET("/check/alive", controllers.ItsAlive)
 
@@ -51,13 +46,8 @@ func main() {
 	e.PUT("api/v1/game/:game-id", controllers.UpdateGame(conn))
 
 	// todo: PORT from .env
-	// todo: use own logger
+	// todo: use own logger ?
 	e.Logger.Fatal(e.Start(":1234"))
-}
-
-func dbTest(p *pgxpool.Pool) {
-	img := models.ImageDao{URL: "url/kekus", Category: "no"}
-	models.InsertImage(p, img)
 }
 
 func initDirs() {
