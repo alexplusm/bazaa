@@ -25,3 +25,7 @@ Tasks:
 * (Go Kernighan p.39, ex 1.5 1.6) + rainbow color palette
 * (Go Kernighan p.43, ex 1.10 1.11)
 * (Go Kernighan p.71, ex 2.3 2.4 2.5) // byte operations
+* (Go Kernighan p.87, ex 3.1 - 3.4) // svg + math
+* (Go Kernighan ch 3.4) // complex numbers
+* (Go Kernighan p.103, ex 3.10 - 3.12)
+* 
