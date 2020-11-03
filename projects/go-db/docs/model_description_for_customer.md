@@ -44,15 +44,22 @@
 * options_csv		- опции, если "answer_type" == '2'
   - пример: 'Есть нарушение,Нет нарушения'
 
-### tasks
+### screenshots
 ---
-Задачи
-* task_id           - id задания
+Скриншоты (Задачи)
+* screenshot_id           - id задания
 * game_id           - id игры
-* image_url			- url скриншота
+* image_name			  - имя изображения
 * expert_answer		- ответ эксперта
 * users_answer		- ответ пользователей
-* complete_by_users	- флаг, отвечающий за завершенность задания пользователями
+
+(?) * complete_by_users	- флаг, отвечающий за завершенность задания пользователями
+  
+### screenshot_sources
+---
+Источники скриншотов
+* source_id
+* source_type
 
 ### answers
 ---
