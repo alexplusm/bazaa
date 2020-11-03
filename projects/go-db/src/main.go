@@ -33,9 +33,7 @@ func main() {
 	// e.Use(middle1)
 	// e.Use(middle2)
 
-	e.GET("/upload/images/test", controllers.LoadFilesToDBWrapper(conn))
 	e.GET("/check/alive", controllers.ItsAlive)
-
 	e.POST("api/v1/game", func(ctx echo.Context) error {
 		// // TODO: Groups and middlewares
 		// if err := middlewares.ContentTypeMiddleware(ctx, "application/json"); err != nil {

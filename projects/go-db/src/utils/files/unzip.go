@@ -11,7 +11,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/src/configs"
 )
 
-// service files with this prefix appear after unpacking
+// INFO: service files with this prefix appear after unpacking
 const serviceUnzipFilePrefix = "._"
 
 var extentionsWhiteList = [3]string{"jpg", "png", "jpeg"}
@@ -87,11 +87,12 @@ func unzipFiles(srcPath string, destPath string, filenames []string) ([]FilePars
 	return result, nil
 }
 
-// unzip will decompress a zip archived file
 func unzip(src string, destination string) ([]FileParsingResult, error) {
 	/*
+		INFO:
 		source: https://www.geeksforgeeks.org/how-to-uncompress-a-file-in-golang/
 
+		TODO:
 		Функция заточена для фоток - мб обобщить?
 		+ есть бизнесс логика
 	*/
@@ -108,14 +109,12 @@ func unzip(src string, destination string) ([]FileParsingResult, error) {
 
 	for _, f := range reader.File {
 		fname := f.FileInfo().Name()
-		// fname := f.Name
 		fpath := filepath.Join(rootFolder, fname)
 
 		fmt.Println("fname", fname, "| fpath", fpath)
 
-		// skip nested dirs and invalid files
+		// INFO: skip nested dirs and invalid files
 		if f.FileInfo().IsDir() || IsInvalidImageFileName(fname) {
-			fmt.Println(f.FileInfo().IsDir(), "|", IsInvalidImageFileName(fname))
 			continue
 		}
 

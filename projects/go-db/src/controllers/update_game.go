@@ -65,11 +65,13 @@ func UpdateGame(p *pgxpool.Pool) echo.HandlerFunc {
 				fmt.Println("Error", err) // todo: process error!
 			}
 
-			fmt.Println("FILES", res)
+			fmt.Println("FILES", res, "| len:", len(res))
+			fmt.Printf("\n\n\n")
 
 			// todo: fill database use res
-			// todo: delete archives
 
+			removeArchives(filenames)
+			ctx.String(http.StatusOK, "OKEY") // todo: {success: true}
 		case ApplicationJSON:
 			updateGameBody := new(updateGameWithSchedulesRequestBody)
 			validate = validator.New()
@@ -104,3 +106,11 @@ func UpdateGame(p *pgxpool.Pool) echo.HandlerFunc {
 // 		return c.String(http.StatusOK, "loaded")
 // 	}
 // }
+
+func removeArchives(filenames []string) {
+	for _, fn := range filenames {
+		if err := files.RemoveFile(configs.MediaTempDir, fn); err != nil {
+			fmt.Println(err) // todo: log error
+		}
+	}
+}
