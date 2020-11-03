@@ -11,6 +11,7 @@ import (
 
 // ParseContentType parse content type
 // TODO: may be stdlib func this same functional exsists?
+// TODO: see "mime.ParseMediaType"
 func ParseContentType(ctx echo.Context) string {
 	// fmt.Printf("HEADER %+v\n", ctx.Request().Header)
 	header := ctx.Request().Header

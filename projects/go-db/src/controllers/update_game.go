@@ -65,6 +65,8 @@ func UpdateGame(p *pgxpool.Pool) echo.HandlerFunc {
 				fmt.Println("Error", err) // todo: process error!
 			}
 
+			fmt.Println("FILES", res)
+
 			// todo: fill database use res
 			// todo: delete archives
 
