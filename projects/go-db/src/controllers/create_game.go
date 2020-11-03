@@ -30,8 +30,12 @@ type game struct {
 	Options    string    `validate:"required"`
 }
 
+// source: https://godoc.org/github.com/go-playground/validator
+// package lvl variable - yes: move to package lvl file with variable | concurrency - need lock???
+// init func ????
 var validate *validator.Validate
 
+// to model?
 func (g *game) createGame(src createGameRequestBody) error {
 	validate = validator.New()
 
