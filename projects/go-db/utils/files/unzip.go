@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Alexplusm/bazaa/projects/go-db/src/configs"
+	"github.com/Alexplusm/bazaa/projects/go-db/configs"
 )
 
 // INFO: service files with this prefix appear after unpacking

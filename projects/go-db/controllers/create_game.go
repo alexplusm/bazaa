@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Alexplusm/bazaa/projects/go-db/src/utils/errors"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/labstack/echo"
