@@ -12,14 +12,14 @@ import (
 )
 
 type IServiceContainer interface {
+	CloseStoragesConnections()
+
 	// INFO: controllers
 	InjectCreateGameController() controllers.CreateGameController
-
-	CloseStoragesConnections()
 }
 
 func (k *kernel) InjectCreateGameController() controllers.CreateGameController {
-	handler := &PSQLHandler{k.pool} // TODO: in kernel?
+	handler := &PSQLHandler{k.pool} // TODO: in kernel? | after creation end point for game creation
 
 	repo := &repositories.GameRepository{handler}
 	service := &services.GameService{repo}
