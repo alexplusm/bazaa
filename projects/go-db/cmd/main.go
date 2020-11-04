@@ -39,7 +39,10 @@ func registerRoutes(e *echo.Echo) {
 
 	createGameController := container.InjectCreateGameController()
 
-	e.POST("/lol", createGameController.CreateGameContl)
+	// if err := middlewares.ContentTypeMiddleware(ctx, "application/json"); err != nil {
+	// 	return err
+	// }
+	e.POST("api/v1/game", createGameController.CreateGameC)
 
 	// todo: REMOVE TRAILING SLASH IN URLS (Rewrite midddleware in "e.Pre()")
 
@@ -48,16 +51,12 @@ func registerRoutes(e *echo.Echo) {
 	// e.Use(middle1)
 	// e.Use(middle2)
 
-	//infrastructures.ServiceContainer().Kek()
-
 	e.GET("/check/alive", controllers.ItsAlive)
 
 	// TODO: wait refactoring
 	//e.POST("api/v1/game", func(ctx echo.Context) error {
 	//	// // TODO: Groups and middlewares
-	//	// if err := middlewares.ContentTypeMiddleware(ctx, "application/json"); err != nil {
-	//	// 	return err
-	//	// }
+
 	//	return controllers.CreateGame(conn)(ctx)
 	//})
 	//e.PUT("api/v1/game/:game-id", controllers.UpdateGame(conn))
