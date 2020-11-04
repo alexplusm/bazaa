@@ -5,10 +5,10 @@ import (
 
 	"github.com/labstack/echo"
 
-	"github.com/Alexplusm/bazaa/projects/go-db/src/configs"
-	"github.com/Alexplusm/bazaa/projects/go-db/src/controllers"
-	"github.com/Alexplusm/bazaa/projects/go-db/src/dbcon"
-	"github.com/Alexplusm/bazaa/projects/go-db/src/utils/files"
+	"github.com/Alexplusm/bazaa/projects/go-db/configs"
+	"github.com/Alexplusm/bazaa/projects/go-db/controllers"
+	"github.com/Alexplusm/bazaa/projects/go-db/dbcon"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/files"
 )
 
 func main() {

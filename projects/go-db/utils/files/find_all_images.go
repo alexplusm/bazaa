@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Alexplusm/bazaa/projects/go-db/src/configs"
+	"github.com/Alexplusm/bazaa/projects/go-db/configs"
 )
 
 // FindAllImages find all images names

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Alexplusm/bazaa/projects/go-db/src/utils/errors"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/errors"
 	"github.com/labstack/echo"
 )
 
