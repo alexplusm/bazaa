@@ -6,13 +6,14 @@ import (
 )
 
 type IGameService interface {
-	Method1()
+	CreateGame()
 }
 
 type GameService struct {
 	interfaces.IGameRepository
 }
 
-func (service *GameService) Method1() {
-	fmt.Println("Method1")
+func (service *GameService) CreateGame() {
+	fmt.Println("CreateGame service")
+	// pgx -> create game in DB
 }
