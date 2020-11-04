@@ -6,10 +6,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Alexplusm/bazaa/projects/go-db/utils/errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/labstack/echo"
+
+	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/errors"
 )
 
 type createGameRequestBody struct {
@@ -105,4 +107,19 @@ func CreateGame(p *pgxpool.Pool) echo.HandlerFunc {
 
 		return nil
 	}
+}
+
+//----------- new version
+
+type CreateGameController struct {
+	interfaces.IGameService
+}
+
+// TODO: rename to "CreateGame"
+func (controller *CreateGameController) CreateGameContl(ctx echo.Context) error {
+	fmt.Println("In controller")
+
+	controller.Method1()
+
+	return nil
 }
