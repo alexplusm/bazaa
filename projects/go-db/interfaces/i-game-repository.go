@@ -1,5 +1,9 @@
 package interfaces
 
+import (
+	"github.com/Alexplusm/bazaa/projects/go-db/models"
+)
+
 type IGameRepository interface {
-	CreateGame() (string, error)
+	CreateGame(game models.GameModel) (string, error)
 }

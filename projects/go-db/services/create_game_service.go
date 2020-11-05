@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
+	"github.com/Alexplusm/bazaa/projects/go-db/models"
 )
 
 type ICreateGameService interface {
@@ -14,7 +15,8 @@ type CreateGameService struct {
 	Repository interfaces.IGameRepository
 }
 
-func (service *CreateGameService) CreateGame() {
-	fmt.Println("CreateGame service")
-	// pgx -> create game in DB
+func (service *CreateGameService) CreateGame(game models.GameModel) (string, error) {
+	fmt.Printf("CreateGame service: %+v\n", game)
+
+	return service.Repository.CreateGame(game)
 }

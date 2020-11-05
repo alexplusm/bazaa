@@ -24,13 +24,10 @@ type CreateGameController struct {
 	Service interfaces.IGameService
 }
 
-// CreateGameС create game controller
+// CreateGame create game controller
 // "application/json" content-type only - make middleware?
-// TODO: rename to "CreateGame"
 // TODO: tests
 func (controller *CreateGameController) CreateGame(ctx echo.Context) error {
-	fmt.Println("CreateGame controller")
-
 	gameRaw := new(dto.CreateGameRequestBody)
 
 	if err := ctx.Bind(gameRaw); err != nil {
@@ -39,17 +36,19 @@ func (controller *CreateGameController) CreateGame(ctx echo.Context) error {
 
 	validate = validator.New()
 
-	//g := new(dto.Game)
-	g := new(models.GameModel)
-	err := g.CreateGame(*gameRaw, validate)
+	game := new(models.GameModel)
+	err := game.CreateGame(*gameRaw, validate)
 	if err != nil {
 		ctx.String(http.StatusOK, errors.GetBadRequestErrorResponseJSONStr())
-		return fmt.Errorf("Create Game controller: %v", err)
+		return fmt.Errorf("create game controller: %v", err)
 	}
 
-	fmt.Printf("GAME: %+v\n", g)
+	gameID, err := controller.Service.CreateGame(*game)
+	if err != nil {
+		return fmt.Errorf("create game controller: %v", err)
+	}
 
-	controller.Service.CreateGame()
+	ctx.String(http.StatusOK, "gameID"+gameID)
 
 	return nil
 }

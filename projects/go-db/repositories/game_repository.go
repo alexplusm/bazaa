@@ -2,16 +2,17 @@ package repositories
 
 import (
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
+	"github.com/Alexplusm/bazaa/projects/go-db/models"
 )
 
 type GameRepository struct {
 	DBConn interfaces.IDBHandler
 }
 
-func (repo *GameRepository) CreateGame() (string, error) {
+func (repo *GameRepository) CreateGame(game models.GameModel) (string, error) {
 	// conn := repo.DBConn.GetConn()
 	// insert game in database and return gameID
-	gameID := ""
+	gameID := "kek-123/567"
 	return gameID, nil
 }
 
