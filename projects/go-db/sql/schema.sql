@@ -1,15 +1,15 @@
 -- INFO: to generate UML diagrams: https://app.sqldbm.com/
 
--- CREATE TYPE ANSWER_TYPE AS ENUM (
--- 	'1', -- Текст
--- 	'2', -- Категориальный
--- 	'3', -- Координаты прямоугольника
--- 	'4'  -- Полигональный
--- );
+DROP TYPE IF EXISTS ANSWER_TYPE; -- 'IF NOT EXISTS' don't work with 'CREATE TYPE'
+CREATE TYPE ANSWER_TYPE AS ENUM (
+	'1', -- Текст
+	'2', -- Категориальный
+	'3', -- Координаты прямоугольника
+	'4'  -- Полигональный
+);
 
 -- TODO: schedules (see docs)
 
--- games
 CREATE TABLE IF NOT EXISTS games (
 	"game_id" uuid DEFAULT uuid_generate_v4(),
 	"start_date" TIMESTAMP NOT NULL,
@@ -20,27 +20,21 @@ CREATE TABLE IF NOT EXISTS games (
 
 	PRIMARY KEY ("game_id")
 );
--- end games
 
--- external_systems
 CREATE TABLE IF NOT EXISTS external_systems (
 	"external_system_id" VARCHAR DEFAULT uuid_generate_v4(),
 	"post_task_results_url" VARCHAR DEFAULT NULL,
 
 	PRIMARY KEY ("external_system_id")
 );
--- external_systems end
 
--- users
 CREATE TABLE IF NOT EXISTS users (
 	"inner_user_id" uuid DEFAULT uuid_generate_v4(),
 	"user_id" VARCHAR NOT NULL,
 
 	PRIMARY KEY ("user_id")
 );
--- users end
 
--- users__external_systems
 CREATE TABLE IF NOT EXISTS users__external_systems (
 	"external_system_id" VARCHAR NOT NULL,
 	"user_id" VARCHAR NOT NULL,
@@ -48,9 +42,8 @@ CREATE TABLE IF NOT EXISTS users__external_systems (
 	FOREIGN KEY ("external_system_id") REFERENCES external_systems("external_system_id"),
 	FOREIGN KEY ("user_id") REFERENCES users("user_id")
 );
--- users__external_systems end
 
--- tasks
+-- tasks -> screenshots
 CREATE TABLE IF NOT EXISTS tasks (
 	"task_id" uuid DEFAULT uuid_generate_v4(),
 	"game_id" uuid NOT NULL,
@@ -73,9 +66,7 @@ CREATE TABLE IF NOT EXISTS tasks (
 	PRIMARY KEY ("task_id"),
 	FOREIGN KEY ("game_id") REFERENCES games("game_id")
 );
--- tasks end
 
--- answers
 CREATE TABLE IF NOT EXISTS answers (
 	"answer_id" BIGSERIAL,
 	
@@ -99,4 +90,3 @@ CREATE TABLE IF NOT EXISTS answers (
 	FOREIGN KEY ("user_id") REFERENCES users("user_id"),
 	FOREIGN KEY ("external_system_id") REFERENCES external_systems("external_system_id")
 );
--- answers end

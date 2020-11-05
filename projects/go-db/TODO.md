@@ -28,4 +28,8 @@ Tasks:
 * (Go Kernighan p.87, ex 3.1 - 3.4) // svg + math
 * (Go Kernighan ch 3.4) // complex numbers
 * (Go Kernighan p.103, ex 3.10 - 3.12)
-* 
+
+## business todos
+* method for adding new external system
+    * with exist uuid
+    * with generating new uuid
