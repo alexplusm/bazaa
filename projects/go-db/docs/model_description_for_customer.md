@@ -51,6 +51,7 @@
 * image_name - имя изображения
 * expert_answer - ответ эксперта
 * users_answer - ответ пользователей
+* source_id: TODO
 
 (?) * complete_by_users	- флаг, отвечающий за завершенность задания пользователями
 
