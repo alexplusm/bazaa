@@ -17,7 +17,7 @@ import (
 var validate *validator.Validate
 
 type CreateGameController struct {
-	interfaces.IGameService
+	Service interfaces.IGameService
 }
 
 // CreateGameС create game controller
@@ -44,7 +44,7 @@ func (controller *CreateGameController) CreateGameC(ctx echo.Context) error {
 
 	fmt.Printf("GAME: %+v\n", g)
 
-	controller.CreateGame() // TODO: пересечение имен с именами метода сервисов!!!
+	controller.Service.CreateGame()
 
 	return nil
 }

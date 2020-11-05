@@ -2,18 +2,19 @@ package services
 
 import (
 	"fmt"
+
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 )
 
-type IGameService interface {
+type ICreateGameService interface {
 	CreateGame()
 }
 
-type GameService struct {
-	interfaces.IGameRepository
+type CreateGameService struct {
+	Repository interfaces.IGameRepository
 }
 
-func (service *GameService) CreateGame() {
+func (service *CreateGameService) CreateGame() {
 	fmt.Println("CreateGame service")
 	// pgx -> create game in DB
 }
