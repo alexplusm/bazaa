@@ -1,7 +1,7 @@
 -- INFO: sync schema with "docs/model_description_for_customer.md"
 -- INFO: to generate UML diagrams: https://app.sqldbm.com/
 
-DROP TYPE IF EXISTS ANSWER_TYPE; -- 'IF NOT EXISTS' don't work with 'CREATE TYPE'
+DROP TYPE IF EXISTS ANSWER_TYPE; -- INFO: 'IF NOT EXISTS' don't work with 'CREATE TYPE'
 CREATE TYPE ANSWER_TYPE AS ENUM (
 	'1', -- Текст
 	'2', -- Категориальный
@@ -13,11 +13,12 @@ CREATE TYPE ANSWER_TYPE AS ENUM (
 
 CREATE TABLE IF NOT EXISTS games (
 	"game_id" uuid DEFAULT uuid_generate_v4(),
+	"name" VARCHAR NOT NULL,
 	"start_date" TIMESTAMP NOT NULL,
 	"end_date" TIMESTAMP NOT NULL,
 	"answer_type" ANSWER_TYPE NOT NULL,
 	"question" TEXT NOT NULL,
-	"options_csv" VARCHAR DEFAULT NULL, -- не обязательный
+	"options_csv" VARCHAR DEFAULT NULL, -- INFO: обязательное поле только для answer_type == 2
 
 	PRIMARY KEY ("game_id")
 );
@@ -44,7 +45,7 @@ CREATE TABLE IF NOT EXISTS users__external_systems (
 	FOREIGN KEY ("user_id") REFERENCES users("user_id")
 );
 
--- tasks -> screenshots
+-- TODO: tasks -> screenshots
 CREATE TABLE IF NOT EXISTS tasks (
 	"task_id" uuid DEFAULT uuid_generate_v4(),
 	"game_id" uuid NOT NULL,
@@ -86,7 +87,7 @@ CREATE TABLE IF NOT EXISTS answers (
 
 	-- INFO: большое количество constraints в виде FK могут навредить insert'ам
 		-- в случае просадки скорости insert'ов рассмотреть вариант убрать часть FK
-	FOREIGN KEY ("task_id") REFERENCES tasks("task_id"),
+	FOREIGN KEY ("task_id") REFERENCES tasks("task_id"), -- TODO: task -> screenshot
 	FOREIGN KEY ("game_id") REFERENCES games("game_id"), -- TODO: above
 	FOREIGN KEY ("user_id") REFERENCES users("user_id"),
 	FOREIGN KEY ("external_system_id") REFERENCES external_systems("external_system_id")
