@@ -8,8 +8,8 @@ import (
 	"github.com/labstack/echo"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/domain"
-	"github.com/Alexplusm/bazaa/projects/go-db/dto"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
+	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/errors"
 )
 

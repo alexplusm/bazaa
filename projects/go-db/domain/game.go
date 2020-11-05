@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 
-	"github.com/Alexplusm/bazaa/projects/go-db/dto"
+	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
 )
 
 type GameBO struct {
