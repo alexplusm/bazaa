@@ -34,11 +34,14 @@ func (controller *CreateGameController) CreateGame(ctx echo.Context) error {
 		fmt.Printf("CreateGame controller: %v\n", err)
 	}
 
+	fmt.Printf("GameRaw %+v\n", gameRaw)
+
 	validate = validator.New()
 
 	game := new(models.GameModel)
 	err := game.CreateGame(*gameRaw, validate)
 	if err != nil {
+		fmt.Println(err) // todo: remove
 		ctx.String(http.StatusOK, errors.GetBadRequestErrorResponseJSONStr())
 		return fmt.Errorf("create game controller: %v", err)
 	}

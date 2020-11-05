@@ -5,7 +5,7 @@ import (
 )
 
 type IDBHandler interface {
-	GetConn() *pgxpool.Pool
+	GetPool() *pgxpool.Pool
 	// TODO: late encapsulate this in methods (below)
 	// Execute(statement string)
 	// Query(statement string) (IRow, error)

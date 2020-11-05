@@ -86,7 +86,7 @@ type PSQLHandler struct {
 }
 
 // TODO: Temporary: look at interfaces.IDBHandler
-func (handler *PSQLHandler) GetConn() *pgxpool.Pool {
+func (handler *PSQLHandler) GetPool() *pgxpool.Pool {
 	return handler.Conn
 }
 

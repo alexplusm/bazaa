@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -20,21 +21,30 @@ type GameModel struct {
 }
 
 func (g *GameModel) CreateGame(src dto.CreateGameRequestBody, validate *validator.Validate) error {
-	startDate, err := time.Parse(time.RFC3339, src.StartDate)
+	startDate, err := strconv.ParseInt(src.StartDate, 10, 64)
 	if err != nil {
 		return fmt.Errorf("CreateGame: %v", err)
 	}
-	endDate, err := time.Parse(time.RFC3339, src.EndDate)
+	endDate, err := strconv.ParseInt(src.EndDate, 10, 64)
 	if err != nil {
 		return fmt.Errorf("CreateGame: %v", err)
 	}
 
-	g.StartDate = startDate
+	g.StartDate = time.Unix(startDate, 0)
 	g.AnswerType = src.AnswerType
-	g.EndDate = endDate
+	g.EndDate = time.Unix(endDate, 0)
 	g.Name = src.Name
 	g.Question = src.Question
 	g.Options = src.Options
+
+	// TODO: test case with AnswerType != 2 (не категориальный тип)
+	// то что будет с Options?
+	// должна быть пустая строка | хотя нужен nil -> чтобы в базе был NULL
+	// (как вариант: 2 sql insertStatement - с options и без)
+
+	// TODO: case: JavaScript генерирует timestamp в миллисекундах
+	// чтобы обработать этот кейс - запрещаем создавать игры с датой, отличной от time.Now() + 10 year
+	// TODO: запилить эту валидацию и описать "INFO" по этому поводу
 
 	if err := validate.Struct(g); err != nil {
 		return fmt.Errorf("CreateGame validation: %v", err)
@@ -48,14 +58,17 @@ func (g *GameModel) CreateGame(src dto.CreateGameRequestBody, validate *validato
 }
 
 func (g *GameModel) validate() error {
-	options := strings.Split(g.Options, ",")
+	// TODO: use ENUM !!!
+	if g.AnswerType == 2 {
+		options := strings.Split(g.Options, ",")
 
-	if len(options) < 2 {
-		return fmt.Errorf("required 2 options or more")
-	}
-	for _, s := range options {
-		if s == "" {
-			return fmt.Errorf("required option value")
+		if len(options) < 2 {
+			return fmt.Errorf("required 2 options or more")
+		}
+		for _, s := range options {
+			if s == "" {
+				return fmt.Errorf("required option value")
+			}
 		}
 	}
 

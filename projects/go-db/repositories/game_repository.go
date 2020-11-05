@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"context"
+	"fmt"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/models"
 )
@@ -9,10 +11,41 @@ type GameRepository struct {
 	DBConn interfaces.IDBHandler
 }
 
+const (
+	createGameStatement = `
+INSERT INTO games ("name", "start_date", "end_date", "answer_type", "question", "options_csv")
+VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING "game_id";
+`
+	//createGameWithoutOptionsStatement // TODO: create
+)
+
 func (repo *GameRepository) CreateGame(game models.GameModel) (string, error) {
-	// conn := repo.DBConn.GetConn()
-	// insert game in database and return gameID
-	gameID := "kek-123/567"
+	p := repo.DBConn.GetPool()
+	conn, err := p.Acquire(context.Background())
+	if err != nil {
+		return "", fmt.Errorf("create game: acquire connection: %v", err)
+	}
+	defer conn.Release()
+
+	row := conn.QueryRow(context.Background(),
+		createGameStatement,
+		game.Name, game.StartDate.Unix(), game.EndDate.Unix(), // TODO: DAO objects?
+		game.AnswerType, game.Question, game.Options)
+
+	var gameID string
+
+	err = row.Scan(&gameID)
+	if err != nil {
+		fmt.Printf("create game: query: %v", err)
+		fmt.Println()
+		fmt.Printf("### ROW: %v", row)
+
+		return "", fmt.Errorf("create game: query: %v", err)
+	}
+
+	fmt.Printf("### ROW: gameIDD: %+v\n", gameID)
+
 	return gameID, nil
 }
 
