@@ -37,7 +37,7 @@ func (repo *GameRepository) CreateGame(game dao.GameDAO) (string, error) {
 	var args []interface{}
 	var statement string
 
-	if game.AnswerType == consts.Categorical {
+	if game.AnswerType == consts.CategoricalAnswerType {
 		args = []interface{}{
 			game.Name, game.StartDate, game.EndDate, game.AnswerType, game.Question, game.Options,
 		}

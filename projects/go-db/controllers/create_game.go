@@ -41,7 +41,6 @@ func (controller *CreateGameController) CreateGame(ctx echo.Context) error {
 	game := new(bo.GameBO)
 	err := game.CreateGame(*gameRaw, validate)
 	if err != nil {
-		fmt.Println(err) // todo: remove
 		ctx.String(http.StatusOK, errors.GetBadRequestErrorResponseJSONStr())
 		return fmt.Errorf("create game controller: %v", err)
 	}

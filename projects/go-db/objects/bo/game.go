@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 
+	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
 )
 
@@ -31,20 +32,17 @@ func (g *GameBO) CreateGame(src dto.CreateGameRequestBody, validate *validator.V
 	}
 
 	g.StartDate = time.Unix(startDate, 0)
-	g.AnswerType = src.AnswerType
 	g.EndDate = time.Unix(endDate, 0)
+
+	upperBound := time.Now().AddDate(5, 0, 0)
+	if g.StartDate.After(upperBound) || g.EndDate.After(upperBound) {
+		return fmt.Errorf("create game: StartDate or EndDate too far dates")
+	}
+
 	g.Name = src.Name
+	g.AnswerType = src.AnswerType
 	g.Question = src.Question
 	g.Options = src.Options
-
-	// TODO: test case with AnswerType != 2 (не категориальный тип)
-	// то что будет с Options?
-	// должна быть пустая строка | хотя нужен nil -> чтобы в базе был NULL
-	// (как вариант: 2 sql insertStatement - с options и без)
-
-	// TODO: case: JavaScript генерирует timestamp в миллисекундах
-	// чтобы обработать этот кейс - запрещаем создавать игры с датой, отличной от time.Now() + 10 year
-	// TODO: запилить эту валидацию и описать "INFO" по этому поводу
 
 	if err := validate.Struct(g); err != nil {
 		return fmt.Errorf("CreateGame validation: %v", err)
@@ -58,8 +56,7 @@ func (g *GameBO) CreateGame(src dto.CreateGameRequestBody, validate *validator.V
 }
 
 func (g *GameBO) validate() error {
-	// TODO: use ENUM !!!
-	if g.AnswerType == 2 {
+	if g.AnswerType == consts.CategoricalAnswerType {
 		options := strings.Split(g.Options, ",")
 
 		if len(options) < 2 {

@@ -2,8 +2,8 @@ package consts
 
 const (
 	_ = iota
-	Text
-	Categorical
-	BoundingBox
-	Polygonal
+	TextAnswerType
+	CategoricalAnswerType
+	BoundingBoxAnswerType
+	PolygonalAnswerType
 )
