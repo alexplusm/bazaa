@@ -1,3 +1,4 @@
+-- INFO: sync schema with "docs/model_description_for_customer.md"
 -- INFO: to generate UML diagrams: https://app.sqldbm.com/
 
 DROP TYPE IF EXISTS ANSWER_TYPE; -- 'IF NOT EXISTS' don't work with 'CREATE TYPE'
