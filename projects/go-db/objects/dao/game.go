@@ -1,7 +1,7 @@
 package dao
 
 import (
-	"github.com/Alexplusm/bazaa/projects/go-db/domain"
+	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 )
 
 type GameDAO struct {
@@ -13,7 +13,7 @@ type GameDAO struct {
 	Options    string
 }
 
-func (g *GameDAO) FromBO(bo domain.GameBO) {
+func (g *GameDAO) FromBO(bo bo.GameBO) {
 	g.Name = bo.Name
 	g.AnswerType = bo.AnswerType
 
