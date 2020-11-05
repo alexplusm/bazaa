@@ -5,12 +5,12 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Alexplusm/bazaa/projects/go-db/configs"
+	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 )
 
 // FindAllImages find all images names
 func FindAllImages() []string {
-	dir, err := os.Open(configs.MediaRoot)
+	dir, err := os.Open(consts.MediaRoot)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -25,7 +25,7 @@ func FindAllImages() []string {
 	for _, fileInfo := range filesInfo {
 		fmt.Println("filesInfo", fileInfo.Name())
 
-		r = findAllImagesPath(filepath.Join(configs.MediaRoot, fileInfo.Name()), r)
+		r = findAllImagesPath(filepath.Join(consts.MediaRoot, fileInfo.Name()), r)
 
 		fmt.Println("Result", r, len(r))
 	}

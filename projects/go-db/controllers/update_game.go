@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Alexplusm/bazaa/projects/go-db/configs"
+	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/errors"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/files"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/middlewares"
@@ -52,7 +52,7 @@ func UpdateGame(p *pgxpool.Pool) echo.HandlerFunc {
 			 */
 			archives := form.File["archives"]
 
-			filenames, err := files.CopyFiles(archives, configs.MediaTempDir)
+			filenames, err := files.CopyFiles(archives, consts.MediaTempDir)
 			if err != nil {
 				fmt.Printf("Error while copieng: %+v\n", err) // TODO: log
 			}
@@ -100,8 +100,8 @@ func UpdateGame(p *pgxpool.Pool) echo.HandlerFunc {
 // 		r := files.FindAllImages()
 
 // 		for _, ff := range r {
-// 			img := models.ImageDao{URL: ff, Category: "1"}
-// 			models.InsertImage(p, img)
+// 			img := dao.ImageDao{URL: ff, Category: "1"}
+// 			dao.InsertImage(p, img)
 // 		}
 // 		return c.String(http.StatusOK, "loaded")
 // 	}
@@ -109,7 +109,7 @@ func UpdateGame(p *pgxpool.Pool) echo.HandlerFunc {
 
 func removeArchives(filenames []string) {
 	for _, fn := range filenames {
-		if err := files.RemoveFile(configs.MediaTempDir, fn); err != nil {
+		if err := files.RemoveFile(consts.MediaTempDir, fn); err != nil {
 			fmt.Println(err) // todo: log error
 		}
 	}

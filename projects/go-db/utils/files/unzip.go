@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Alexplusm/bazaa/projects/go-db/configs"
+	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 )
 
 // INFO: service files with this prefix appear after unpacking
@@ -55,7 +55,7 @@ type FileParsingResult struct {
 
 // UnzipImages unzip images
 func UnzipImages(filenames []string) ([]FileParsingResult, error) {
-	return unzipFiles(configs.MediaTempDir, configs.MediaRoot, filenames)
+	return unzipFiles(consts.MediaTempDir, consts.MediaRoot, filenames)
 }
 
 func unzipFiles(srcPath string, destPath string, filenames []string) ([]FileParsingResult, error) {

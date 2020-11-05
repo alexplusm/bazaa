@@ -1,4 +1,4 @@
-package configs
+package consts
 
 // Folders name
 const (

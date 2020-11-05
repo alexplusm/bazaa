@@ -7,9 +7,9 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo"
 
+	"github.com/Alexplusm/bazaa/projects/go-db/domain"
 	"github.com/Alexplusm/bazaa/projects/go-db/dto"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
-	"github.com/Alexplusm/bazaa/projects/go-db/models"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/errors"
 )
 
@@ -38,7 +38,7 @@ func (controller *CreateGameController) CreateGame(ctx echo.Context) error {
 
 	validate = validator.New()
 
-	game := new(models.GameModel)
+	game := new(domain.GameBO)
 	err := game.CreateGame(*gameRaw, validate)
 	if err != nil {
 		fmt.Println(err) // todo: remove
@@ -51,7 +51,7 @@ func (controller *CreateGameController) CreateGame(ctx echo.Context) error {
 		return fmt.Errorf("create game controller: %v", err)
 	}
 
-	ctx.String(http.StatusOK, "gameID"+gameID)
+	ctx.String(http.StatusOK, "gameID: "+gameID) // todo: response generator
 
 	return nil
 }

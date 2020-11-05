@@ -3,8 +3,9 @@ package repositories
 import (
 	"context"
 	"fmt"
+
+	"github.com/Alexplusm/bazaa/projects/go-db/dao"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
-	"github.com/Alexplusm/bazaa/projects/go-db/models"
 )
 
 type GameRepository struct {
@@ -20,7 +21,7 @@ RETURNING "game_id";
 	//createGameWithoutOptionsStatement // TODO: create
 )
 
-func (repo *GameRepository) CreateGame(game models.GameModel) (string, error) {
+func (repo *GameRepository) CreateGame(game dao.GameDAO) (string, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -30,7 +31,7 @@ func (repo *GameRepository) CreateGame(game models.GameModel) (string, error) {
 
 	row := conn.QueryRow(context.Background(),
 		createGameStatement,
-		game.Name, game.StartDate.Unix(), game.EndDate.Unix(), // TODO: DAO objects?
+		game.Name, game.StartDate, game.EndDate,
 		game.AnswerType, game.Question, game.Options)
 
 	var gameID string
@@ -50,14 +51,14 @@ func (repo *GameRepository) CreateGame(game models.GameModel) (string, error) {
 }
 
 /* TODO: Examples */
-//func (repository *PlayerRepository) GetPlayerByName(name string) (models.PlayerModel, error) {
+//func (repository *PlayerRepository) GetPlayerByName(name string) (dao.PlayerModel, error) {
 //
 //	row, err :=repository.Query(fmt.Sprintf("SELECT * FROM player_models WHERE name = '%s'", name))
 //	if err != nil {
-//		return models.PlayerModel{}, err
+//		return dao.PlayerModel{}, err
 //	}
 //
-//	var player models.PlayerModel
+//	var player dao.PlayerModel
 //
 //	row.Next()
 //	row.Scan(&player.Id, &player.Name, &player.Score)
@@ -66,9 +67,9 @@ func (repo *GameRepository) CreateGame(game models.GameModel) (string, error) {
 //}
 
 // TODO: use this later
-//func (repository *PlayerRepositoryWithCircuitBreaker) GetPlayerByName(name string) (models.PlayerModel, error) {
+//func (repository *PlayerRepositoryWithCircuitBreaker) GetPlayerByName(name string) (dao.PlayerModel, error) {
 //
-//	output := make(chan models.PlayerModel, 1)
+//	output := make(chan dao.PlayerModel, 1)
 //	hystrix.ConfigureCommand("get_player_by_name", hystrix.CommandConfig{Timeout: 1000})
 //	errors := hystrix.Go("get_player_by_name", func() error {
 //
@@ -83,6 +84,6 @@ func (repo *GameRepository) CreateGame(game models.GameModel) (string, error) {
 //		return out, nil
 //	case err := <-errors:
 //		println(err)
-//		return models.PlayerModel{}, err
+//		return dao.PlayerModel{}, err
 //	}
 //}

@@ -1,9 +1,9 @@
 package interfaces
 
 import (
-	"github.com/Alexplusm/bazaa/projects/go-db/models"
+	"github.com/Alexplusm/bazaa/projects/go-db/domain"
 )
 
 type IGameService interface {
-	CreateGame(game models.GameModel) (string, error)
+	CreateGame(game domain.GameBO) (string, error)
 }

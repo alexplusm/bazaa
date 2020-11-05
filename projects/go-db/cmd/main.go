@@ -4,7 +4,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 
-	"github.com/Alexplusm/bazaa/projects/go-db/configs"
+	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/controllers"
 	"github.com/Alexplusm/bazaa/projects/go-db/infrastructures"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/files"
@@ -28,7 +28,7 @@ func main() {
 }
 
 func initDirs() {
-	dirs := []string{configs.MediaRoot, configs.MediaTempDir}
+	dirs := []string{consts.MediaRoot, consts.MediaTempDir}
 	for _, dir := range dirs {
 		files.CreateDirIfNotExists(dir)
 	}

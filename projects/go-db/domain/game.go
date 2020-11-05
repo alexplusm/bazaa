@@ -1,4 +1,4 @@
-package models
+package domain
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/dto"
 )
 
-type GameModel struct {
+type GameBO struct {
 	Name       string    `validate:"required"`
 	AnswerType int       `validate:"gte=1,lte=4"`
 	StartDate  time.Time `validate:"required"`
@@ -20,7 +20,7 @@ type GameModel struct {
 	Options    string    `validate:"required"`
 }
 
-func (g *GameModel) CreateGame(src dto.CreateGameRequestBody, validate *validator.Validate) error {
+func (g *GameBO) CreateGame(src dto.CreateGameRequestBody, validate *validator.Validate) error {
 	startDate, err := strconv.ParseInt(src.StartDate, 10, 64)
 	if err != nil {
 		return fmt.Errorf("CreateGame: %v", err)
@@ -57,7 +57,7 @@ func (g *GameModel) CreateGame(src dto.CreateGameRequestBody, validate *validato
 	return nil
 }
 
-func (g *GameModel) validate() error {
+func (g *GameBO) validate() error {
 	// TODO: use ENUM !!!
 	if g.AnswerType == 2 {
 		options := strings.Split(g.Options, ",")

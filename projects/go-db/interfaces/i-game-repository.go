@@ -1,9 +1,9 @@
 package interfaces
 
 import (
-	"github.com/Alexplusm/bazaa/projects/go-db/models"
+	"github.com/Alexplusm/bazaa/projects/go-db/dao"
 )
 
 type IGameRepository interface {
-	CreateGame(game models.GameModel) (string, error)
+	CreateGame(game dao.GameDAO) (string, error)
 }
