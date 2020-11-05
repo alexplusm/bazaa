@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/jackc/pgx/v4/pgxpool"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/controllers"
@@ -11,7 +12,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/services"
 )
 
-type IServiceContainer interface {
+type IInjector interface {
 	CloseStoragesConnections()
 
 	// INFO: controllers
@@ -33,10 +34,12 @@ func (k *kernel) CloseStoragesConnections() {
 	// TODO: Redis Close
 	// TODO: create dumps?
 	k.pool.Close()
+	k.redisClient.Close() // TODO: process error
 }
 
 type kernel struct {
-	pool *pgxpool.Pool
+	pool        *pgxpool.Pool
+	redisClient *redis.Client
 }
 
 var (
@@ -44,7 +47,7 @@ var (
 	singleton sync.Once
 )
 
-func ServiceContainer() IServiceContainer {
+func Injector() IInjector {
 	if k == nil {
 		singleton.Do(func() {
 			pool, err := initPostgresql()
@@ -52,7 +55,10 @@ func ServiceContainer() IServiceContainer {
 				// todo: need try to reconnect? how undo "singleton"?
 				fmt.Println("Error connection")
 			}
-			k = &kernel{pool}
+
+			redisClient := initRedis()
+
+			k = &kernel{pool, redisClient}
 		})
 	}
 

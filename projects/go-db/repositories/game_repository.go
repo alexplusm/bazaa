@@ -5,16 +5,17 @@ import (
 )
 
 type GameRepository struct {
-	interfaces.IDBHandler
+	DBConn interfaces.IDBHandler
 }
 
 func (repo *GameRepository) CreateGame() (string, error) {
-	// conn := repo.GetConn()
+	// conn := repo.DBConn.GetConn()
 	// insert game in database and return gameID
 	gameID := ""
 	return gameID, nil
 }
 
+/* TODO: Examples */
 //func (repository *PlayerRepository) GetPlayerByName(name string) (models.PlayerModel, error) {
 //
 //	row, err :=repository.Query(fmt.Sprintf("SELECT * FROM player_models WHERE name = '%s'", name))

@@ -14,7 +14,7 @@ import (
 */
 
 func main() {
-	defer infrastructures.ServiceContainer().CloseStoragesConnections()
+	defer infrastructures.Injector().CloseStoragesConnections()
 
 	initDirs()
 
@@ -35,7 +35,7 @@ func initDirs() {
 }
 
 func registerRoutes(e *echo.Echo) {
-	container := infrastructures.ServiceContainer()
+	container := infrastructures.Injector()
 
 	createGameController := container.InjectCreateGameController()
 
