@@ -17,7 +17,7 @@ type GameBO struct {
 	StartDate  time.Time `validate:"required"`
 	EndDate    time.Time `validate:"required,gtcsfield=StartDate"`
 	Question   string    `validate:"required"`
-	Options    string    `validate:"required"`
+	Options    string
 }
 
 func (g *GameBO) CreateGame(src dto.CreateGameRequestBody, validate *validator.Validate) error {
