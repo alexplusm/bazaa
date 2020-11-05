@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Alexplusm/bazaa/projects/go-db/dao"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
+	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 )
 
 type GameRepository struct {
