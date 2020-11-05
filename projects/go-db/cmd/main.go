@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/configs"
 	"github.com/Alexplusm/bazaa/projects/go-db/controllers"
@@ -9,9 +10,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/files"
 )
 
-/*
-	source: https://github.com/irahardianto/service-pattern-go
-*/
+/* source: https://github.com/irahardianto/service-pattern-go */
 
 func main() {
 	defer infrastructures.Injector().CloseStoragesConnections()
@@ -19,6 +18,7 @@ func main() {
 	initDirs()
 
 	e := echo.New()
+	e.Pre(middleware.RemoveTrailingSlash())
 
 	registerRoutes(e)
 
@@ -37,29 +37,27 @@ func initDirs() {
 func registerRoutes(e *echo.Echo) {
 	container := infrastructures.Injector()
 
+	// TODO: rename?
 	createGameController := container.InjectCreateGameController()
 
 	// if err := middlewares.ContentTypeMiddleware(ctx, "application/json"); err != nil {
 	// 	return err
 	// }
-	e.POST("api/v1/game", createGameController.CreateGameC)
-
-	// todo: REMOVE TRAILING SLASH IN URLS (Rewrite midddleware in "e.Pre()")
+	e.POST("api/v1/game", createGameController.CreateGame)
 
 	// g := e.Group("api/v1/game")
 	// g.Use(middle2)
-	// e.Use(middle1)
-	// e.Use(middle2)
 
 	e.GET("/check/alive", controllers.ItsAlive)
 
+	// e.PUT("api/v1/game/:game-id", controllers.UpdateGame(conn))
+
 	// TODO: wait refactoring
 	//e.POST("api/v1/game", func(ctx echo.Context) error {
-	//	// // TODO: Groups and middlewares
-
+	//	// TODO: Groups and middlewares
 	//	return controllers.CreateGame(conn)(ctx)
 	//})
-	//e.PUT("api/v1/game/:game-id", controllers.UpdateGame(conn))
+
 }
 
 // ------ test
