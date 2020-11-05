@@ -1,6 +1,8 @@
 -- INFO: sync schema with "docs/model_description_for_customer.md"
 -- INFO: to generate UML diagrams: https://app.sqldbm.com/
 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 DROP TYPE IF EXISTS ANSWER_TYPE; -- INFO: 'IF NOT EXISTS' don't work with 'CREATE TYPE'
 CREATE TYPE ANSWER_TYPE AS ENUM (
 	'1', -- Текст
@@ -9,37 +11,37 @@ CREATE TYPE ANSWER_TYPE AS ENUM (
 	'4'  -- Полигональный
 );
 
--- TODO: schedules (see docs)
-
 CREATE TABLE IF NOT EXISTS games (
-	"game_id" uuid DEFAULT uuid_generate_v4(),
-	"name" VARCHAR NOT NULL,
-	"start_date" TIMESTAMP NOT NULL,
-	"end_date" TIMESTAMP NOT NULL,
-	"answer_type" ANSWER_TYPE NOT NULL,
-	"question" TEXT NOT NULL,
-	"options_csv" VARCHAR DEFAULT NULL, -- INFO: обязательное поле только для answer_type == 2
+	"game_id"       uuid            DEFAULT uuid_generate_v4(),
+	"name"          VARCHAR         NOT NULL,
+	"start_date"    BIGINT          NOT NULL,
+	"end_date"      BIGINT          NOT NULL,
+	"answer_type"   ANSWER_TYPE     NOT NULL,
+	"question"      TEXT            NOT NULL,
+	"options_csv"   VARCHAR         DEFAULT NULL, -- INFO: обязательное поле только для answer_type == 2
 
 	PRIMARY KEY ("game_id")
 );
 
+-- TODO: schedules (see docs)
+
 CREATE TABLE IF NOT EXISTS external_systems (
-	"external_system_id" VARCHAR DEFAULT uuid_generate_v4(),
+	"external_system_id"    VARCHAR DEFAULT uuid_generate_v4(),
 	"post_task_results_url" VARCHAR DEFAULT NULL,
 
 	PRIMARY KEY ("external_system_id")
 );
 
 CREATE TABLE IF NOT EXISTS users (
-	"inner_user_id" uuid DEFAULT uuid_generate_v4(),
-	"user_id" VARCHAR NOT NULL,
+	"inner_user_id" uuid    DEFAULT uuid_generate_v4(),
+	"user_id"       VARCHAR NOT NULL,
 
 	PRIMARY KEY ("user_id")
 );
 
 CREATE TABLE IF NOT EXISTS users__external_systems (
-	"external_system_id" VARCHAR NOT NULL,
-	"user_id" VARCHAR NOT NULL,
+	"external_system_id"    VARCHAR NOT NULL,
+	"user_id"               VARCHAR NOT NULL,
 
 	FOREIGN KEY ("external_system_id") REFERENCES external_systems("external_system_id"),
 	FOREIGN KEY ("user_id") REFERENCES users("user_id")

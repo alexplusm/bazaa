@@ -5,60 +5,38 @@ GRANT ALL PRIVILEGES ON DATABASE godb0 TO alex;
 -- postgres://{user}:{password}@{hostname}:{port}/{database-name}
 -- postgres://postgres:postgres@localhost:5432/testik
 
--- to use uuid
+-- INFO: uuid extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- to test extension
+-- INFO: test uuid extension
 SELECT uuid_generate_v1();
 
-CREATE TYPE image_category AS ENUM (
-	'no_violation',
-	'violation',
-	'undefined'
+-- games
+-- create game
+INSERT INTO games ("name", "start_date", "end_date", "answer_type", "question", "options_csv")
+VALUES
+(
+    'first game!',
+    '1601510400000',
+    '1601683200000',
+    '2',
+    'Есть ли нарушение?',
+    'Да,Нет'
 )
+RETURNING "game_id";
+-- end games
 
--- create table images
-CREATE TABLE IF NOT EXISTS images (
-	id uuid DEFAULT uuid_generate_v4 (),
-	"url" VARCHAR NOT NULL,
-	init_category image_category,
-	users_answer_category image_category DEFAULT 'undefined',
+-- external_systems
+INSERT INTO external_systems (external_system_id)
+VALUES ('ex-1');
+-- external_systems end
 
-	-- task_id (o-to-many)
+-- users
+INSERT INTO users (user_id)
+VALUES ('vasya_pup123');
+-- users end
 
-	-- был ли дан ответ (+ поле самого ответа (мб использовать enum category))
-	resolved BOOLEAN DEFAULT false, 
-	PRIMARY KEY (id)
-);
-
-CREATE TABLE IF NOT EXISTS tasks (
-	-- task_id SERIAL,
-	id uuid DEFAULT uuid_generate_v4 (),
-	-- timestamp -- значение времени, когда был загружен архив на сервер
-	PRIMARY KEY (id)
-)
-
--- insert image
-INSERT INTO images ("url", category)
-VALUES ('/path/kek/123123123.png', 'no_violation');
-
--- TODO
-CREATE TYPE image_category AS ENUM (
-	'no_violation',
-	'violation',
-	'undefined'
-)
-
-CREATE TABLE IF NOT EXISTS jobs (
-	id uuid DEFAULT uuid_generate_v4 (),
-	load_timestamp, -- TODO: create_at (schedules)
-	job_date, -- TODO: TIMESTAMP (schedules)
-
-	PRIMARY KEY (id)
-)
-
--- todo: rename jobs -> tasks; tasks -> ???
-
+-- TODO: into docs
 
 --     ExternalSystemId
 -- Date1
@@ -71,41 +49,3 @@ CREATE TABLE IF NOT EXISTS jobs (
 --     INNER JOIN answers
 -- ON answers.game_id = game_id
 -- WHERE answers.external_system_id = ExternalSystemId
-
--- games
-INSERT INTO games ("start_date", "answer_type", "question", "options_id")
-VALUES
-('2020-10-25T17:30:39.417Z', '1', 'some question', 1);
-
--- получить список options связанных со своими game
-SELECT * FROM options_list
-                  INNER JOIN games ON options_list.options_id = games.options_id;
-
-
--- создать опции и игру вместе
-WITH insert_result AS (
-    INSERT INTO options_list ("options_csv")
-        VALUES ('yes, no') RETURNING "options_id"
-)
-INSERT INTO games ("start_date", "answer_type", "question", "options_id")
-VALUES
-(
-    '2020-10-25T17:30:39.417Z',
-    '1',
-    'some question',
-    (SELECT options_id FROM insert_result)
-)
-RETURNING "game_id";
-
-
--- end games
-
--- external_systems
-INSERT INTO external_systems (external_system_id)
-VALUES ('ex-1');
--- external_systems end
-
--- users
-INSERT INTO users (user_id)
-VALUES ('vasya_pup123');
--- users end
