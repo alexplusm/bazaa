@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 
@@ -19,6 +20,9 @@ func main() {
 
 	e := echo.New()
 	e.Pre(middleware.RemoveTrailingSlash())
+	e.HTTPErrorHandler = func(err error, ctx echo.Context) {
+		fmt.Printf("Error: %v\n", err)
+	}
 
 	registerRoutes(e)
 
@@ -35,48 +39,20 @@ func initDirs() {
 }
 
 func registerRoutes(e *echo.Echo) {
-	container := infrastructures.Injector()
+	injector := infrastructures.Injector()
 
-	// TODO: rename?
-	createGameController := container.InjectCreateGameController()
+	createGameController := injector.InjectCreateGameController()
+	updateGameController := injector.InjectUpdateGameController()
 
-	// if err := middlewares.ContentTypeMiddleware(ctx, "application/json"); err != nil {
-	// 	return err
-	// }
+	// TODO:later
+	// Create middleware for each route with whitelist of ContentTypes:
+	// ["application/json", "multipart/form-data"] | ["application/json"]
+
+	// TODO: ["application/json"]
 	e.POST("api/v1/game", createGameController.CreateGame)
+	// TODO: ["application/json", "multipart/form-data"]
+	e.PUT("api/v1/game/:game-id", updateGameController.UpdateGame)
 
-	// g := e.Group("api/v1/game")
-	// g.Use(middle2)
-
+	// e.PUT("api/v1/game-12/:game-id", controllers.UpdateGame(conn)) // TODO: remove
 	e.GET("/check/alive", controllers.ItsAlive)
-
-	// e.PUT("api/v1/game/:game-id", controllers.UpdateGame(conn))
-
-	// TODO: wait refactoring
-	//e.POST("api/v1/game", func(ctx echo.Context) error {
-	//	// TODO: Groups and middlewares
-	//	return controllers.CreateGame(conn)(ctx)
-	//})
-
 }
-
-// ------ test
-//func middle1(next echo.HandlerFunc) echo.HandlerFunc {
-//	return func(ctx echo.Context) error {
-//		if err := next(ctx); err != nil {
-//			ctx.Error(err)
-//		}
-//		fmt.Println("middle 1")
-//		return nil
-//	}
-//}
-//
-//func middle2(next echo.HandlerFunc) echo.HandlerFunc {
-//	return func(ctx echo.Context) error {
-//		if err := next(ctx); err != nil {
-//			ctx.Error(err)
-//		}
-//		fmt.Println("middle 2")
-//		return nil
-//	}
-//}
