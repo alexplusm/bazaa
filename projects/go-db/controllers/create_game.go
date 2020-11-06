@@ -21,7 +21,7 @@ import (
 var validate *validator.Validate
 
 type CreateGameController struct {
-	Service interfaces.IGameService
+	Service interfaces.ICreateGameService
 }
 
 // CreateGame create game controller
