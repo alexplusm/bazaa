@@ -34,31 +34,34 @@ func hasAllowableImageExtension(name string) bool {
 }
 
 const (
-	undefinedDir     = "undefined"
 	withViolationDir = "withViolation"
 	noViolationDir   = "noViolation"
 )
 
 type categoryType int8
 
+// TODO: Должны совпадать с опциями игры: придется синхронизиться руками
+// question: "Есть ли нарушение?"
+// [{option: 0, value: "Есть нарушение"}, {option: 1, value: "Нет нарушения"}]
+// TODO:  bo/image.go | сделать структуру, и вынести бизнес логику туда!
 const (
-	withViolationCategory categoryType = iota
-	noViolationCategory
-	undefinedCategory
+	WithViolationCategory categoryType = iota
+	NoViolationCategory
+	UndefinedCategory
 )
 
-// FileParsingResult TODO: rename!
-type FileParsingResult struct {
-	filename string
-	category categoryType
+// ImageParsingResult TODO: -> into bo package
+type ImageParsingResult struct {
+	Filename string
+	Category categoryType
 }
 
 // UnzipImages unzip images
-func UnzipImages(filenames []string) ([]FileParsingResult, error) {
+func UnzipImages(filenames []string) ([]ImageParsingResult, error) {
 	return unzipFiles(consts.MediaTempDir, consts.MediaRoot, filenames)
 }
 
-func unzipFiles(srcPath string, destPath string, filenames []string) ([]FileParsingResult, error) {
+func unzipFiles(srcPath string, destPath string, filenames []string) ([]ImageParsingResult, error) {
 	dir, err := os.Open(srcPath)
 	if err != nil {
 		return nil, err // todo: nil?
@@ -68,7 +71,7 @@ func unzipFiles(srcPath string, destPath string, filenames []string) ([]FilePars
 		return nil, err // todo: nil?
 	}
 
-	result := make([]FileParsingResult, 0, 500)
+	result := make([]ImageParsingResult, 0, 500)
 
 	for _, fileInfo := range filesInfo {
 		fmt.Println("zip archive", fileInfo.Name(), fileInfo.Size())
@@ -87,7 +90,7 @@ func unzipFiles(srcPath string, destPath string, filenames []string) ([]FilePars
 	return result, nil
 }
 
-func unzip(src string, destination string) ([]FileParsingResult, error) {
+func unzip(src string, destination string) ([]ImageParsingResult, error) {
 	/*
 		INFO:
 		source: https://www.geeksforgeeks.org/how-to-uncompress-a-file-in-golang/
@@ -97,7 +100,7 @@ func unzip(src string, destination string) ([]FileParsingResult, error) {
 		+ есть бизнесс логика
 	*/
 
-	var parsingResults []FileParsingResult
+	var parsingResults []ImageParsingResult
 
 	reader, err := zip.OpenReader(src)
 	if err != nil {
@@ -119,18 +122,18 @@ func unzip(src string, destination string) ([]FileParsingResult, error) {
 		}
 
 		// TODO: after testing refactor with switch
-		// TODO: bissness logic -> need remove
+		// TODO: business logic -> need remove
 		withViolation := strings.HasSuffix(f.Name, filepath.Join(withViolationDir, fname))
 		noViolation := strings.HasSuffix(f.Name, filepath.Join(noViolationDir, fname))
 
-		var result FileParsingResult
+		var result ImageParsingResult
 
 		if withViolation {
-			result = FileParsingResult{fname, withViolationCategory}
+			result = ImageParsingResult{fname, WithViolationCategory}
 		} else if noViolation {
-			result = FileParsingResult{fname, noViolationCategory}
+			result = ImageParsingResult{fname, NoViolationCategory}
 		} else {
-			result = FileParsingResult{fname, undefinedCategory}
+			result = ImageParsingResult{fname, UndefinedCategory}
 		}
 
 		fmt.Println(result)
