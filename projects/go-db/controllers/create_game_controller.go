@@ -24,9 +24,6 @@ type CreateGameController struct {
 	Service interfaces.ICreateGameService
 }
 
-// CreateGame create game controller
-// "application/json" content-type only - make middleware?
-// TODO: tests
 func (controller *CreateGameController) CreateGame(ctx echo.Context) error {
 	gameRaw := new(dto.CreateGameRequestBody)
 
