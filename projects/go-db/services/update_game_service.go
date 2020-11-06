@@ -20,23 +20,36 @@ func (service *UpdateGameService) AttachZipArchiveToGame(gameID string, archives
 		return fmt.Errorf("attach zip archive: %v", err)
 	}
 
+	fmt.Println("has game: ", hasGame) // todo: if true -> return bad request
+
 	filenames, err := fileutils.CopyFiles(archives, consts.MediaTempDir)
 	if err != nil {
 		return fmt.Errorf("attach zip archive: %+v\n", err)
 	}
 
-	// must return imageNames and category
-	res, err := fileutils.UnzipImages(filenames)
+	images, err := fileutils.UnzipImages(filenames)
 	if err != nil {
 		return fmt.Errorf("attach zip archive: %+v\n", err)
 	}
 
-	fmt.Println("filenames:", filenames)
-	fmt.Println("Has game:", hasGame)
-	fmt.Println("FILES", res, "| len:", len(res))
-	fmt.Println()
+	// --- TODO: Когда загружаем несколько архивов
+	// TODO: могут быть несколько одинаковых файлов -> обработать!
+	//
+	//mmap := make(map[string]int)
+	//for _, r := range res {
+	//	mmap[r.Filename]++
+	//}
+	//for key := range mmap {
+	//	if mmap[key] > 1 {
+	//		fmt.Println("RESULT: ", mmap[key])
+	//	}
+	//}
+	// ---
 
-	// todo: fill database use res
+	//images -> db
+	//source -> db
+
+	fmt.Println("images count", len(images))
 
 	removeArchives(filenames)
 
