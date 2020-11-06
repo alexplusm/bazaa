@@ -1,6 +1,8 @@
 package interfaces
 
 import (
+	"mime/multipart"
+
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 )
 
@@ -9,6 +11,6 @@ type ICreateGameService interface {
 }
 
 type IUpdateGameService interface {
-	AttachZipArchiveToGame(gameID string) error
-	AttachSchedulesToGame() error
+	AttachZipArchiveToGame(gameID string, archives []*multipart.FileHeader) error
+	AttachSchedulesToGame(gameID string) error
 }

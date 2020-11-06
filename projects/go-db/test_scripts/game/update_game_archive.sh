@@ -15,4 +15,5 @@ URL="http://localhost:1234/api/v1/game/${GAME_ID2}"
 
 curl \
     -F "$ARCHIVE_LOW1" \
+    -F "$ARCHIVE_MEDIUM" \
     -X PUT "$URL"

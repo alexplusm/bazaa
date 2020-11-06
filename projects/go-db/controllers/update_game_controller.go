@@ -2,10 +2,13 @@ package controllers
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/labstack/echo"
 
+	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
 )
 
 type UpdateGameController struct {
@@ -15,39 +18,37 @@ type UpdateGameController struct {
 func (controller *UpdateGameController) UpdateGame(ctx echo.Context) error {
 	gameID := ctx.Param("game-id")
 
-	//switch httputils.ParseContentType(ctx) {
-	//
-	//}
-
 	fmt.Println("UpdateGameController: GameID:", gameID)
 
-	// TODO: check game game existance in service
+	switch httputils.ParseContentType(ctx) {
+	case consts.FormDataContentType:
+		form, err := ctx.MultipartForm()
+		if err != nil {
+			ctx.String(http.StatusOK, httputils.GetBadRequestErrorResponseJSONStr())
+			return fmt.Errorf("update game controller: %v", err)
+		}
 
-	err := controller.Service.AttachZipArchiveToGame(gameID)
-	if err != nil {
-		return fmt.Errorf("update game controller: %v", err)
+		archives := form.File["archives"]
+
+		err = controller.Service.AttachZipArchiveToGame(gameID, archives)
+		if err != nil {
+			return fmt.Errorf("update game controller: %v", err)
+		}
+	case consts.ApplicationContentJSON:
+		err := controller.Service.AttachSchedulesToGame(gameID)
+		if err != nil {
+			return fmt.Errorf("update game controller: %v", err)
+		}
+	default:
+		ctx.String(http.StatusOK, httputils.GetBadRequestErrorResponseJSONStr())
 	}
 
 	return nil
 }
 
 /////////-----------
-
-//type schedule struct {
-//	ScheduleID string `json:"schedule_id" validate:"required"`
-//}
-//
-//type updateGameWithSchedulesRequestBody struct {
-//	Schedules []schedule `json:"schedules" validate:"required,dive"`
-//}
-//
-//// UpdateGame update game controller
 //func UpdateGame(p *pgxpool.Pool) echo.HandlerFunc {
 //	return func(ctx echo.Context) error {
-//		fmt.Println("GAME ID", ctx.Param("game-id"))
-//
-//		// TODO: check game existanse
-//
 //		switch httputils.ParseContentType(ctx) {
 //		case consts.FormDataContentType:
 //			fmt.Println("FORM DATA TYPE")
@@ -104,10 +105,3 @@ func (controller *UpdateGameController) UpdateGame(ctx echo.Context) error {
 //	}
 //}
 //
-//func removeArchives(filenames []string) {
-//	for _, fn := range filenames {
-//		if err := fileutils.RemoveFile(consts.MediaTempDir, fn); err != nil {
-//			fmt.Println(err) // TODO:log // TODO:error
-//		}
-//	}
-//}
