@@ -8,6 +8,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 )
 
+// todo: remove! unused
 type ICreateGameService interface {
 	CreateGame()
 }
@@ -19,8 +20,8 @@ type CreateGameService struct {
 func (service *CreateGameService) CreateGame(game bo.GameBO) (string, error) {
 	fmt.Printf("CreateGame service: %+v\n", game)
 
-	dao := dao.GameDAO{}
-	dao.FromBO(game)
+	gameDAO := dao.GameDAO{}
+	gameDAO.FromBO(game)
 
-	return service.Repository.CreateGame(dao)
+	return service.Repository.CreateGame(gameDAO)
 }
