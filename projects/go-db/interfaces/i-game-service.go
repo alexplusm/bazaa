@@ -4,6 +4,11 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 )
 
-type IGameService interface {
+type ICreateGameService interface {
 	CreateGame(game bo.GameBO) (string, error)
+}
+
+type IUpdateGameService interface {
+	AttachZipArchiveToGame()
+	AttachSchedulesToGame()
 }
