@@ -15,23 +15,23 @@ type GameRepository struct {
 }
 
 const (
-	createGameStatement = `
+	insertGameStatement = `
 INSERT INTO games ("name", "start_date", "end_date", "answer_type", "question", "options_csv")
 VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING "game_id";
 `
-	createGameWithoutOptionsStatement = `
+	insertGameWithoutOptionsStatement = `
 INSERT INTO games ("name", "start_date", "end_date", "answer_type", "question")
 VALUES ($1, $2, $3, $4, $5)
 RETURNING "game_id";
 `
-	gameCountWithSameIDStatement = `
+	selectNotStartedGameCountWithSameIDStatement = `
 SELECT COUNT(1) FROM games
 WHERE "game_id" = $1 and "start_date" > $2;
 `
 )
 
-func (repo *GameRepository) CreateGame(game dao.GameDAO) (string, error) {
+func (repo *GameRepository) InsertGame(game dao.GameDAO) (string, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -46,12 +46,12 @@ func (repo *GameRepository) CreateGame(game dao.GameDAO) (string, error) {
 		args = []interface{}{
 			game.Name, game.StartDate, game.EndDate, game.AnswerType, game.Question, game.Options,
 		}
-		statement = createGameStatement
+		statement = insertGameStatement
 	} else {
 		args = []interface{}{
 			game.Name, game.StartDate, game.EndDate, game.AnswerType, game.Question,
 		}
-		statement = createGameWithoutOptionsStatement
+		statement = insertGameWithoutOptionsStatement
 	}
 
 	row := conn.QueryRow(context.Background(), statement, args...)
@@ -66,7 +66,7 @@ func (repo *GameRepository) CreateGame(game dao.GameDAO) (string, error) {
 	return gameID, nil // TODO:log: saving game into DB
 }
 
-func (repo *GameRepository) HasHotStartedGameWithSameID(gameID string) (bool, error) {
+func (repo *GameRepository) HasNotStartedGameWithSameID(gameID string) (bool, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -74,13 +74,9 @@ func (repo *GameRepository) HasHotStartedGameWithSameID(gameID string) (bool, er
 	}
 	defer conn.Release()
 
-	now := time.Now().Unix()
-
-	// TODO: game must be not started (из будущего)
-
 	var gameCount int64
-
-	row := conn.QueryRow(context.Background(), gameCountWithSameIDStatement, gameID, now)
+	now := time.Now().Unix()
+	row := conn.QueryRow(context.Background(), selectNotStartedGameCountWithSameIDStatement, gameID, now)
 
 	err = row.Scan(&gameCount)
 	if err != nil {

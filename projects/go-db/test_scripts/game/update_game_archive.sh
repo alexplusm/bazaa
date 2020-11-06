@@ -6,9 +6,9 @@ GAME_ID2="2bc4c2aa-aa87-406c-b922-334a95fed451" # future
 
 URL="http://localhost:1234/api/v1/game/${GAME_ID2}"
 
-#-F "$ARCHIVE_LOW1" \
+#  -F "$ARCHIVE_LOW1" \
+#  -F "$ARCHIVE_MEDIUM" \
 
 curl \
   -F "$ARCHIVE_LOW1" \
-  -F "$ARCHIVE_MEDIUM" \
   -X PUT "$URL"

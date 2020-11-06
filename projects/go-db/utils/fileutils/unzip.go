@@ -45,7 +45,7 @@ type categoryType int8
 // [{option: 0, value: "Есть нарушение"}, {option: 1, value: "Нет нарушения"}]
 // TODO:  bo/image.go | сделать структуру, и вынести бизнес логику туда!
 const (
-	WithViolationCategory categoryType = iota
+	WithViolationCategory = iota
 	NoViolationCategory
 	UndefinedCategory
 )
@@ -53,7 +53,7 @@ const (
 // ImageParsingResult TODO: -> into bo package
 type ImageParsingResult struct {
 	Filename string
-	Category categoryType
+	Category int
 }
 
 // UnzipImages unzip images

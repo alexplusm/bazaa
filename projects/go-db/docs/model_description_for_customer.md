@@ -48,7 +48,7 @@
     Скриншоты (Задачи)
 * screenshot_id - id задания
 * game_id - id игры
-* image_name - имя изображения
+* image_name - имя изображения // TODO -> filename
 * expert_answer - ответ эксперта
 * users_answer - ответ пользователей
 * source_id: TODO

@@ -5,8 +5,8 @@ import (
 )
 
 type IGameRepository interface {
-	CreateGame(game dao.GameDAO) (string, error)
-	HasHotStartedGameWithSameID(gameID string) (bool, error)
+	InsertGame(game dao.GameDAO) (string, error)
+	HasNotStartedGameWithSameID(gameID string) (bool, error)
 }
 
 type ISourceRepository interface {

@@ -6,6 +6,7 @@ import (
 
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
+	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/fileutils"
 )
 
@@ -15,7 +16,7 @@ type UpdateGameService struct {
 }
 
 func (service *UpdateGameService) AttachZipArchiveToGame(gameID string, archives []*multipart.FileHeader) error {
-	hasGame, err := service.GameRepo.HasHotStartedGameWithSameID(gameID)
+	hasGame, err := service.GameRepo.HasNotStartedGameWithSameID(gameID)
 	if err != nil {
 		return fmt.Errorf("attach zip archive: %v", err)
 	}
@@ -46,10 +47,14 @@ func (service *UpdateGameService) AttachZipArchiveToGame(gameID string, archives
 	//}
 	// ---
 
-	//images -> db
-	//source -> db
+	// source -> db : sourceID
+	// sourceID, gameID -> images -> db
+
+	a, b := split(images, gameID, "sourceID")
 
 	fmt.Println("images count", len(images))
+	fmt.Println("kek ||| ", len(a), len(b))
+	fmt.Printf("--- %+v\n", b[1])
 
 	removeArchives(filenames)
 
@@ -68,4 +73,29 @@ func removeArchives(filenames []string) {
 			fmt.Println(err) // TODO:log // TODO:error
 		}
 	}
+}
+
+func split(images []fileutils.ImageParsingResult, gameID, sourceID string) ([]dao.ScreenshotDAO, []dao.ScreenshotWithExpertAnswerDAO) {
+	mmap := make(map[string]bool)
+	imagesWithoutExpertAnswer := make([]dao.ScreenshotDAO, 0, len(images))
+	imagesWithExpertAnswer := make([]dao.ScreenshotWithExpertAnswerDAO, 0, len(images))
+
+	for _, image := range images {
+		if !mmap[image.Filename] {
+			mmap[image.Filename] = true
+			if image.Category == fileutils.UndefinedCategory {
+				screen := dao.ScreenshotDAO{image.Filename, gameID, sourceID}
+
+				imagesWithoutExpertAnswer = append(imagesWithoutExpertAnswer, screen)
+			} else {
+				screen := dao.ScreenshotWithExpertAnswerDAO{
+					dao.ScreenshotDAO{image.Filename, gameID, sourceID},
+					image.Category,
+				}
+				imagesWithExpertAnswer = append(imagesWithExpertAnswer, screen)
+			}
+		}
+	}
+
+	return imagesWithoutExpertAnswer, imagesWithExpertAnswer
 }

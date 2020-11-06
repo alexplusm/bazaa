@@ -23,5 +23,5 @@ func (service *CreateGameService) CreateGame(game bo.GameBO) (string, error) {
 	gameDAO := dao.GameDAO{}
 	gameDAO.FromBO(game)
 
-	return service.Repository.CreateGame(gameDAO)
+	return service.Repository.InsertGame(gameDAO)
 }
