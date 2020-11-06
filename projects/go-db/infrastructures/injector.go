@@ -29,6 +29,17 @@ func (k *kernel) InjectCreateGameController() controllers.CreateGameController {
 	return controller
 }
 
+func (k *kernel) InjectUpdateGameController() controllers.UpdateGameController {
+	handler := &PSQLHandler{k.pool}
+
+	gameRepo := &repositories.GameRepository{handler}
+	sourceRepo := &repositories.SourceRepository{handler}
+	service := &services.UpdateGameService{GameRepo: gameRepo, SourceRepo: sourceRepo}
+	controller := controllers.UpdateGameController{service}
+
+	return controller
+}
+
 func (k *kernel) CloseStoragesConnections() {
 	// TODO: test
 	// TODO: Redis Close
