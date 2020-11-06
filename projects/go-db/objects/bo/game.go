@@ -39,6 +39,8 @@ func (g *GameBO) CreateGame(src dto.CreateGameRequestBody, validate *validator.V
 		return fmt.Errorf("create game: StartDate or EndDate too far dates")
 	}
 
+	// TODO: нельзя на прошлую дату создать игру: добавить валидацию
+
 	g.Name = src.Name
 	g.AnswerType = src.AnswerType
 	g.Question = src.Question

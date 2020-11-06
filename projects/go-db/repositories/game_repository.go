@@ -24,6 +24,10 @@ INSERT INTO games ("name", "start_date", "end_date", "answer_type", "question")
 VALUES ($1, $2, $3, $4, $5)
 RETURNING "game_id";
 `
+	gameCountWithSameIDStatement = `
+SELECT COUNT(1) FROM games
+WHERE game_id = $1;
+`
 )
 
 func (repo *GameRepository) CreateGame(game dao.GameDAO) (string, error) {
@@ -61,40 +65,24 @@ func (repo *GameRepository) CreateGame(game dao.GameDAO) (string, error) {
 	return gameID, nil // TODO:log: saving game into DB
 }
 
-/* TODO: Examples */
-//func (repository *PlayerRepository) GetPlayerByName(name string) (dao.PlayerModel, error) {
-//
-//	row, err :=repository.Query(fmt.Sprintf("SELECT * FROM player_models WHERE name = '%s'", name))
-//	if err != nil {
-//		return dao.PlayerModel{}, err
-//	}
-//
-//	var player dao.PlayerModel
-//
-//	row.Next()
-//	row.Scan(&player.Id, &player.Name, &player.Score)
-//
-//	return player, nil
-//}
+func (repo *GameRepository) HasHotStartedGameWithSameID(gameID string) (bool, error) {
+	p := repo.DBConn.GetPool()
+	conn, err := p.Acquire(context.Background())
+	if err != nil {
+		return false, fmt.Errorf("has game: acquire connection: %v", err)
+	}
+	defer conn.Release()
 
-// TODO: use this later
-//func (repository *PlayerRepositoryWithCircuitBreaker) GetPlayerByName(name string) (dao.PlayerModel, error) {
-//
-//	output := make(chan dao.PlayerModel, 1)
-//	hystrix.ConfigureCommand("get_player_by_name", hystrix.CommandConfig{Timeout: 1000})
-//	errors := hystrix.Go("get_player_by_name", func() error {
-//
-//		player, _ := repository.PlayerRepository.GetPlayerByName(name)
-//
-//		output <- player
-//		return nil
-//	}, nil)
-//
-//	select {
-//	case out := <-output:
-//		return out, nil
-//	case err := <-errors:
-//		println(err)
-//		return dao.PlayerModel{}, err
-//	}
-//}
+	// TODO: game must be not started (из будущего)
+
+	var gameCount int64
+
+	row := conn.QueryRow(context.Background(), gameCountWithSameIDStatement, gameID)
+
+	err = row.Scan(&gameCount)
+	if err != nil {
+		return false, fmt.Errorf("has game: query: %v", err)
+	}
+
+	return gameCount == 1, nil
+}
