@@ -17,6 +17,7 @@ type IInjector interface {
 
 	// INFO: controllers
 	InjectCreateGameController() controllers.CreateGameController
+	InjectUpdateGameController() controllers.UpdateGameController
 }
 
 func (k *kernel) InjectCreateGameController() controllers.CreateGameController {
@@ -45,7 +46,7 @@ func (k *kernel) CloseStoragesConnections() {
 	// TODO: Redis Close
 	// TODO: create dumps?
 	k.pool.Close()
-	k.redisClient.Close() // TODO: process error
+	k.redisClient.Close() // TODO:error
 }
 
 type kernel struct {

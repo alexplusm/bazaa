@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
@@ -26,7 +27,7 @@ RETURNING "game_id";
 `
 	gameCountWithSameIDStatement = `
 SELECT COUNT(1) FROM games
-WHERE game_id = $1;
+WHERE "game_id" = $1 and "start_date" > $2;
 `
 )
 
@@ -73,11 +74,13 @@ func (repo *GameRepository) HasHotStartedGameWithSameID(gameID string) (bool, er
 	}
 	defer conn.Release()
 
+	now := time.Now().Unix()
+
 	// TODO: game must be not started (из будущего)
 
 	var gameCount int64
 
-	row := conn.QueryRow(context.Background(), gameCountWithSameIDStatement, gameID)
+	row := conn.QueryRow(context.Background(), gameCountWithSameIDStatement, gameID, now)
 
 	err = row.Scan(&gameCount)
 	if err != nil {

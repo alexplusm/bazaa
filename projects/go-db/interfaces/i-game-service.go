@@ -9,6 +9,6 @@ type ICreateGameService interface {
 }
 
 type IUpdateGameService interface {
-	AttachZipArchiveToGame()
-	AttachSchedulesToGame()
+	AttachZipArchiveToGame(gameID string) error
+	AttachSchedulesToGame() error
 }
