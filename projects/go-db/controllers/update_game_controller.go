@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+
 	"github.com/labstack/echo"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
@@ -14,9 +15,11 @@ type UpdateGameController struct {
 func (controller *UpdateGameController) UpdateGame(ctx echo.Context) error {
 	gameID := ctx.Param("game-id")
 
-	fmt.Println("UpdateGameController: GameID:", gameID)
+	//switch httputils.ParseContentType(ctx) {
+	//
+	//}
 
-	// HasGame()
+	fmt.Println("UpdateGameController: GameID:", gameID)
 
 	// TODO: check game game existance in service
 
@@ -45,7 +48,7 @@ func (controller *UpdateGameController) UpdateGame(ctx echo.Context) error {
 //
 //		// TODO: check game existanse
 //
-//		switch middlewares.ParseContentType(ctx) {
+//		switch httputils.ParseContentType(ctx) {
 //		case consts.FormDataContentType:
 //			fmt.Println("FORM DATA TYPE")
 //			form, err := ctx.MultipartForm()
@@ -60,7 +63,7 @@ func (controller *UpdateGameController) UpdateGame(ctx echo.Context) error {
 //			 */
 //			archives := form.File["archives"]
 //
-//			filenames, err := files.CopyFiles(archives, consts.MediaTempDir)
+//			filenames, err := fileutils.CopyFiles(archives, consts.MediaTempDir)
 //			if err != nil {
 //				fmt.Printf("Error while copieng: %+v\n", err) // TODO:log
 //			}
@@ -68,7 +71,7 @@ func (controller *UpdateGameController) UpdateGame(ctx echo.Context) error {
 //			fmt.Println("filenames:", filenames)
 //
 //			// must return imageNames and category
-//			res, err := files.UnzipImages(filenames)
+//			res, err := fileutils.UnzipImages(filenames)
 //			if err != nil {
 //				fmt.Println("Error", err) // TODO:error
 //			}
@@ -103,7 +106,7 @@ func (controller *UpdateGameController) UpdateGame(ctx echo.Context) error {
 //
 //func removeArchives(filenames []string) {
 //	for _, fn := range filenames {
-//		if err := files.RemoveFile(consts.MediaTempDir, fn); err != nil {
+//		if err := fileutils.RemoveFile(consts.MediaTempDir, fn); err != nil {
 //			fmt.Println(err) // TODO:log // TODO:error
 //		}
 //	}

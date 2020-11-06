@@ -1,11 +1,10 @@
-package middlewares
+package httputils
 
 import (
 	"fmt"
 	"net/http"
 	"strings"
 
-	"github.com/Alexplusm/bazaa/projects/go-db/utils/errors"
 	"github.com/labstack/echo"
 )
 
@@ -32,7 +31,7 @@ func ContentTypeMiddleware(ctx echo.Context, expectedContentType string) error {
 	ctxContentType := ParseContentType(ctx)
 
 	if ctxContentType != expectedContentType {
-		errMsg := errors.GetBadRequestErrorResponseJSONStr()
+		errMsg := GetBadRequestErrorResponseJSONStr()
 		ctx.String(http.StatusOK, errMsg)
 		return fmt.Errorf("Error content-type")
 	}

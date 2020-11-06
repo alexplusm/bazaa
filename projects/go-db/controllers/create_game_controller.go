@@ -10,7 +10,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
-	"github.com/Alexplusm/bazaa/projects/go-db/utils/errors"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
 )
 
 // source: https://medium.com/cuddle-ai/building-microservice-using-golang-echo-framework-ff10ba06d508
@@ -38,7 +38,7 @@ func (controller *CreateGameController) CreateGame(ctx echo.Context) error {
 	game := new(bo.GameBO)
 	err := game.CreateGame(*gameRaw, validate)
 	if err != nil {
-		ctx.String(http.StatusOK, errors.GetBadRequestErrorResponseJSONStr())
+		ctx.String(http.StatusOK, httputils.GetBadRequestErrorResponseJSONStr())
 		return fmt.Errorf("create game controller: %v", err)
 	}
 

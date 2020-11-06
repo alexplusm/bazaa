@@ -8,7 +8,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/controllers"
 	"github.com/Alexplusm/bazaa/projects/go-db/infrastructures"
-	"github.com/Alexplusm/bazaa/projects/go-db/utils/files"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/fileutils"
 )
 
 /* source: https://github.com/irahardianto/service-pattern-go */
@@ -34,7 +34,7 @@ func main() {
 func initDirs() {
 	dirs := []string{consts.MediaRoot, consts.MediaTempDir}
 	for _, dir := range dirs {
-		files.CreateDirIfNotExists(dir)
+		fileutils.CreateDirIfNotExists(dir)
 	}
 }
 
