@@ -11,6 +11,8 @@ CREATE TYPE ANSWER_TYPE AS ENUM (
 	'4'  -- Полигональный
 );
 
+-- TODO: Отказаться от enum? На уровне БЭКА это все фильтровать!
+
 CREATE TABLE IF NOT EXISTS games (
 	"game_id"       uuid            DEFAULT uuid_generate_v4(),
 	"name"          VARCHAR         NOT NULL,
@@ -21,6 +23,16 @@ CREATE TABLE IF NOT EXISTS games (
 	"options_csv"   VARCHAR         DEFAULT NULL, -- INFO: обязательное поле только для answer_type == 2
 
 	PRIMARY KEY ("game_id")
+);
+
+CREATE TABLE IF NOT EXISTS sources (
+    "source_id"     VARCHAR DEFAULT NULL, -- generate (SERIAL -> VARCHAR)
+    "source_type"   VARCHAR NOT NULL,
+    "created_at"    BIGINT  NOT NULL,
+    "game_id"       uuid    NOT NULL,
+
+    PRIMARY KEY ("source_id"),
+    FOREIGN KEY ("game_id") REFERENCES games("game_id")
 );
 
 -- TODO: schedules (see docs)

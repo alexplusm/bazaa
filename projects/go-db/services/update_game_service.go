@@ -23,7 +23,9 @@ func (service *UpdateGameService) AttachZipArchiveToGame(gameID string, archives
 		return fmt.Errorf("attach zip archive: %v", err)
 	}
 
-	fmt.Println("has game: ", hasGame) // todo: if true -> return bad request
+	// TODO: if false -> return bad request ! (а если ID неправильно введен?
+	// TODO: | нужно ошибку на вверх прокидывать -> gameNotStarted | game not exists | ... )
+	fmt.Println("has game: ", hasGame)
 
 	filenames, err := fileutils.CopyFiles(archives, consts.MediaTempDir)
 	if err != nil {

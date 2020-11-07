@@ -26,6 +26,17 @@ VALUES
 RETURNING "game_id";
 -- end games
 
+-- sources
+-- INSERT schedule (schedule has own ID)
+INSERT INTO sources ("source_id", "source_type", "created_at", "game_id")
+VALUES ('some-source-id', '1', '1601683200000', 'some-game-id')
+RETURNING "source_id";
+-- INSERT zip-archive (generate ID for archive source)
+INSERT INTO sources ("source_type", "created_at", "game_id")
+VALUES ('1', '1601683200000', 'some-game-id')
+RETURNING "source_id";
+-- end sources
+
 -- external_systems
 INSERT INTO external_systems (external_system_id)
 VALUES ('ex-1');
