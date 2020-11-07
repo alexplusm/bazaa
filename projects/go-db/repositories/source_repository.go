@@ -9,7 +9,11 @@ type SourceRepository struct {
 	DBConn interfaces.IDBHandler
 }
 
-func (repo *SourceRepository) CreateSource(source dao.SourceDAO) error {
+const (
+	insertSourceStatement = ``
+)
 
-	return nil
+func (repo *SourceRepository) InsertSource(source dao.SourceDAO) (string, error) {
+	sourceID := ""
+	return sourceID, nil
 }

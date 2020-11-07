@@ -9,6 +9,10 @@ type ScreenshotRepository struct {
 	DBConn interfaces.IDBHandler
 }
 
-func (repo *SourceRepository) InsertScreenshot(screenshot dao.ScreenshotDAO) error {
+func (repo *ScreenshotRepository) InsertScreenshots(screenshots []dao.ScreenshotDAO) error {
+	return nil
+}
+
+func (repo *ScreenshotRepository) InsertScreenshotsWithExpertAnswer(screenshots []dao.ScreenshotWithExpertAnswerDAO) error {
 	return nil
 }

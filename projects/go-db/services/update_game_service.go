@@ -3,6 +3,7 @@ package services
 import (
 	"fmt"
 	"mime/multipart"
+	"time"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
@@ -11,8 +12,9 @@ import (
 )
 
 type UpdateGameService struct {
-	GameRepo   interfaces.IGameRepository
-	SourceRepo interfaces.ISourceRepository
+	GameRepo       interfaces.IGameRepository
+	SourceRepo     interfaces.ISourceRepository
+	ScreenshotRepo interfaces.IScreenshotRepository
 }
 
 func (service *UpdateGameService) AttachZipArchiveToGame(gameID string, archives []*multipart.FileHeader) error {
@@ -25,36 +27,37 @@ func (service *UpdateGameService) AttachZipArchiveToGame(gameID string, archives
 
 	filenames, err := fileutils.CopyFiles(archives, consts.MediaTempDir)
 	if err != nil {
-		return fmt.Errorf("attach zip archive: %+v\n", err)
+		return fmt.Errorf("attach zip archive: %v", err)
 	}
 
 	images, err := fileutils.UnzipImages(filenames)
 	if err != nil {
-		return fmt.Errorf("attach zip archive: %+v\n", err)
+		return fmt.Errorf("attach zip archive: %v", err)
 	}
 
-	// --- TODO: Когда загружаем несколько архивов
-	// TODO: могут быть несколько одинаковых файлов -> обработать!
-	//
-	//mmap := make(map[string]int)
-	//for _, r := range res {
-	//	mmap[r.Filename]++
-	//}
-	//for key := range mmap {
-	//	if mmap[key] > 1 {
-	//		fmt.Println("RESULT: ", mmap[key])
-	//	}
-	//}
-	// ---
+	source := dao.SourceDAO{dao.ArchiveSourceType, time.Now().Unix(), gameID}
+	sourceID, err := service.SourceRepo.InsertSource(source)
+	if err != nil {
+		return fmt.Errorf("attach zip archive: %v", err)
+	}
 
-	// source -> db : sourceID
-	// sourceID, gameID -> images -> db
+	//fmt.Println("sourceID: ", sourceID)
 
-	a, b := split(images, gameID, "sourceID")
+	a, b := split(images, gameID, sourceID)
 
-	fmt.Println("images count", len(images))
-	fmt.Println("kek ||| ", len(a), len(b))
-	fmt.Printf("--- %+v\n", b[1])
+	err = service.ScreenshotRepo.InsertScreenshots(a)
+	if err != nil {
+		return fmt.Errorf("attach zip archive: %v", err)
+	}
+
+	err = service.ScreenshotRepo.InsertScreenshotsWithExpertAnswer(b)
+	if err != nil {
+		return fmt.Errorf("attach zip archive: %v", err)
+	}
+
+	//fmt.Println("images count", len(images))
+	//fmt.Println("kek ||| ", len(a), len(b))
+	//fmt.Printf("--- %+v\n", b[1])
 
 	removeArchives(filenames)
 
@@ -80,6 +83,8 @@ func split(images []fileutils.ImageParsingResult, gameID, sourceID string) ([]da
 	imagesWithoutExpertAnswer := make([]dao.ScreenshotDAO, 0, len(images))
 	imagesWithExpertAnswer := make([]dao.ScreenshotWithExpertAnswerDAO, 0, len(images))
 
+	// INFO: Когда загружаем несколько архивов могут быть попасться одинаковые файлы
+	// -> обрабатываем эту ситуацию
 	for _, image := range images {
 		if !mmap[image.Filename] {
 			mmap[image.Filename] = true

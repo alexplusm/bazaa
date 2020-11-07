@@ -6,7 +6,6 @@ type ScreenshotDAO struct {
 	SourceID string
 }
 
-// TODO:refactor
 type ScreenshotWithExpertAnswerDAO struct {
 	ScreenshotDAO
 	ExpertAnswer int

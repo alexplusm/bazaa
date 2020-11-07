@@ -10,5 +10,10 @@ type IGameRepository interface {
 }
 
 type ISourceRepository interface {
-	CreateSource(source dao.SourceDAO) error
+	InsertSource(source dao.SourceDAO) (string, error)
+}
+
+type IScreenshotRepository interface {
+	InsertScreenshots(screenshots []dao.ScreenshotDAO) error
+	InsertScreenshotsWithExpertAnswer(screenshots []dao.ScreenshotWithExpertAnswerDAO) error
 }

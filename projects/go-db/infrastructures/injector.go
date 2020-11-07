@@ -35,7 +35,10 @@ func (k *kernel) InjectUpdateGameController() controllers.UpdateGameController {
 
 	gameRepo := &repositories.GameRepository{handler}
 	sourceRepo := &repositories.SourceRepository{handler}
-	service := &services.UpdateGameService{GameRepo: gameRepo, SourceRepo: sourceRepo}
+	screenshotRepo := &repositories.ScreenshotRepository{handler}
+	service := &services.UpdateGameService{
+		GameRepo: gameRepo, SourceRepo: sourceRepo, ScreenshotRepo: screenshotRepo,
+	}
 	controller := controllers.UpdateGameController{service}
 
 	return controller
