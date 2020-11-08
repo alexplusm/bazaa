@@ -13,4 +13,7 @@ type ICreateGameService interface {
 type IUpdateGameService interface {
 	AttachZipArchiveToGame(gameID string, archives []*multipart.FileHeader) error
 	AttachSchedulesToGame(gameID string) error
+
+	// TODO: move to -> GameService ?
+	GetGame(gameID string) (bo.GameBO, error)
 }

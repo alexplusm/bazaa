@@ -7,6 +7,7 @@ import (
 
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
+	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/fileutils"
 )
@@ -17,16 +18,19 @@ type UpdateGameService struct {
 	ScreenshotRepo interfaces.IScreenshotRepository
 }
 
-func (service *UpdateGameService) AttachZipArchiveToGame(gameID string, archives []*multipart.FileHeader) error {
-	hasGame, err := service.GameRepo.HasNotStartedGameWithSameID(gameID)
+// TODO: move to -> GameService ???
+func (service *UpdateGameService) GetGame(gameID string) (bo.GameBO, error) {
+	gameDAO, err := service.GameRepo.SelectGame(gameID)
 	if err != nil {
-		return fmt.Errorf("attach zip archive: %v", err)
+		return bo.GameBO{}, fmt.Errorf("get game: %v", err)
 	}
 
-	// TODO: if false -> return bad request ! (а если ID неправильно введен?
-	// TODO: | нужно ошибку на вверх прокидывать -> gameNotStarted | game not exists | ... )
-	fmt.Println("has game: ", hasGame)
+	gameBO := gameDAO.ToBO()
 
+	return gameBO, nil
+}
+
+func (service *UpdateGameService) AttachZipArchiveToGame(gameID string, archives []*multipart.FileHeader) error {
 	filenames, err := fileutils.CopyFiles(archives, consts.MediaTempDir)
 	if err != nil {
 		return fmt.Errorf("attach zip archive: %v", err)
@@ -42,8 +46,6 @@ func (service *UpdateGameService) AttachZipArchiveToGame(gameID string, archives
 	if err != nil {
 		return fmt.Errorf("attach zip archive: %v", err)
 	}
-
-	//fmt.Println("sourceID: ", sourceID)
 
 	a, b := split(images, gameID, sourceID)
 
