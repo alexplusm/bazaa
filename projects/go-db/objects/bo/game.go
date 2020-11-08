@@ -73,3 +73,7 @@ func (g *GameBO) validate() error {
 
 	return nil
 }
+
+func (g *GameBO) NotStarted() bool {
+	return time.Now().Before(g.StartDate)
+}
