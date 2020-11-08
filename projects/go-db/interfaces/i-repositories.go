@@ -6,7 +6,7 @@ import (
 
 type IGameRepository interface {
 	InsertGame(game dao.GameDAO) (string, error)
-	HasNotStartedGameWithSameID(gameID string) (bool, error)
+	SelectGame(gameID string) (dao.GameDAO, error)
 }
 
 type ISourceRepository interface {
