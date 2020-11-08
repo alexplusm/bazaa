@@ -1,8 +1,8 @@
 ARCHIVE_LOW1="archives=@/Users/a.mogilevskiy/work/5gen/clean-city/archives/low1.zip"
 ARCHIVE_MEDIUM="archives=@/Users/a.mogilevskiy/work/5gen/clean-city/archives/medium.zip"
 
-GAME_ID1="be359a94-d2cf-4ec4-8dc2-fbd8350c89ec" # past
-GAME_ID2="2bc4c2aa-aa87-406c-b922-334a95fed451" # future
+GAME_ID1="29ceff68-1bc0-4099-b0f2-2205f8b1f12d" # past
+GAME_ID2="bd255325-e7d1-44bd-8f76-1ff4796e71a2" # future
 
 URL="http://localhost:1234/api/v1/game/${GAME_ID2}"
 
