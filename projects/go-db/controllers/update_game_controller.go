@@ -28,6 +28,18 @@ func (controller *UpdateGameController) UpdateGame(ctx echo.Context) error {
 			return fmt.Errorf("update game controller: %v", err)
 		}
 
+		game, err := controller.Service.GetGame(gameID)
+		if err != nil {
+			// TODO: ctx.String: return game NOT found
+			return fmt.Errorf("update game controller: %v", err)
+		}
+
+		if !game.NotStarted() {
+			fmt.Println("Game NOT started")
+			// TODO: ctx.String: return game not started
+			return nil
+		}
+
 		archives := form.File["archives"]
 
 		err = controller.Service.AttachZipArchiveToGame(gameID, archives)
