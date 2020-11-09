@@ -16,14 +16,38 @@ CREATE TABLE IF NOT EXISTS games (
 );
 
 CREATE TABLE IF NOT EXISTS sources (
-    "source_id"     VARCHAR     DEFAULT NULL, -- TODO: generate (SERIAL -> VARCHAR)
-    "source_type"   VARCHAR     NOT NULL,
-    "created_at"    BIGINT      NOT NULL,
+    "source_id"     VARCHAR     DEFAULT uuid_generate_v4(),
     "game_id"       uuid        NOT NULL,
+    "source_type"   INTEGER     NOT NULL,
+    "created_at"    BIGINT      NOT NULL,
 
     PRIMARY KEY ("source_id"),
 
     FOREIGN KEY ("game_id") REFERENCES games("game_id")
+);
+
+CREATE TABLE IF NOT EXISTS screenshots (
+	"screenshot_id"         uuid        DEFAULT uuid_generate_v4(),
+	"game_id"               uuid        NOT NULL,
+	"source_id"             VARCHAR     NOT NULL,
+	"filename"              VARCHAR     NOT NULL,
+
+	-- INFO: как работать с ответами понимаем из "game.answer_type"
+	-- INFO: *_answer
+		-- if game.answerType == 1 (Текст) -> store 'user free text'
+		-- if game.answerType == 2 (Категориальный) -> store option index  '0' | '1' | ...
+		-- if game.answerType == 3 (Координаты прямоугольника) -> store JSON string
+		-- if game.answerType == 4 (Полигональный) -> store JSON string
+	-- INFO: в этом поле будет лежать ответ эксперта, который мы получаем:
+        -- либо при загрузке zip архива, из файловой структуры
+        -- либо в ответе внешней системы, которая проверила "screenshot" и дала экспертный ответ
+	"expert_answer"         VARCHAR     DEFAULT NULL,
+	"users_answer"          VARCHAR     DEFAULT NULL,
+
+	PRIMARY KEY ("screenshot_id"),
+
+	FOREIGN KEY ("game_id")     REFERENCES games("game_id"),
+	FOREIGN KEY ("source_id")   REFERENCES sources("source_id")
 );
 
 -- TODO: schedules (see docs)
@@ -50,33 +74,9 @@ CREATE TABLE IF NOT EXISTS users__external_systems (
 	FOREIGN KEY ("user_id")             REFERENCES users("user_id")
 );
 
--- TODO: tasks -> screenshots
-CREATE TABLE IF NOT EXISTS tasks (
-	"task_id"               uuid        DEFAULT uuid_generate_v4(),
-	"game_id"               uuid        NOT NULL,
-	"image_url"             VARCHAR     NOT NULL,
-	-- INFO: в этом поле будет лежать ответ эксперта, который мы получаем:
-		-- либо при загрузке zip архива, из файловой структуры
-		-- либо в ответе внешней системы, которая проверила "task" и дала экспертный ответ
-	-- INFO: как работать с ответами понимаем из "game.answer_type"
-
-	-- INFO: *_answer
-		-- if game.answerType == 1 (Текст) -> store 'user free text'
-		-- if game.answerType == 2 (Категориальный) -> store option index  '0' | '1' | ...
-		-- if game.answerType == 3 (Координаты прямоугольника) -> store JSON string
-		-- if game.answerType == 4 (Полигональный) -> store JSON string
-	"expert_answer"         VARCHAR     DEFAULT 'undefined',
-	"users_answer"          VARCHAR     DEFAULT 'undefined',
-	-- INFO: как только 10 пользователей даст ответ, переводим в TRUE
-	"complete_by_users"     BOOLEAN     DEFAULT FALSE,
-
-	PRIMARY KEY ("task_id"),
-	FOREIGN KEY ("game_id") REFERENCES games("game_id")
-);
-
 CREATE TABLE IF NOT EXISTS answers (
 	"answer_id" BIGSERIAL,
-	
+
 	-- INFO: value
 		-- if game.answerType == 1 (Текст) -> store 'user free text'
 		-- if game.answerType == 2 (Категориальный) -> store option index  '0' | '1' | ...

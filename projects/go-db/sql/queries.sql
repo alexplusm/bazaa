@@ -47,8 +47,15 @@ INSERT INTO users (user_id)
 VALUES ('vasya_pup123');
 -- users end
 
--- TODO: into docs
+-- screenshots
+INSERT INTO screenshots ("game_id", "source_id", "filename")
+VALUES ("some-game-id", "some-source-id", "filename.jpg");
+-- INFO: insert with expert answer
+INSERT INTO screenshots ("game_id", "source_id", "filename", "expert_answer")
+VALUES ("some-game-id", "some-source-id", "filename.jpg", "1");
+-- screenshots end
 
+-- TODO: into docs
 --     ExternalSystemId
 -- Date1
 -- Date2
