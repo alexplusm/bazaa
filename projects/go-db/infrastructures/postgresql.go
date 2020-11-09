@@ -9,6 +9,15 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
+type PSQLHandler struct {
+	Conn *pgxpool.Pool
+}
+
+// TODO: Temporary: look at interfaces.IDBHandler
+func (handler *PSQLHandler) GetPool() *pgxpool.Pool {
+	return handler.Conn
+}
+
 func initPostgresql() (*pgxpool.Pool, error) {
 	dbUrl := os.Getenv("DATABASE_URL")
 	config, err := pgxpool.ParseConfig(dbUrl)
@@ -80,15 +89,6 @@ func initPostgresql() (*pgxpool.Pool, error) {
 //}
 
 // ----------------
-
-type PSQLHandler struct {
-	Conn *pgxpool.Pool
-}
-
-// TODO: Temporary: look at interfaces.IDBHandler
-func (handler *PSQLHandler) GetPool() *pgxpool.Pool {
-	return handler.Conn
-}
 
 // TODO: try to create some generic methods: see SQLiteHandler example
 //// Example for SQLiteHandler

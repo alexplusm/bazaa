@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 
@@ -53,6 +54,13 @@ func registerRoutes(e *echo.Echo) {
 	// TODO: ["application/json", "multipart/form-data"]
 	e.PUT("api/v1/game/:game-id", updateGameController.UpdateGame)
 
-	// e.PUT("api/v1/game-12/:game-id", controllers.UpdateGame(conn)) // TODO: remove
+	// TODO: for test
 	e.GET("/check/alive", controllers.ItsAlive)
+
+	testService(injector)
+}
+
+func testService(i infrastructures.IInjector) {
+	s := i.InjectService()
+	s.Method()
 }
