@@ -5,6 +5,8 @@ const (
 	ScheduleSourceType
 )
 
+//TODO: schedules
+
 type SourceDAO struct {
 	Type      int
 	CreatedAt int64

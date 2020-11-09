@@ -48,7 +48,6 @@ func (service *UpdateGameService) AttachZipArchiveToGame(gameID string, archives
 	}
 
 	a, b := split(images, gameID, sourceID)
-
 	err = service.ScreenshotRepo.InsertScreenshots(a)
 	if err != nil {
 		return fmt.Errorf("attach zip archive: %v", err)
@@ -58,10 +57,6 @@ func (service *UpdateGameService) AttachZipArchiveToGame(gameID string, archives
 	if err != nil {
 		return fmt.Errorf("attach zip archive: %v", err)
 	}
-
-	//fmt.Println("images count", len(images))
-	//fmt.Println("kek ||| ", len(a), len(b))
-	//fmt.Printf("--- %+v\n", b[1])
 
 	removeArchives(filenames)
 

@@ -8,5 +8,5 @@ type ScreenshotDAO struct {
 
 type ScreenshotWithExpertAnswerDAO struct {
 	ScreenshotDAO
-	ExpertAnswer int
+	ExpertAnswer string
 }
