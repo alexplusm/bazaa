@@ -17,3 +17,7 @@ type IUpdateGameService interface {
 	// TODO: move to -> GameService ?
 	GetGame(gameID string) (bo.GameBO, error)
 }
+
+type IRedisService interface {
+	Method()
+}
