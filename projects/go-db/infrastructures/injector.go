@@ -19,7 +19,7 @@ type IInjector interface {
 	InjectCreateGameController() controllers.CreateGameController
 	InjectUpdateGameController() controllers.UpdateGameController
 
-	// TODO: Test
+	// TODO: Test: TODO: ServiceInjector and ControllerInjector????
 	InjectService() services.RedisService
 }
 
@@ -49,8 +49,10 @@ func (k *kernel) InjectUpdateGameController() controllers.UpdateGameController {
 
 func (k *kernel) InjectService() services.RedisService {
 	redisHandler := &RedisHandler{k.redisClient}
+	DBhandler := &PSQLHandler{k.pool}
 
-	service := services.RedisService{redisHandler}
+	screenshotRepo := &repositories.ScreenshotRepository{DBhandler}
+	service := services.RedisService{redisHandler, screenshotRepo}
 
 	return service
 }
