@@ -1,3 +1,9 @@
+# TODO
+game & externalSystem : O2O relationship
+* update createGame
+* update gameModel
+* update externalSystemModel (add description -> for web interface (select) )
+
 # Описание модели хранения данных
 
 ## Таблицы
