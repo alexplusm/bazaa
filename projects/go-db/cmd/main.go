@@ -44,6 +44,7 @@ func registerRoutes(e *echo.Echo) {
 
 	createGameController := injector.InjectCreateGameController()
 	updateGameController := injector.InjectUpdateGameController()
+	getScreenshotController := injector.InjectGetScreenshotController()
 
 	// TODO:later
 	// Create middleware for each route with whitelist of ContentTypes:
@@ -53,6 +54,8 @@ func registerRoutes(e *echo.Echo) {
 	e.POST("api/v1/game", createGameController.CreateGame)
 	// TODO: ["application/json", "multipart/form-data"]
 	e.PUT("api/v1/game/:game-id", updateGameController.UpdateGame)
+	// TODO: ["application/json"]
+	e.GET("api/v1/game/:game-id/screenshot", getScreenshotController.GetScreenshot)
 
 	// TODO: for test
 	e.GET("/check/alive", controllers.ItsAlive)

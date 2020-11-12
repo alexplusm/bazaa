@@ -18,6 +18,7 @@ type IInjector interface {
 	// INFO: controllers
 	InjectCreateGameController() controllers.CreateGameController
 	InjectUpdateGameController() controllers.UpdateGameController
+	InjectGetScreenshotController() controllers.GetScreenshotController
 
 	// TODO: Test: TODO: ServiceInjector and ControllerInjector????
 	InjectService() services.RedisService
@@ -43,6 +44,12 @@ func (k *kernel) InjectUpdateGameController() controllers.UpdateGameController {
 		GameRepo: gameRepo, SourceRepo: sourceRepo, ScreenshotRepo: screenshotRepo,
 	}
 	controller := controllers.UpdateGameController{service}
+
+	return controller
+}
+
+func (k *kernel) InjectGetScreenshotController() controllers.GetScreenshotController {
+	controller := controllers.GetScreenshotController{}
 
 	return controller
 }
