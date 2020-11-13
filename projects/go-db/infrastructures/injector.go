@@ -16,26 +16,26 @@ type IInjector interface {
 	CloseStoragesConnections()
 
 	// INFO: controllers
-	InjectCreateGameController() controllers.CreateGameController
-	InjectUpdateGameController() controllers.UpdateGameController
+	InjectGameCreateController() controllers.GameCreateController
+	InjectGameUpdateController() controllers.GameUpdateController
 	InjectExtSystemCreateController() controllers.ExtSystemCreateController
-	InjectGetScreenshotController() controllers.GetScreenshotController
+	InjectScreenshotGetController() controllers.ScreenshotGetController
 
 	// TODO: Test: TODO: ServiceInjector and ControllerInjector????
 	InjectGameCacheService() services.GameCacheService
 }
 
-func (k *kernel) InjectCreateGameController() controllers.CreateGameController {
+func (k *kernel) InjectGameCreateController() controllers.GameCreateController {
 	handler := &PSQLHandler{k.pool} // TODO: in kernel? | after creation end point for game creation
 
 	repo := &repositories.GameRepository{handler}
 	service := &services.CreateGameService{repo}
-	controller := controllers.CreateGameController{service}
+	controller := controllers.GameCreateController{service}
 
 	return controller
 }
 
-func (k *kernel) InjectUpdateGameController() controllers.UpdateGameController {
+func (k *kernel) InjectGameUpdateController() controllers.GameUpdateController {
 	handler := &PSQLHandler{k.pool}
 
 	gameRepo := &repositories.GameRepository{handler}
@@ -44,7 +44,7 @@ func (k *kernel) InjectUpdateGameController() controllers.UpdateGameController {
 	service := &services.UpdateGameService{
 		GameRepo: gameRepo, SourceRepo: sourceRepo, ScreenshotRepo: screenshotRepo,
 	}
-	controller := controllers.UpdateGameController{service}
+	controller := controllers.GameUpdateController{service}
 
 	return controller
 }
@@ -55,8 +55,8 @@ func (k *kernel) InjectExtSystemCreateController() controllers.ExtSystemCreateCo
 	return controller
 }
 
-func (k *kernel) InjectGetScreenshotController() controllers.GetScreenshotController {
-	controller := controllers.GetScreenshotController{}
+func (k *kernel) InjectScreenshotGetController() controllers.ScreenshotGetController {
+	controller := controllers.ScreenshotGetController{}
 
 	return controller
 }

@@ -11,14 +11,14 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
 )
 
-type UpdateGameController struct {
+type GameUpdateController struct {
 	Service interfaces.IUpdateGameService
 }
 
-func (controller *UpdateGameController) UpdateGame(ctx echo.Context) error {
+func (controller *GameUpdateController) UpdateGame(ctx echo.Context) error {
 	gameID := ctx.Param("game-id")
 
-	fmt.Println("UpdateGameController: GameID:", gameID)
+	fmt.Println("GameUpdateController: GameID:", gameID)
 
 	switch httputils.ParseContentType(ctx) {
 	case consts.FormDataContentType:

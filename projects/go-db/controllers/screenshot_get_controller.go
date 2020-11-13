@@ -6,10 +6,10 @@ import (
 	"github.com/labstack/echo"
 )
 
-type GetScreenshotController struct {
+type ScreenshotGetController struct {
 }
 
-func (controller *GetScreenshotController) GetScreenshot(ctx echo.Context) error {
+func (controller *ScreenshotGetController) GetScreenshot(ctx echo.Context) error {
 	gameID := ctx.Param("game-id")
 	externalSystemID := ctx.QueryParam("extSystemId")
 	userID := ctx.QueryParam("userId")

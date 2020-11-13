@@ -20,11 +20,11 @@ import (
 // TODO: init func ????
 var validate *validator.Validate
 
-type CreateGameController struct {
+type GameCreateController struct {
 	Service interfaces.ICreateGameService
 }
 
-func (controller *CreateGameController) CreateGame(ctx echo.Context) error {
+func (controller *GameCreateController) CreateGame(ctx echo.Context) error {
 	gameRaw := new(dto.CreateGameRequestBody)
 
 	if err := ctx.Bind(gameRaw); err != nil {

@@ -42,23 +42,23 @@ func initDirs() {
 func registerRoutes(e *echo.Echo) {
 	injector := infrastructures.Injector()
 
-	createGameController := injector.InjectCreateGameController()
-	updateGameController := injector.InjectUpdateGameController()
+	gameCreateController := injector.InjectGameCreateController()
+	gameUpdateController := injector.InjectGameUpdateController()
 	extSystemCreateController := injector.InjectExtSystemCreateController()
-	getScreenshotController := injector.InjectGetScreenshotController()
+	screenshotGetController := injector.InjectScreenshotGetController()
 
 	// TODO:later
 	// Create middleware for each route with whitelist of ContentTypes:
 	// ["application/json", "multipart/form-data"] | ["application/json"]
 
 	// TODO: ["application/json"]
-	e.POST("api/v1/game", createGameController.CreateGame)
+	e.POST("api/v1/game", gameCreateController.CreateGame)
 	// TODO: ["application/json", "multipart/form-data"]
-	e.PUT("api/v1/game/:game-id", updateGameController.UpdateGame)
+	e.PUT("api/v1/game/:game-id", gameUpdateController.UpdateGame)
 	// TODO: ["application/json"]
 	e.POST("api/v1/ext-system", extSystemCreateController.CreateExtSystem)
 	// TODO: ["application/json"]
-	e.GET("api/v1/game/:game-id/screenshot", getScreenshotController.GetScreenshot)
+	e.GET("api/v1/game/:game-id/screenshot", screenshotGetController.GetScreenshot)
 
 	// TODO: for test
 	e.GET("/check/alive", controllers.ItsAlive)
