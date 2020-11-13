@@ -10,8 +10,8 @@ import (
 // TODO: move to consts
 const (
 	extSystemIDKey   = "extSystemID"
-	screenshotsKey   = "__screenshots"
-	gameKey          = "__game"
+	screenshotsKey   = "--screenshots"
+	gameKey          = "--game"
 	screenshotURLKey = "url"
 	answerCount      = 5 // TODO: rename + move to config
 	// INFO: "url" ...
