@@ -31,8 +31,8 @@ CREATE TABLE IF NOT EXISTS games (
 
 CREATE TABLE IF NOT EXISTS ext_systems (
 	"ext_system_id"         VARCHAR     DEFAULT uuid_generate_v4(),
-	"description"           VARCHAR     DEFAULT NULL,
-	"post_results_url"      VARCHAR     DEFAULT NULL,
+	"description"           VARCHAR     NOT NULL,
+	"post_results_url"      VARCHAR     NOT NULL,
 
 	PRIMARY KEY ("ext_system_id")
 );
