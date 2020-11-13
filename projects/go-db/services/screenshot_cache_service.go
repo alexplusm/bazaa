@@ -24,7 +24,7 @@ func (service *ScreenshotCacheService) getScreenshotID(gameID string) (bool, str
 	flag := true
 
 	for flag {
-		// todo: incr index to find not full answered screenshot
+		// TODO: incr index to find not full answered screenshot
 		if index+1 == listLength {
 			hasID = false
 			id = ""
@@ -35,7 +35,7 @@ func (service *ScreenshotCacheService) getScreenshotID(gameID string) (bool, str
 		if err != nil {
 			fmt.Println(err)
 		}
-		flag = service.checkAnsweredScreenshot(id)
+		flag, err = service.screenshotNotHaveEnoughAnswers(id)
 		index++
 	}
 
@@ -44,15 +44,17 @@ func (service *ScreenshotCacheService) getScreenshotID(gameID string) (bool, str
 	return hasID, id
 }
 
-func (service *ScreenshotCacheService) checkAnsweredScreenshot(screenshotID string) bool {
-	ctx := context.Background()
+func (service *ScreenshotCacheService) screenshotNotHaveEnoughAnswers(
+	screenshotID string,
+) (bool, error) {
 	conn := service.RedisClient.GetConn()
-
-	keys, err := conn.HKeys(ctx, screenshotID).Result()
+	keys, err := conn.HKeys(context.Background(), screenshotID).Result()
+	if err != nil {
+		return false, fmt.Errorf("screenshot not have enough answers: %v", err)
+	}
 	fmt.Println("Keys:", keys)
 
-	fmt.Println(err) // TODO: process error
 	// INFO: проверка длинны массива ключей ответов с учетом наличия служебных полей
 	maxKeysCount := consts.RequiredAnswerCountToFinishScreenshot + nonAnswerFieldsCount
-	return len(keys) < maxKeysCount // TODO: concurrency
+	return len(keys) < maxKeysCount, nil // TODO: concurrency
 }

@@ -24,3 +24,6 @@ type IGameCacheService interface {
 	PrepareGame(gameID string)
 	GameWithSameExtSystemIDExist(gameID, extSystemID string) bool
 }
+
+type IScreenshotCacheService interface {
+}

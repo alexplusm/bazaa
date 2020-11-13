@@ -117,6 +117,7 @@ func convertToInterfaces(screenshots []dao.ScreenshotDAOFull) ([]interface{}, ma
 }
 
 // TODO: move + add logic ?
+// TODO: another service ?
 func buildFileURL(filename string) string {
 	return filename
 }
