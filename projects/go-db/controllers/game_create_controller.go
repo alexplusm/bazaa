@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
@@ -14,11 +13,6 @@ import (
 )
 
 // source: https://medium.com/cuddle-ai/building-microservice-using-golang-echo-framework-ff10ba06d508
-
-// source: https://godoc.org/github.com/go-playground/validator
-// TODO: package lvl variable - yes: move to package lvl file with variable | concurrency - need lock???
-// TODO: init func ????
-var validate *validator.Validate
 
 type GameCreateController struct {
 	Service interfaces.ICreateGameService
@@ -33,11 +27,8 @@ func (controller *GameCreateController) CreateGame(ctx echo.Context) error {
 
 	fmt.Printf("GameRaw %+v\n", gameRaw)
 
-	validate = validator.New()
-
 	game := new(bo.GameBO)
-	err := game.CreateGame(*gameRaw, validate)
-	if err != nil {
+	if err := game.CreateGame(*gameRaw, validate); err != nil {
 		ctx.String(http.StatusOK, httputils.GetBadRequestErrorResponseJSONStr())
 		return fmt.Errorf("create game controller: %v", err)
 	}
