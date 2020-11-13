@@ -55,7 +55,11 @@ func (k *kernel) InjectGameUpdateController() controllers.GameUpdateController {
 }
 
 func (k *kernel) InjectExtSystemCreateController() controllers.ExtSystemCreateController {
-	controller := controllers.ExtSystemCreateController{}
+	handler := &PSQLHandler{k.pool}
+
+	repo := &repositories.ExtSystemRepository{handler}
+	service := &services.ExtSystemService{repo}
+	controller := controllers.ExtSystemCreateController{service}
 
 	return controller
 }

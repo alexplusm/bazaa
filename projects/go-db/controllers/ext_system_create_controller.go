@@ -5,11 +5,13 @@ import (
 
 	"github.com/labstack/echo"
 
+	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
 )
 
 type ExtSystemCreateController struct {
+	ExtSystemService interfaces.IExtSystemService
 }
 
 func (controller *ExtSystemCreateController) CreateExtSystem(ctx echo.Context) error {
@@ -27,5 +29,5 @@ func (controller *ExtSystemCreateController) CreateExtSystem(ctx echo.Context) e
 	fmt.Printf("ExtSystemRaw: %+v\n", *extSystemRaw)
 	fmt.Printf("ExtSystem: %+v | hasID: %v\n", extSystem, extSystem.HasID())
 
-	return nil
+	return controller.ExtSystemService.CreateExtSystem(*extSystem)
 }

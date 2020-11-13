@@ -1,13 +1,13 @@
 package services
 
 import (
+	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
-	"github.com/Alexplusm/bazaa/projects/go-db/repositories"
 )
 
 type ExtSystemService struct {
-	ExtSystemRepo repositories.ExtSystemRepository
+	ExtSystemRepo interfaces.IExtSystemRepository
 }
 
 func (service *ExtSystemService) CreateExtSystem(extSystem bo.ExtSystemBO) error {

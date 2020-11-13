@@ -14,11 +14,11 @@ type ExtSystemRepository struct {
 
 const (
 	insertExtSystemWithIDStatement = `
-INSERT INTO external_systems ("external_system_id", "description", "post_results_url")
+INSERT INTO ext_systems ("ext_system_id", "description", "post_results_url")
 VALUES ($1, $2, $3);
 `
 	insertExtSystemWithoutIDStatement = `
-INSERT INTO external_systems ("description", "post_results_url")
+INSERT INTO ext_systems ("description", "post_results_url")
 VALUES ($1, $2);
 `
 )

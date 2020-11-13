@@ -16,6 +16,10 @@ type IAttachSourceToGameService interface {
 	AttachSchedulesToGame(gameID string) error
 }
 
+type IExtSystemService interface {
+	CreateExtSystem(extSystem bo.ExtSystemBO) error
+}
+
 type IGameCacheService interface {
 	PrepareGame(gameID string)
 	GameWithSameExtSystemIDExist(gameID, extSystemID string) bool
