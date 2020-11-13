@@ -8,6 +8,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 )
 
+// TODO: rename RedisClient in all controllers
 type ScreenshotCacheService struct {
 	RedisClient interfaces.IRedisHandler
 }

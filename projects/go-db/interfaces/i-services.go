@@ -21,7 +21,7 @@ type IExtSystemService interface {
 }
 
 type IGameCacheService interface {
-	PrepareGame(gameID string)
+	PrepareGame(gameID string) error
 	GameWithSameExtSystemIDExist(gameID, extSystemID string) bool
 }
 

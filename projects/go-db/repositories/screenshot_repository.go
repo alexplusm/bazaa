@@ -43,12 +43,9 @@ func (repo *ScreenshotRepository) SelectScreenshotsByGameID(gameID string) ([]da
 		fmt.Println(err)
 	}
 
-	var screenshotID, sourceID, filename string // expertAnswer, usersAnswer
-	results := make([]dao.ScreenshotDAOFull, 0, 100)
-
+	var screenshotID, sourceID, filename string
 	var expertAnswer, usersAnswer []byte
-
-	fmt.Println("SelectScreenshotsByGameID")
+	results := make([]dao.ScreenshotDAOFull, 0, 100)
 
 	for row.Next() {
 		err := row.Scan(&screenshotID, &sourceID, &filename, &expertAnswer, &usersAnswer)
@@ -110,7 +107,6 @@ func (repo *ScreenshotRepository) InsertScreenshotsWithExpertAnswer(screenshots 
 	}
 
 	return nil
-
 }
 
 func insertScreenshot(conn *pgxpool.Conn, s dao.ScreenshotDAO) error {

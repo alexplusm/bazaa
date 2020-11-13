@@ -65,7 +65,20 @@ func (k *kernel) InjectExtSystemCreateController() controllers.ExtSystemCreateCo
 }
 
 func (k *kernel) InjectScreenshotGetController() controllers.ScreenshotGetController {
-	controller := controllers.ScreenshotGetController{}
+	redisHandler := &RedisHandler{k.redisClient}
+	DBhandler := &PSQLHandler{k.pool}
+
+	screenshotRepo := &repositories.ScreenshotRepository{DBConn: DBhandler}
+	gameRepo := &repositories.GameRepository{DBConn: DBhandler}
+	screenshotCacheService := &services.ScreenshotCacheService{RedisClient: redisHandler}
+	gameCacheService := &services.GameCacheService{
+		RedisClient: redisHandler, ScreenshotRepo: screenshotRepo, GameRepo: gameRepo,
+	}
+
+	controller := controllers.ScreenshotGetController{
+		ScreenshotCacheService: screenshotCacheService,
+		GameCacheService:       gameCacheService,
+	}
 
 	return controller
 }
