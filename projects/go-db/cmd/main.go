@@ -15,7 +15,13 @@ import (
 /* source: https://github.com/irahardianto/service-pattern-go */
 
 func main() {
-	defer infrastructures.Injector().CloseStoragesConnections()
+	injector, err := infrastructures.Injector()
+	if err != nil {
+		// TODO: fatal panic?
+		fmt.Printf("main: %v\n", err)
+		return
+	}
+	defer injector.CloseStoragesConnections()
 
 	initDirs()
 
@@ -25,7 +31,12 @@ func main() {
 		fmt.Printf("Error: %v\n", err)
 	}
 
-	registerRoutes(e)
+	err = registerRoutes(e)
+	if err != nil {
+		// TODO: fatal panic?
+		fmt.Printf("main: %v\n", err)
+		return
+	}
 
 	// TODO: PORT from .env
 	// TODO: use own logger?
@@ -39,8 +50,11 @@ func initDirs() {
 	}
 }
 
-func registerRoutes(e *echo.Echo) {
-	injector := infrastructures.Injector()
+func registerRoutes(e *echo.Echo) error {
+	injector, err := infrastructures.Injector()
+	if err != nil {
+		return fmt.Errorf("register routes: %v", err)
+	}
 
 	gameCreateController := injector.InjectGameCreateController()
 	gameUpdateController := injector.InjectGameUpdateController()
@@ -64,6 +78,8 @@ func registerRoutes(e *echo.Echo) {
 	e.GET("/check/alive", controllers.ItsAlive)
 
 	testService(injector)
+
+	return nil
 }
 
 func testService(i infrastructures.IInjector) {
