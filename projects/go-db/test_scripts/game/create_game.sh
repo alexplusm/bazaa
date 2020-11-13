@@ -16,5 +16,5 @@ URL="http://localhost:1234/api/v1/game"
 
 curl \
   -H "$CT" \
-  -d "$FAR_FUTURE" \
+  -d "$FUTURE" \
   -X POST "$URL"
