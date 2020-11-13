@@ -70,7 +70,7 @@ func (service *GameCacheService) insertScreenshots(gameID string) error {
 		list, idURLMap := convertToInterfaces(mergedScreenshots)
 
 		for id, url := range idURLMap {
-			conn.HSet(ctx, id, screenshotURLKey, url).Err()
+			err = conn.HSet(ctx, id, screenshotURLKey, url).Err()
 		}
 		err = conn.RPush(ctx, key, list...).Err()
 	}
