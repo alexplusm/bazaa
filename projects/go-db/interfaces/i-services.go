@@ -6,21 +6,14 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 )
 
-type ICreateGameService interface {
-	// TODO: move to -> GameService ?
+type IGameService interface {
 	CreateGame(game bo.GameBO) (string, error)
-}
-
-type IUpdateGameService interface {
-	AttachZipArchiveToGame(gameID string, archives []*multipart.FileHeader) error
-	AttachSchedulesToGame(gameID string) error
-
-	// TODO: move to -> GameService ?
 	GetGame(gameID string) (bo.GameBO, error)
 }
 
-type IRedisService interface {
-	Method()
+type IAttachSourceToGameService interface {
+	AttachZipArchiveToGame(gameID string, archives []*multipart.FileHeader) error
+	AttachSchedulesToGame(gameID string) error
 }
 
 type IGameCacheService interface {

@@ -12,7 +12,8 @@ import (
 )
 
 type GameUpdateController struct {
-	Service interfaces.IUpdateGameService
+	GameService               interfaces.IGameService
+	AttachSourceToGameService interfaces.IAttachSourceToGameService
 }
 
 func (controller *GameUpdateController) UpdateGame(ctx echo.Context) error {
@@ -28,7 +29,7 @@ func (controller *GameUpdateController) UpdateGame(ctx echo.Context) error {
 			return fmt.Errorf("update game controller: %v", err)
 		}
 
-		game, err := controller.Service.GetGame(gameID)
+		game, err := controller.GameService.GetGame(gameID)
 		if err != nil {
 			// TODO: ctx.String: return game NOT found
 			return fmt.Errorf("update game controller: %v", err)
@@ -42,14 +43,14 @@ func (controller *GameUpdateController) UpdateGame(ctx echo.Context) error {
 
 		archives := form.File["archives"]
 
-		err = controller.Service.AttachZipArchiveToGame(gameID, archives)
+		err = controller.AttachSourceToGameService.AttachZipArchiveToGame(gameID, archives)
 		if err != nil {
 			return fmt.Errorf("update game controller: %v", err)
 		}
 
 		ctx.String(http.StatusOK, "{\"success\": true}")
 	case consts.ApplicationContentJSON:
-		err := controller.Service.AttachSchedulesToGame(gameID)
+		err := controller.AttachSourceToGameService.AttachSchedulesToGame(gameID)
 		if err != nil {
 			return fmt.Errorf("update game controller: %v", err)
 		}

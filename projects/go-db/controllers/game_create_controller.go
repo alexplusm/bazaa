@@ -15,7 +15,7 @@ import (
 // source: https://medium.com/cuddle-ai/building-microservice-using-golang-echo-framework-ff10ba06d508
 
 type GameCreateController struct {
-	Service interfaces.ICreateGameService
+	Service interfaces.IGameService
 }
 
 func (controller *GameCreateController) CreateGame(ctx echo.Context) error {

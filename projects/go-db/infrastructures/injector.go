@@ -29,7 +29,7 @@ func (k *kernel) InjectGameCreateController() controllers.GameCreateController {
 	handler := &PSQLHandler{k.pool} // TODO: in kernel? | after creation end point for game creation
 
 	repo := &repositories.GameRepository{handler}
-	service := &services.CreateGameService{repo}
+	service := &services.GameService{repo}
 	controller := controllers.GameCreateController{service}
 
 	return controller
@@ -41,10 +41,15 @@ func (k *kernel) InjectGameUpdateController() controllers.GameUpdateController {
 	gameRepo := &repositories.GameRepository{handler}
 	sourceRepo := &repositories.SourceRepository{handler}
 	screenshotRepo := &repositories.ScreenshotRepository{handler}
-	service := &services.UpdateGameService{
+
+	gameService := &services.GameService{gameRepo}
+	attachSourceToGameService := &services.AttachSourceToGameService{
 		GameRepo: gameRepo, SourceRepo: sourceRepo, ScreenshotRepo: screenshotRepo,
 	}
-	controller := controllers.GameUpdateController{service}
+
+	controller := controllers.GameUpdateController{
+		gameService, attachSourceToGameService,
+	}
 
 	return controller
 }

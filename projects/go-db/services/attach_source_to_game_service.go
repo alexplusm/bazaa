@@ -7,30 +7,19 @@ import (
 
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
-	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/fileutils"
 )
 
-type UpdateGameService struct {
+type AttachSourceToGameService struct {
 	GameRepo       interfaces.IGameRepository
 	SourceRepo     interfaces.ISourceRepository
 	ScreenshotRepo interfaces.IScreenshotRepository
 }
 
-// TODO: move to -> GameService ???
-func (service *UpdateGameService) GetGame(gameID string) (bo.GameBO, error) {
-	gameDAO, err := service.GameRepo.SelectGame(gameID)
-	if err != nil {
-		return bo.GameBO{}, fmt.Errorf("get game: %v", err)
-	}
-
-	gameBO := gameDAO.ToBO()
-
-	return gameBO, nil
-}
-
-func (service *UpdateGameService) AttachZipArchiveToGame(gameID string, archives []*multipart.FileHeader) error {
+func (service *AttachSourceToGameService) AttachZipArchiveToGame(
+	gameID string, archives []*multipart.FileHeader,
+) error {
 	filenames, err := fileutils.CopyFiles(archives, consts.MediaTempDir)
 	if err != nil {
 		return fmt.Errorf("attach zip archive: %v", err)
@@ -63,7 +52,7 @@ func (service *UpdateGameService) AttachZipArchiveToGame(gameID string, archives
 	return nil
 }
 
-func (service *UpdateGameService) AttachSchedulesToGame(gameID string) error {
+func (service *AttachSourceToGameService) AttachSchedulesToGame(gameID string) error {
 	// TODO:later
 	fmt.Println("Schedules attaching coming soon ... : gameID =", gameID)
 	return nil
@@ -77,7 +66,9 @@ func removeArchives(filenames []string) {
 	}
 }
 
-func split(images []fileutils.ImageParsingResult, gameID, sourceID string) ([]dao.ScreenshotDAO, []dao.ScreenshotWithExpertAnswerDAO) {
+func split(
+	images []fileutils.ImageParsingResult, gameID, sourceID string,
+) ([]dao.ScreenshotDAO, []dao.ScreenshotWithExpertAnswerDAO) {
 	mmap := make(map[string]bool)
 	imagesWithoutExpertAnswer := make([]dao.ScreenshotDAO, 0, len(images))
 	imagesWithExpertAnswer := make([]dao.ScreenshotWithExpertAnswerDAO, 0, len(images))

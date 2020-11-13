@@ -53,7 +53,6 @@ func (g *GameBO) CreateGame(src dto.CreateGameRequestBody, validate *validator.V
 		return fmt.Errorf("CreateGame validation: %v", err)
 	}
 
-	fmt.Printf("Created game: %+v\n", g) // TODO:log: game creation
 	return nil
 }
 
