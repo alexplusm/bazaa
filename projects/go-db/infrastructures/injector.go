@@ -21,12 +21,12 @@ type IInjector interface {
 	InjectExtSystemCreateController() controllers.ExtSystemCreateController
 	InjectScreenshotGetController() controllers.ScreenshotGetController
 
-	// TODO: Test: TODO: ServiceInjector and ControllerInjector????
+	// INFO: services
 	InjectGameCacheService() services.GameCacheService
 }
 
 func (k *kernel) InjectGameCreateController() controllers.GameCreateController {
-	handler := &PSQLHandler{k.pool} // TODO: in kernel? | after creation end point for game creation
+	handler := &PSQLHandler{k.pool}
 
 	repo := &repositories.GameRepository{handler}
 	service := &services.GameService{repo}
@@ -103,7 +103,7 @@ func Injector() IInjector {
 		singleton.Do(func() {
 			pool, err := initPostgresql()
 			if err != nil {
-				// todo: need try to reconnect? how undo "singleton"?
+				// todo: need try to reconnect? how undo "singleton"? | panic?
 				fmt.Println("Error connection")
 			}
 

@@ -7,15 +7,17 @@ import (
 )
 
 type GameDAO struct {
-	Name       string
-	AnswerType int
-	StartDate  int64
-	EndDate    int64
-	Question   string
-	Options    string
+	ExtSystemID string
+	Name        string
+	AnswerType  int
+	StartDate   int64
+	EndDate     int64
+	Question    string
+	Options     string
 }
 
 func (g *GameDAO) FromBO(bo bo.GameBO) {
+	g.ExtSystemID = bo.ExtSystemID
 	g.Name = bo.Name
 	g.AnswerType = bo.AnswerType
 	g.StartDate = bo.StartDate.Unix()
@@ -27,6 +29,7 @@ func (g *GameDAO) FromBO(bo bo.GameBO) {
 func (g *GameDAO) ToBO() bo.GameBO {
 	gameBO := new(bo.GameBO)
 
+	gameBO.ExtSystemID = g.ExtSystemID
 	gameBO.Name = g.Name
 	gameBO.StartDate = time.Unix(g.StartDate, 0)
 	gameBO.EndDate = time.Unix(g.EndDate, 0)

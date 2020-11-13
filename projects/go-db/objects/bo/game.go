@@ -13,12 +13,13 @@ import (
 )
 
 type GameBO struct {
-	Name       string    `validate:"required"`
-	AnswerType int       `validate:"gte=1,lte=4"`
-	StartDate  time.Time `validate:"required"`
-	EndDate    time.Time `validate:"required,gtcsfield=StartDate"`
-	Question   string    `validate:"required"`
-	Options    string
+	ExtSystemID string    `validate:"required"`
+	Name        string    `validate:"required"`
+	AnswerType  int       `validate:"gte=1,lte=4"`
+	StartDate   time.Time `validate:"required"`
+	EndDate     time.Time `validate:"required,gtcsfield=StartDate"`
+	Question    string    `validate:"required"`
+	Options     string
 }
 
 func (g *GameBO) CreateGame(src dto.CreateGameRequestBody, validate *validator.Validate) error {
@@ -41,6 +42,7 @@ func (g *GameBO) CreateGame(src dto.CreateGameRequestBody, validate *validator.V
 
 	// TODO: нельзя на прошлую дату создать игру: добавить валидацию
 
+	g.ExtSystemID = src.ExtSystemID
 	g.Name = src.Name
 	g.AnswerType = src.AnswerType
 	g.Question = src.Question
