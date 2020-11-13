@@ -18,6 +18,7 @@ type IInjector interface {
 	// INFO: controllers
 	InjectCreateGameController() controllers.CreateGameController
 	InjectUpdateGameController() controllers.UpdateGameController
+	InjectExtSystemCreateController() controllers.ExtSystemCreateController
 	InjectGetScreenshotController() controllers.GetScreenshotController
 
 	// TODO: Test: TODO: ServiceInjector and ControllerInjector????
@@ -44,6 +45,12 @@ func (k *kernel) InjectUpdateGameController() controllers.UpdateGameController {
 		GameRepo: gameRepo, SourceRepo: sourceRepo, ScreenshotRepo: screenshotRepo,
 	}
 	controller := controllers.UpdateGameController{service}
+
+	return controller
+}
+
+func (k *kernel) InjectExtSystemCreateController() controllers.ExtSystemCreateController {
+	controller := controllers.ExtSystemCreateController{}
 
 	return controller
 }
