@@ -3,16 +3,17 @@ package services
 import (
 	"context"
 	"fmt"
+
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
-	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
-	"strings"
 )
 
 // TODO: move to consts
 const (
-	extSystemIDKey = "extSystemID"
-	screenshotsKey = "screenshots"
-	answerCount    = 5 // TODO: rename + move to config
+	extSystemIDKey   = "extSystemID"
+	screenshotsKey   = "__screenshots"
+	gameKey          = "__game"
+	screenshotURLKey = "url"
+	answerCount      = 5 // TODO: rename + move to config
 	// INFO: "url" ...
 	serviceFields = 1
 )
@@ -56,54 +57,12 @@ func (r *RedisService) Method() {
 	fmt.Println("===", hasID, id)
 }
 
-// TODO: remove
-//func (r *RedisService) prepareCache(gameID string, screenshots []dao.ScreenshotDAOFull) {
-//	// достаем последнюю игру (за один час до начала игры) | todo: а если несколько игр?!
-//	// достаем все скрины из этой игры | todo: замешивание из прошлой игры с таким же типом
-//	// закидываем в редис имена скриншотов (в массив?!)
-//
-//	y := make([]interface{}, len(screenshots))
-//	for i := range screenshots {
-//		y[i] = screenshots[i].ScreenshotID
-//	}
-//
-//	c := r.RedisClient.GetConn()
-//	ctx := context.Background()
-//
-//	val, err := c.RPush(ctx, screenshotsKey, y...).Result()
-//	if err != nil {
-//		fmt.Println(err)
-//	}
-//
-//	fmt.Println("Value: ", val)
-//
-//	len, err := c.LLen(ctx, screenshotsKey).Result()
-//
-//	fmt.Println("Len: ", len)
-//	values, err := c.LRange(ctx, screenshotsKey, 0, len).Result()
-//
-//	fmt.Println("VALUES", values)
-//}
-
+// TODO: move to game_cache_service
 func (r *RedisService) insertGame(gameID, externalSystemID string) {
 	ctx := context.Background()
 	conn := r.RedisClient.GetConn()
 
 	conn.HSet(ctx, gameID, extSystemIDKey, externalSystemID)
-}
-
-func (r *RedisService) insertScreenshots(gameID string, screenshots []dao.ScreenshotDAOFull) {
-	ctx := context.Background()
-	conn := r.RedisClient.GetConn()
-
-	screenshotIDs := make([]interface{}, len(screenshots))
-	for i := range screenshots {
-		id := screenshots[i].ScreenshotID
-		conn.HSet(ctx, id, "url", screenshots[i].Filename) // TODO: build URL
-		screenshotIDs[i] = id
-	}
-
-	conn.LPush(ctx, getScreenshotsListKey(gameID), screenshotIDs...)
 }
 
 // скриншот, который можно отдать пользователю
@@ -138,20 +97,6 @@ func (r *RedisService) getScreenshotID(gameID string) (bool, string) {
 	return hasID, id
 }
 
-// TODO: check out of range
-
-//fmt.Println("IDs: ", id)
-
-//conn.HSet(ctx, id, "user1", "kek")
-//conn.HSet(ctx, id, "user2", "lol")
-//conn.HSet(ctx, id, "user3", "kek")
-//conn.HSet(ctx, id, "user4", "kek")
-
-//fmt.Println("BOOL:", r.checkAnsweredScreenshot(id))
-
-//url := conn.HGet(ctx, id, "url").Val()
-//fmt.Println("Url:", url)
-
 func (r *RedisService) checkAnsweredScreenshot(screenshotID string) bool {
 	ctx := context.Background()
 	conn := r.RedisClient.GetConn()
@@ -163,38 +108,3 @@ func (r *RedisService) checkAnsweredScreenshot(screenshotID string) bool {
 	// INFO: проверка длинны массива ключей ответов с учетом наличия поля служебных полей
 	return len(keys) < answerCount+serviceFields // TODO: concurrency
 }
-
-func getScreenshotsListKey(gameID string) string {
-	return strings.Join([]string{screenshotsKey, gameID}, ":")
-}
-
-/*
-$gameID : $externalSystemID
-"screenshot:$gameID" :list: [scrID1, scrID2, scrID3, ... scrID_n]
-
-// Когда отдаем задание пользователю с $userID
-// 		создаем поле в структуре $scrID1->$userID со значением "null"
-// Когда получаем ответ от пользователя с $userID
-//		обновляем поле в структуре $scrID1->$userID со значением ответа
-// Если скриншот был выдан уже 10-ти пользователям: то мы выдаем следующий скриншот
-// 		проверяем кол-во ключей в хэше (исключая поле "url") // из константы
-// Когда все ответы по скриншоту получены
-//		* проверка в момент получения ответа от пользователя
-// 		1) проверяем кол-во ключей в хэше (исключая поле "url") // из константы
-//		2) у всех полей значение не "null"
-// 		3) записываем в базу все ответы всех пользователей
-
-$scrID_1 :hash:
-	url: /url/abc_1.jpg
-	$userID1: answer1 | null
-	$userID2: answer2 | null
-	...
-	$userID10: answer10 | null
-...
-$scrID_n :hash:
-	url: /url/abc_n.jpg
-	$userID1: answer1 | null
-	$userID2: answer2 | null
-	...
-	$userID10: answer10 | null
-*/
