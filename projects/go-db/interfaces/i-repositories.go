@@ -9,6 +9,10 @@ type IGameRepository interface {
 	SelectGame(gameID string) (dao.GameDAO, error)
 }
 
+type IExtSystemRepository interface {
+	InsertExtSystem() error
+}
+
 type ISourceRepository interface {
 	InsertSource(source dao.SourceDAO) (string, error)
 }
