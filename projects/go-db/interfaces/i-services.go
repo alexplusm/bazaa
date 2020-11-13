@@ -7,6 +7,7 @@ import (
 )
 
 type ICreateGameService interface {
+	// TODO: move to -> GameService ?
 	CreateGame(game bo.GameBO) (string, error)
 }
 
@@ -20,4 +21,9 @@ type IUpdateGameService interface {
 
 type IRedisService interface {
 	Method()
+}
+
+type IGameCacheService interface {
+	PrepareGame(gameID string)
+	GameWithSameExtSystemIDExist(gameID, extSystemID string) bool
 }

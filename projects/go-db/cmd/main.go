@@ -64,6 +64,7 @@ func registerRoutes(e *echo.Echo) {
 }
 
 func testService(i infrastructures.IInjector) {
-	s := i.InjectService()
-	s.Method()
+	s := i.InjectGameCacheService()
+	gameID := "bd255325-e7d1-44bd-8f76-1ff4796e71a2"
+	s.PrepareGame(gameID)
 }

@@ -23,14 +23,12 @@ func (controller *GetScreenshotController) GetScreenshot(ctx echo.Context) error
 		return nil
 	}
 
-	// TODO: check game exsitance and externalSystem
-
-	// service.GameExist(gameID, externalSystemID)
+	// service.GameExist(gameID, externalSystemID) // TODO: check game exsitance and externalSystem
 	// BAD RESPONSE -> game does not exist
 
 	// TODO: BAD RESPONSE: game not started | game is finished | game not found
 
-	// TODO: all params - required
+	// service.getScreenshot(gameID)
 
 	fmt.Println("ctx", gameID, externalSystemID, userID)
 	return nil

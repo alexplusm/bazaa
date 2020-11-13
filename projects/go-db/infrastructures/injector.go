@@ -21,7 +21,7 @@ type IInjector interface {
 	InjectGetScreenshotController() controllers.GetScreenshotController
 
 	// TODO: Test: TODO: ServiceInjector and ControllerInjector????
-	InjectService() services.RedisService
+	InjectGameCacheService() services.GameCacheService
 }
 
 func (k *kernel) InjectCreateGameController() controllers.CreateGameController {
@@ -54,12 +54,12 @@ func (k *kernel) InjectGetScreenshotController() controllers.GetScreenshotContro
 	return controller
 }
 
-func (k *kernel) InjectService() services.RedisService {
+func (k *kernel) InjectGameCacheService() services.GameCacheService {
 	redisHandler := &RedisHandler{k.redisClient}
 	DBhandler := &PSQLHandler{k.pool}
 
 	screenshotRepo := &repositories.ScreenshotRepository{DBhandler}
-	service := services.RedisService{redisHandler, screenshotRepo}
+	service := services.GameCacheService{redisHandler, screenshotRepo}
 
 	return service
 }
