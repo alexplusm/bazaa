@@ -32,8 +32,11 @@ RETURNING "game_id";
 -- ##############################################
 
 -- ext_systems
-INSERT INTO external_systems (external_system_id)
-VALUES ('ex-1');
+INSERT INTO external_systems ("external_system_id", "description", "post_results_url")
+VALUES ('ex-1', 'Активный гражданин', 'https://hello.php');
+--
+INSERT INTO external_systems ("description", "post_results_url")
+VALUES ('Активный гражданин', 'https://hello.php');
 -- ##############################################
 
 -- sources
