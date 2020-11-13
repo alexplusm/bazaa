@@ -8,17 +8,17 @@ import (
 	"strings"
 )
 
+// TODO: move to consts
 const (
-	externalSystemIDKey = "externalSystemIDKey"
-	screenshotsKey      = "screenshots"
-	answerCount         = 5 // TODO: rename + move to config
+	extSystemIDKey = "extSystemID"
+	screenshotsKey = "screenshots"
+	answerCount    = 5 // TODO: rename + move to config
 	// INFO: "url" ...
 	serviceFields = 1
 )
 
 type RedisService struct {
-	RedisClient    interfaces.IRedisHandler
-	ScreenshotRepo interfaces.IScreenshotRepository
+	RedisClient interfaces.IRedisHandler
 }
 
 func (r *RedisService) Method() {
@@ -26,15 +26,6 @@ func (r *RedisService) Method() {
 
 	//ctx := context.Background()
 	//conn := r.RedisClient.GetConn()
-
-	// -----------------------------------------------------------
-	//screenshots, err := r.ScreenshotRepo.SelectScreenshotsByGameID(gameID)
-	//if err != nil {
-	//	fmt.Println(err) // TODO: process err
-	//}
-	// -----------------------------------------------------------
-
-	//r.prepareCache(gameID, screenshots)
 
 	// CHECK GAME <-> EXTERNAL_SYSTEM_ID
 	//sysID := "ExtSys-123-id"
@@ -65,51 +56,40 @@ func (r *RedisService) Method() {
 	fmt.Println("===", hasID, id)
 }
 
-func (r *RedisService) prepareCache(gameID string, screenshots []dao.ScreenshotDAOFull) {
-	// достаем последнюю игру (за один час до начала игры) | todo: а если несколько игр?!
-	// достаем все скрины из этой игры | todo: замешивание из прошлой игры с таким же типом
-	// закидываем в редис имена скриншотов (в массив?!)
-
-	y := make([]interface{}, len(screenshots))
-	for i := range screenshots {
-		y[i] = screenshots[i].ScreenshotID
-	}
-
-	c := r.RedisClient.GetConn()
-	ctx := context.Background()
-
-	val, err := c.RPush(ctx, screenshotsKey, y...).Result()
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	fmt.Println("Value: ", val)
-
-	len, err := c.LLen(ctx, screenshotsKey).Result()
-
-	fmt.Println("Len: ", len)
-	values, err := c.LRange(ctx, screenshotsKey, 0, len).Result()
-
-	fmt.Println("VALUES", values)
-}
+// TODO: remove
+//func (r *RedisService) prepareCache(gameID string, screenshots []dao.ScreenshotDAOFull) {
+//	// достаем последнюю игру (за один час до начала игры) | todo: а если несколько игр?!
+//	// достаем все скрины из этой игры | todo: замешивание из прошлой игры с таким же типом
+//	// закидываем в редис имена скриншотов (в массив?!)
+//
+//	y := make([]interface{}, len(screenshots))
+//	for i := range screenshots {
+//		y[i] = screenshots[i].ScreenshotID
+//	}
+//
+//	c := r.RedisClient.GetConn()
+//	ctx := context.Background()
+//
+//	val, err := c.RPush(ctx, screenshotsKey, y...).Result()
+//	if err != nil {
+//		fmt.Println(err)
+//	}
+//
+//	fmt.Println("Value: ", val)
+//
+//	len, err := c.LLen(ctx, screenshotsKey).Result()
+//
+//	fmt.Println("Len: ", len)
+//	values, err := c.LRange(ctx, screenshotsKey, 0, len).Result()
+//
+//	fmt.Println("VALUES", values)
+//}
 
 func (r *RedisService) insertGame(gameID, externalSystemID string) {
 	ctx := context.Background()
 	conn := r.RedisClient.GetConn()
 
-	conn.HSet(ctx, gameID, externalSystemIDKey, externalSystemID)
-}
-
-// TODO: rename
-func (r *RedisService) checkGame(gameID, externalSystemID string) bool {
-	ctx := context.Background()
-	conn := r.RedisClient.GetConn()
-
-	extSystemID, err := conn.HGet(ctx, gameID, externalSystemIDKey).Result()
-	if err != nil {
-		fmt.Println("Error", err) // TODO: process error | return error
-	}
-	return extSystemID == externalSystemID
+	conn.HSet(ctx, gameID, extSystemIDKey, externalSystemID)
 }
 
 func (r *RedisService) insertScreenshots(gameID string, screenshots []dao.ScreenshotDAOFull) {
