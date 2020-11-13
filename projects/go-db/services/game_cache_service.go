@@ -21,7 +21,7 @@ func (service *GameCacheService) PrepareGame(gameID string) {
 	*/
 	conn := service.RedisClient.GetConn()
 	ctx := context.Background()
-	key := getScreenshotsListKey(gameID)
+	key := buildScreenshotsListKey(gameID)
 
 	service.insertGame(gameID, "my-ext-sys")
 
@@ -54,19 +54,17 @@ func (service *GameCacheService) GameWithSameExtSystemIDExist(gameID, extSystemI
 	return id == extSystemID
 }
 
-// TODO: move to game_cache_service
 func (service *GameCacheService) insertGame(gameID, externalSystemID string) {
 	conn := service.RedisClient.GetConn()
-	// TODO: build game key
-	conn.HSet(context.Background(), getGameKey(gameID), extSystemIDKey, externalSystemID)
+	conn.HSet(context.Background(), buildGameKey(gameID), extSystemIDKey, externalSystemID)
 	// TODO: handle error
 }
 
-func getScreenshotsListKey(gameID string) string {
+func buildScreenshotsListKey(gameID string) string {
 	return strings.Join([]string{screenshotsKey, gameID}, ":")
 }
 
-func getGameKey(gameID string) string {
+func buildGameKey(gameID string) string {
 	return strings.Join([]string{gameKey, gameID}, ":")
 }
 
