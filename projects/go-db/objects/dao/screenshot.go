@@ -19,3 +19,8 @@ type ScreenshotDAOFull struct {
 	ExpertAnswer string
 	UsersAnswer  string
 }
+
+type ScreenshotURLDAO struct {
+	ScreenshotID string
+	ImageURL     string
+}

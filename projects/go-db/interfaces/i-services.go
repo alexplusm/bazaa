@@ -4,6 +4,7 @@ import (
 	"mime/multipart"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
+	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 )
 
 type IGameService interface {
@@ -26,4 +27,5 @@ type IGameCacheService interface {
 }
 
 type IScreenshotCacheService interface {
+	GetScreenshot(gameID, userID string) (dao.ScreenshotURLDAO, bool)
 }

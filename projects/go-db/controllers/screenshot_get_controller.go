@@ -28,15 +28,18 @@ func (controller *ScreenshotGetController) GetScreenshot(ctx echo.Context) error
 	}
 
 	ok := controller.GameCacheService.GameWithSameExtSystemIDExist(gameID, externalSystemID)
-	fmt.Println("OOOKKK: ", ok)
-
-	// service.GameExist(gameID, externalSystemID) // TODO: check game exsitance and externalSystem
-	// BAD RESPONSE -> game does not exist
-
+	// TODO: inject game service
 	// TODO: BAD RESPONSE: game not started | game is finished | game not found
 
-	// service.getScreenshot(gameID)
+	fmt.Println("OOOKKK: ", ok)
 
-	fmt.Println("ctx", gameID, externalSystemID, userID)
+	screenshot, hasScreenshot := controller.ScreenshotCacheService.GetScreenshot(gameID, userID)
+	if !hasScreenshot {
+		// TODO: game over
+	}
+
+	fmt.Printf("SCREEN: %+v\n", screenshot)
+	fmt.Println("CONTEXT: ", gameID, externalSystemID, userID)
+
 	return nil
 }
