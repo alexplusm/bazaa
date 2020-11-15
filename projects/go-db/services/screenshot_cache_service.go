@@ -8,6 +8,7 @@ import (
 
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
+	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 )
 
@@ -31,7 +32,7 @@ func (service *ScreenshotCacheService) GetScreenshot(
 	}
 
 	url, _ := conn.HGet(ctx, id, screenshotURLKey).Result()
-	service.SetUserAnswerToScreenshot(userID, id, nullAnswerValue)
+	service.SetUserAnswerToScreenshot(userID, id, initAnswerValue)
 
 	return dao.ScreenshotURLDAO{ScreenshotID: id, ImageURL: url}, true
 }
@@ -49,6 +50,28 @@ func (service *ScreenshotCacheService) SetUserAnswerToScreenshot(
 	}
 }
 
+func (service *ScreenshotCacheService) GetUsersAnswers(screenshotID string) []bo.UserAnswerCacheBO {
+	// TODO: process error in func
+	ctx := context.Background()
+	conn := service.RedisClient.GetConn()
+
+	keys, _ := conn.HKeys(ctx, screenshotID).Result()
+	answers := make([]bo.UserAnswerCacheBO, 0, consts.RequiredAnswerCountToFinishScreenshot)
+
+	for _, key := range keys {
+		if serviceKeyMap[key] {
+			continue
+		}
+		userAnswer, _ := conn.HGet(ctx, screenshotID, key).Result()
+		if userAnswer != initAnswerValue {
+			answer := bo.UserAnswerCacheBO{UserID: key, Answer: userAnswer}
+			answers = append(answers, answer)
+		}
+	}
+
+	return answers
+}
+
 // TODO: rename: на который не достаточно ответов
 func findScreenshot(conn *redis.Client, index, maxIndex int64, gameID string) (string, bool) {
 	if index == maxIndex {
@@ -58,6 +81,7 @@ func findScreenshot(conn *redis.Client, index, maxIndex int64, gameID string) (s
 
 	id, _ := conn.LIndex(ctx, buildScreenshotsListKey(gameID), index).Result()
 	keys, _ := conn.HKeys(ctx, id).Result()
+	// TODO: consts.RequiredAnswerCountToFinishScreenshot+nonAnswerFieldsCount -> in variable
 	if len(keys) < consts.RequiredAnswerCountToFinishScreenshot+nonAnswerFieldsCount {
 		return id, true
 	} else {

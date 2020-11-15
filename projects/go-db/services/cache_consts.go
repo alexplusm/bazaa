@@ -6,7 +6,17 @@ const (
 	gameKey          = "--game"
 	screenshotURLKey = "url"
 
-	// INFO: служебные поля: "url"
+	// INFO: количество служебных полей: "url"
 	nonAnswerFieldsCount = 1
-	nullAnswerValue      = "null"
+
+	// INFO: дефолтное значение ответа
+	initAnswerValue = "null"
 )
+
+var serviceKeyMap map[string]bool
+
+func init() {
+	serviceKeyMap = make(map[string]bool)
+
+	serviceKeyMap[screenshotURLKey] = true
+}

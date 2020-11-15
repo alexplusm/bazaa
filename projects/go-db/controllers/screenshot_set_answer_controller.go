@@ -34,6 +34,8 @@ func (controller *ScreenshotSetAnswerController) SetAnswer(ctx echo.Context) err
 		userAnswerBO.UserID, screenshotID, userAnswerBO.Answer,
 	)
 
+	// TODO: check count of answers
+
 	fmt.Printf("UserAnswer: %+v\n", *userAnswerBO)
 	fmt.Println("SetAnswer: Params: ", gameID, screenshotID)
 

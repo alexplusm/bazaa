@@ -14,6 +14,11 @@ type UserAnswerBO struct {
 	Answer      string `validate:"required"`
 }
 
+type UserAnswerCacheBO struct {
+	UserID string
+	Answer string
+}
+
 func (userAnswer *UserAnswerBO) Create(src dto.UserAnswerRequestBody, validate *validator.Validate) error {
 	userAnswer.ExtSystemID = src.ExtSystemID
 	userAnswer.UserID = src.UserID
