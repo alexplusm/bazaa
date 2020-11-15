@@ -41,8 +41,7 @@ func (controller *ScreenshotSetAnswerController) SetAnswer(ctx echo.Context) err
 	if !controller.ScreenshotCacheService.CanSetUserAnswerToScreenshot(
 		userAnswerBO.UserID, screenshotID,
 	) {
-		// TODO: Что делать в этому случае?
-		// TODO: Обсудить с Колей
+		// TODO: Что делать в этому случае? Обсудить с Колей
 		ctx.String(200, "Can't Set UserAnswerToScreenshot")
 		return nil
 	}
@@ -58,7 +57,7 @@ func (controller *ScreenshotSetAnswerController) SetAnswer(ctx echo.Context) err
 	ctx.JSON(
 		http.StatusOK,
 		// TODO: getData -> in service
-		httputils.BuildResponse(getData(userAnswerBO.UserID, answers)),
+		httputils.BuildSuccessResponse(getData(userAnswerBO.UserID, answers)),
 	)
 
 	fmt.Printf("UserAnswer: %+v\n", *userAnswerBO)

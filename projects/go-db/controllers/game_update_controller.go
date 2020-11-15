@@ -25,7 +25,7 @@ func (controller *GameUpdateController) UpdateGame(ctx echo.Context) error {
 	case consts.FormDataContentType:
 		form, err := ctx.MultipartForm()
 		if err != nil {
-			ctx.String(http.StatusOK, httputils.GetBadRequestErrorResponseJSONStr())
+			ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
 			return fmt.Errorf("update game controller: %v", err)
 		}
 
@@ -55,7 +55,7 @@ func (controller *GameUpdateController) UpdateGame(ctx echo.Context) error {
 			return fmt.Errorf("update game controller: %v", err)
 		}
 	default:
-		ctx.String(http.StatusOK, httputils.GetBadRequestErrorResponseJSONStr())
+		ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
 	}
 
 	return nil
