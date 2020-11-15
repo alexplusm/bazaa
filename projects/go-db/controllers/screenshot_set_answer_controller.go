@@ -2,12 +2,14 @@ package controllers
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/labstack/echo"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
 )
 
 type ScreenshotSetAnswerController struct {
@@ -53,9 +55,30 @@ func (controller *ScreenshotSetAnswerController) SetAnswer(ctx echo.Context) err
 	// if len(answers) == required... -> culc response | write in db!
 	// TODO: check count of answers
 
+	ctx.JSON(
+		http.StatusOK,
+		// TODO: getData -> in service
+		httputils.BuildResponse(getData(userAnswerBO.UserID, answers)),
+	)
+
 	fmt.Printf("UserAnswer: %+v\n", *userAnswerBO)
 	fmt.Println("Answers: ", answers)
 	fmt.Println("SetAnswer: Params: ", gameID, screenshotID)
 
 	return nil
+}
+
+func getData(userID string, answersBO []bo.UserAnswerCacheBO) dto.UserAnswerResponseData {
+	answers := make([]dto.UserAnswerKek, 0, len(answersBO))
+	finished := false
+
+	// TODO: вычислять результат (в сервисе!)
+	for _, answer := range answersBO {
+		answerDTO := dto.UserAnswerKek{
+			UserID: answer.UserID, Answer: answer.Answer, Result: "rees",
+		}
+		answers = append(answers, answerDTO)
+	}
+
+	return dto.UserAnswerResponseData{Finished: finished, UserResult: "us-res", Answers: answers}
 }

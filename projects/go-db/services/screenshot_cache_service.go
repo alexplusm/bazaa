@@ -44,7 +44,8 @@ func (service *ScreenshotCacheService) CanSetUserAnswerToScreenshot(
 	conn := service.RedisClient.GetConn()
 	answer, _ := conn.HGet(context.Background(), screenshotID, userID).Result()
 
-	return answer == initAnswerValue
+	// TODO: альтернативная проверка: answer == initAnswerValue
+	return answer != ""
 }
 
 func (service *ScreenshotCacheService) SetUserAnswerToScreenshot(
