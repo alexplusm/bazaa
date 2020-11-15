@@ -31,12 +31,12 @@ func (service *ScreenshotCacheService) GetScreenshot(
 	}
 
 	url, _ := conn.HGet(ctx, id, screenshotURLKey).Result()
-	service.setUserAnswerToScreenshot(userID, id, nullAnswerValue)
+	service.SetUserAnswerToScreenshot(userID, id, nullAnswerValue)
 
 	return dao.ScreenshotURLDAO{ScreenshotID: id, ImageURL: url}, true
 }
 
-func (service *ScreenshotCacheService) setUserAnswerToScreenshot(
+func (service *ScreenshotCacheService) SetUserAnswerToScreenshot(
 	userID, screenshotID, answer string,
 ) {
 	ctx := context.Background()

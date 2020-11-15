@@ -28,4 +28,5 @@ type IGameCacheService interface {
 
 type IScreenshotCacheService interface {
 	GetScreenshot(gameID, userID string) (dao.ScreenshotURLDAO, bool)
+	SetUserAnswerToScreenshot(userID, screenshotID, answer string)
 }
