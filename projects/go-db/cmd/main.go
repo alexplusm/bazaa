@@ -60,6 +60,7 @@ func registerRoutes(e *echo.Echo) error {
 	gameUpdateController := injector.InjectGameUpdateController()
 	extSystemCreateController := injector.InjectExtSystemCreateController()
 	screenshotGetController := injector.InjectScreenshotGetController()
+	screenshotSetAnswerController := injector.InjectScreenshotSetAnswerController()
 
 	// TODO:later
 	// Create middleware for each route with whitelist of ContentTypes:
@@ -73,6 +74,12 @@ func registerRoutes(e *echo.Echo) error {
 	e.POST("api/v1/ext-system", extSystemCreateController.CreateExtSystem)
 	// TODO: ["application/json"]
 	e.GET("api/v1/game/:game-id/screenshot", screenshotGetController.GetScreenshot)
+
+	// TODO: ["application/json"]
+	e.POST(
+		"api/v1/game/:game-id/screenshot/:screenshot-id/answer",
+		screenshotSetAnswerController.SetAnswer,
+	)
 
 	// TODO: for test
 	e.GET("/check/alive", controllers.ItsAlive)

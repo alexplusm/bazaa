@@ -1,5 +1,7 @@
 package dto
 
+// TODO: camelCase !!!
+
 type CreateGameRequestBody struct {
 	ExtSystemID string `json:"ext_system_id"`
 	Name        string `json:"name"`

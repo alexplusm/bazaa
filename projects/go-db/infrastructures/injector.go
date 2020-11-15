@@ -20,6 +20,7 @@ type IInjector interface {
 	InjectGameUpdateController() controllers.GameUpdateController
 	InjectExtSystemCreateController() controllers.ExtSystemCreateController
 	InjectScreenshotGetController() controllers.ScreenshotGetController
+	InjectScreenshotSetAnswerController() controllers.ScreenshotSetAnswerController
 
 	// INFO: services
 	InjectGameCacheService() services.GameCacheService
@@ -79,6 +80,14 @@ func (k *kernel) InjectScreenshotGetController() controllers.ScreenshotGetContro
 		ScreenshotCacheService: screenshotCacheService,
 		GameCacheService:       gameCacheService,
 	}
+
+	return controller
+}
+
+func (k *kernel) InjectScreenshotSetAnswerController() controllers.ScreenshotSetAnswerController {
+	redisHandler := &RedisHandler{k.redisClient}
+
+	controller := controllers.ScreenshotSetAnswerController{RedisClient: redisHandler}
 
 	return controller
 }
