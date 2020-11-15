@@ -34,16 +34,14 @@ func (controller *ScreenshotSetAnswerController) SetAnswer(ctx echo.Context) err
 
 	screenshotExist := controller.ScreenshotCacheService.ScreenshotExist(screenshotID)
 	if !screenshotExist {
-		ctx.String(200, "screenshot doesn't exist")
-		return nil
+		return ctx.String(200, "screenshot doesn't exist")
 	}
 
 	if !controller.ScreenshotCacheService.CanSetUserAnswerToScreenshot(
 		userAnswerBO.UserID, screenshotID,
 	) {
 		// TODO: Что делать в этому случае? Обсудить с Колей
-		ctx.String(200, "Can't Set UserAnswerToScreenshot")
-		return nil
+		return ctx.String(200, "Can't Set UserAnswerToScreenshot")
 	}
 
 	controller.ScreenshotCacheService.SetUserAnswerToScreenshot(
@@ -54,26 +52,24 @@ func (controller *ScreenshotSetAnswerController) SetAnswer(ctx echo.Context) err
 	// if len(answers) == required... -> culc response | write in db!
 	// TODO: check count of answers
 
-	ctx.JSON(
-		http.StatusOK,
-		// TODO: getData -> in service
-		httputils.BuildSuccessResponse(getData(userAnswerBO.UserID, answers)),
-	)
-
 	fmt.Printf("UserAnswer: %+v\n", *userAnswerBO)
 	fmt.Println("Answers: ", answers)
 	fmt.Println("SetAnswer: Params: ", gameID, screenshotID)
 
-	return nil
+	return ctx.JSON(
+		http.StatusOK,
+		// TODO: getData -> in service
+		httputils.BuildSuccessResponse(getData(userAnswerBO.UserID, answers)),
+	)
 }
 
 func getData(userID string, answersBO []bo.UserAnswerCacheBO) dto.UserAnswerResponseData {
-	answers := make([]dto.UserAnswerKek, 0, len(answersBO))
+	answers := make([]dto.UserAnswerDTO, 0, len(answersBO))
 	finished := false
 
 	// TODO: вычислять результат (в сервисе!)
 	for _, answer := range answersBO {
-		answerDTO := dto.UserAnswerKek{
+		answerDTO := dto.UserAnswerDTO{
 			UserID: answer.UserID, Answer: answer.Answer, Result: "rees",
 		}
 		answers = append(answers, answerDTO)

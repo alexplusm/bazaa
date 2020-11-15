@@ -31,13 +31,13 @@ func (controller *GameUpdateController) UpdateGame(ctx echo.Context) error {
 
 		game, err := controller.GameService.GetGame(gameID)
 		if err != nil {
-			// TODO: ctx.String: return game NOT found
+			// TODO: ctx.JSON: return game NOT found
 			return fmt.Errorf("update game controller: %v", err)
 		}
 
 		if !game.NotStarted() {
 			fmt.Println("Game NOT started")
-			// TODO: ctx.String: return game not started
+			// TODO: ctx.JSON: return game not started
 			return nil
 		}
 
@@ -55,7 +55,7 @@ func (controller *GameUpdateController) UpdateGame(ctx echo.Context) error {
 			return fmt.Errorf("update game controller: %v", err)
 		}
 	default:
-		ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
+		return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
 	}
 
 	return nil

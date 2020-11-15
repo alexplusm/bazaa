@@ -1,6 +1,6 @@
 package dto
 
-// TODO: camelCase !!!
+// TODO: camelCase !!! and refactor test script
 
 type CreateGameRequestBody struct {
 	ExtSystemID string `json:"ext_system_id"`

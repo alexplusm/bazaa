@@ -37,7 +37,7 @@ func (controller *GameCreateController) CreateGame(ctx echo.Context) error {
 		return fmt.Errorf("game create controller: %v", err)
 	}
 
-	ctx.String(http.StatusOK, "gameID: "+gameID) // todo: response generator
+	ctx.String(http.StatusOK, "gameID: "+gameID) // todo: use response generator
 
 	return nil
 }

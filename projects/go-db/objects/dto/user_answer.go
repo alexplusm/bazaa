@@ -9,11 +9,10 @@ type UserAnswerRequestBody struct {
 type UserAnswerResponseData struct {
 	Finished   bool            `json:"finished"`
 	UserResult string          `json:"userResult"`
-	Answers    []UserAnswerKek `json:"answers"`
+	Answers    []UserAnswerDTO `json:"answers"`
 }
 
-// TODO: rename
-type UserAnswerKek struct {
+type UserAnswerDTO struct {
 	UserID string `json:"userId"`
 	Answer string `json:"answer"`
 	Result string `json:"result"`

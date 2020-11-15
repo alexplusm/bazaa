@@ -29,5 +29,7 @@ func (controller *ExtSystemCreateController) CreateExtSystem(ctx echo.Context) e
 	fmt.Printf("ExtSystemRaw: %+v\n", *extSystemRaw)
 	fmt.Printf("ExtSystem: %+v | hasID: %v\n", extSystem, extSystem.HasID())
 
+	// TODO: ctx.JSON
+
 	return controller.ExtSystemService.CreateExtSystem(*extSystem)
 }
