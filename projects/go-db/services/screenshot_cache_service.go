@@ -37,6 +37,16 @@ func (service *ScreenshotCacheService) GetScreenshot(
 	return dao.ScreenshotURLDAO{ScreenshotID: id, ImageURL: url}, true
 }
 
+func (service *ScreenshotCacheService) CanSetUserAnswerToScreenshot(
+	userID, screenshotID string,
+) bool {
+	// TODO: process errors
+	conn := service.RedisClient.GetConn()
+	answer, _ := conn.HGet(context.Background(), screenshotID, userID).Result()
+
+	return answer == initAnswerValue
+}
+
 func (service *ScreenshotCacheService) SetUserAnswerToScreenshot(
 	userID, screenshotID, answer string,
 ) {
@@ -50,11 +60,22 @@ func (service *ScreenshotCacheService) SetUserAnswerToScreenshot(
 	}
 }
 
+func (service *ScreenshotCacheService) ScreenshotExist(screenshotID string) bool {
+	// TODO: process error in func
+	conn := service.RedisClient.GetConn()
+	res, _ := conn.HExists(
+		context.Background(), screenshotID, screenshotURLKey,
+	).Result()
+
+	return res
+}
+
 func (service *ScreenshotCacheService) GetUsersAnswers(screenshotID string) []bo.UserAnswerCacheBO {
 	// TODO: process error in func
 	ctx := context.Background()
 	conn := service.RedisClient.GetConn()
 
+	// TODO: check screenshot exist
 	keys, _ := conn.HKeys(ctx, screenshotID).Result()
 	answers := make([]bo.UserAnswerCacheBO, 0, consts.RequiredAnswerCountToFinishScreenshot)
 

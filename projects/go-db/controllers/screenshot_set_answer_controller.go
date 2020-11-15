@@ -30,13 +30,31 @@ func (controller *ScreenshotSetAnswerController) SetAnswer(ctx echo.Context) err
 
 	// TODO: check gameID and ExtSystemID
 
+	screenshotExist := controller.ScreenshotCacheService.ScreenshotExist(screenshotID)
+	if !screenshotExist {
+		ctx.String(200, "screenshot doesn't exist")
+		return nil
+	}
+
+	if !controller.ScreenshotCacheService.CanSetUserAnswerToScreenshot(
+		userAnswerBO.UserID, screenshotID,
+	) {
+		// TODO: Что делать в этому случае?
+		// TODO: Обсудить с Колей
+		ctx.String(200, "Can't Set UserAnswerToScreenshot")
+		return nil
+	}
+
 	controller.ScreenshotCacheService.SetUserAnswerToScreenshot(
 		userAnswerBO.UserID, screenshotID, userAnswerBO.Answer,
 	)
+	answers := controller.ScreenshotCacheService.GetUsersAnswers(screenshotID)
 
+	// if len(answers) == required... -> culc response | write in db!
 	// TODO: check count of answers
 
 	fmt.Printf("UserAnswer: %+v\n", *userAnswerBO)
+	fmt.Println("Answers: ", answers)
 	fmt.Println("SetAnswer: Params: ", gameID, screenshotID)
 
 	return nil

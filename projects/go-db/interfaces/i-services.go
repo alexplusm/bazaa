@@ -27,6 +27,9 @@ type IGameCacheService interface {
 }
 
 type IScreenshotCacheService interface {
+	CanSetUserAnswerToScreenshot(userID, screenshotID string) bool
 	GetScreenshot(gameID, userID string) (dao.ScreenshotURLDAO, bool)
+	GetUsersAnswers(screenshotID string) []bo.UserAnswerCacheBO
 	SetUserAnswerToScreenshot(userID, screenshotID, answer string)
+	ScreenshotExist(screenshotID string) bool
 }
