@@ -41,3 +41,7 @@ type IScreenshotUserAnswerService interface {
 	) dto.UserAnswerResponseData
 	ScreenshotIsFinished(answers []bo.UserAnswerCacheBO) bool
 }
+
+type IUserService interface {
+	CreateUser(userID string) error
+}

@@ -39,5 +39,5 @@ def set_answer():
         print("Set Answer: " + str(i) + " | ", response.text)
 
 
-# get_answer()
-set_answer()
+get_answer()
+# set_answer()

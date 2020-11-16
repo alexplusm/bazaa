@@ -12,7 +12,6 @@ type UserRepository struct {
 	DBConn interfaces.IDBHandler
 }
 
-// ON CONFLICT DO NOTHING
 const (
 	insertUserStatement = `INSERT INTO users ("user_id") VALUES ($1);`
 )

@@ -11,6 +11,7 @@ import (
 type ScreenshotGetController struct {
 	ScreenshotCacheService interfaces.IScreenshotCacheService
 	GameCacheService       interfaces.IGameCacheService
+	UserService            interfaces.IUserService
 }
 
 func (controller *ScreenshotGetController) GetScreenshot(ctx echo.Context) error {
@@ -37,6 +38,11 @@ func (controller *ScreenshotGetController) GetScreenshot(ctx echo.Context) error
 	// TODO: BAD RESPONSE: game not started | game is finished | game not found
 
 	fmt.Println("OOOKKK: ", ok)
+
+	err := controller.UserService.CreateUser(userID)
+	if err != nil {
+		fmt.Println("USER SERVICE Error: ", err)
+	}
 
 	screenshot, hasScreenshot := controller.ScreenshotCacheService.GetScreenshot(gameID, userID)
 	if !hasScreenshot {

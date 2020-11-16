@@ -71,14 +71,18 @@ func (k *kernel) InjectScreenshotGetController() controllers.ScreenshotGetContro
 
 	screenshotRepo := &repositories.ScreenshotRepository{DBConn: dbHandler}
 	gameRepo := &repositories.GameRepository{DBConn: dbHandler}
+	userRepo := &repositories.UserRepository{DBConn: dbHandler}
+
 	screenshotCacheService := &services.ScreenshotCacheService{RedisClient: redisHandler}
 	gameCacheService := &services.GameCacheService{
 		RedisClient: redisHandler, ScreenshotRepo: screenshotRepo, GameRepo: gameRepo,
 	}
+	userService := &services.UserService{UserRepo: userRepo}
 
 	controller := controllers.ScreenshotGetController{
 		ScreenshotCacheService: screenshotCacheService,
 		GameCacheService:       gameCacheService,
+		UserService:            userService,
 	}
 
 	return controller

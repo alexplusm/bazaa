@@ -26,5 +26,4 @@ type IScreenshotRepository interface {
 
 type IUserRepository interface {
 	InsertUser(user dao.UserDAO) error
-	InsertUsers(users []dao.UserDAO)
 }
