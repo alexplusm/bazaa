@@ -86,9 +86,13 @@ func (k *kernel) InjectScreenshotGetController() controllers.ScreenshotGetContro
 
 func (k *kernel) InjectScreenshotSetAnswerController() controllers.ScreenshotSetAnswerController {
 	redisHandler := &RedisHandler{k.redisClient}
-	service := &services.ScreenshotCacheService{RedisClient: redisHandler}
+	screenshotCacheService := &services.ScreenshotCacheService{RedisClient: redisHandler}
+	screenshotUserAnswerService := &services.ScreenshotUserAnswerService{}
 
-	controller := controllers.ScreenshotSetAnswerController{ScreenshotCacheService: service}
+	controller := controllers.ScreenshotSetAnswerController{
+		ScreenshotCacheService:      screenshotCacheService,
+		ScreenshotUserAnswerService: screenshotUserAnswerService,
+	}
 
 	return controller
 }

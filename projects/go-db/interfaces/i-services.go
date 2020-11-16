@@ -5,6 +5,7 @@ import (
 
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
+	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
 )
 
 type IGameService interface {
@@ -32,4 +33,10 @@ type IScreenshotCacheService interface {
 	GetUsersAnswers(screenshotID string) []bo.UserAnswerCacheBO
 	SetUserAnswerToScreenshot(userID, screenshotID, answer string)
 	ScreenshotExist(screenshotID string) bool
+}
+
+type IScreenshotUserAnswerService interface {
+	BuildUserAnswerResponse(
+		userID string, answersBO []bo.UserAnswerCacheBO,
+	) dto.UserAnswerResponseData
 }

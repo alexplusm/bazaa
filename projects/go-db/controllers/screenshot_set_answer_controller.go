@@ -13,7 +13,8 @@ import (
 )
 
 type ScreenshotSetAnswerController struct {
-	ScreenshotCacheService interfaces.IScreenshotCacheService
+	ScreenshotCacheService      interfaces.IScreenshotCacheService
+	ScreenshotUserAnswerService interfaces.IScreenshotUserAnswerService
 }
 
 func (controller *ScreenshotSetAnswerController) SetAnswer(ctx echo.Context) error {
@@ -49,6 +50,8 @@ func (controller *ScreenshotSetAnswerController) SetAnswer(ctx echo.Context) err
 	)
 	answers := controller.ScreenshotCacheService.GetUsersAnswers(screenshotID)
 
+	// another service
+
 	// if len(answers) == required... -> culc response | write in db!
 	// TODO: check count of answers
 
@@ -56,24 +59,7 @@ func (controller *ScreenshotSetAnswerController) SetAnswer(ctx echo.Context) err
 	fmt.Println("Answers: ", answers)
 	fmt.Println("SetAnswer: Params: ", gameID, screenshotID)
 
-	return ctx.JSON(
-		http.StatusOK,
-		// TODO: getData -> in service
-		httputils.BuildSuccessResponse(getData(userAnswerBO.UserID, answers)),
-	)
-}
+	response := controller.ScreenshotUserAnswerService.BuildUserAnswerResponse(userAnswerBO.UserID, answers)
 
-func getData(userID string, answersBO []bo.UserAnswerCacheBO) dto.UserAnswerResponseData {
-	answers := make([]dto.UserAnswerDTO, 0, len(answersBO))
-	finished := false
-
-	// TODO: вычислять результат (в сервисе!)
-	for _, answer := range answersBO {
-		answerDTO := dto.UserAnswerDTO{
-			UserID: answer.UserID, Answer: answer.Answer, Result: "rees",
-		}
-		answers = append(answers, answerDTO)
-	}
-
-	return dto.UserAnswerResponseData{Finished: finished, UserResult: "us-res", Answers: answers}
+	return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(response))
 }
