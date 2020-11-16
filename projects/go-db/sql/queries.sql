@@ -62,7 +62,7 @@ VALUES ("some-game-id", "some-source-id", "filename.jpg", "1");
 -- ##############################################
 
 -- users
-INSERT INTO users (user_id)
+INSERT INTO users ("user_id")
 VALUES ('vasya_pup123');
 -- ##############################################
 

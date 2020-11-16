@@ -81,6 +81,12 @@ func (service *ScreenshotUserAnswerService) ScreenshotIsFinished(
 	return len(answers) == consts.RequiredAnswerCountToFinishScreenshot
 }
 
+func (service *ScreenshotUserAnswerService) SaveUsersAnswers(
+	answers []bo.UserAnswerCacheBO,
+) {
+	// TODO: inject repo and insert users | answers
+}
+
 func getRightAnswerCategoryType(answers []bo.UserAnswerCacheBO) (string, bool) {
 	answerMap := make(map[string]int)
 

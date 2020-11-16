@@ -23,3 +23,8 @@ type IScreenshotRepository interface {
 	InsertScreenshots(screenshots []dao.ScreenshotDAO) error
 	InsertScreenshotsWithExpertAnswer(screenshots []dao.ScreenshotWithExpertAnswerDAO) error
 }
+
+type IUserRepository interface {
+	InsertUser(user dao.UserDAO) error
+	InsertUsers(users []dao.UserDAO)
+}

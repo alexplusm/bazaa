@@ -19,15 +19,20 @@ func (controller *ScreenshotGetController) GetScreenshot(ctx echo.Context) error
 	userID := ctx.QueryParam("userId")
 
 	if externalSystemID == "" {
+		// BadRequest
 		ctx.String(200, "kek")
 		return nil
 	}
 	if userID == "" {
+		// BadRequest
 		ctx.String(200, "user required")
 		return nil
 	}
 
 	ok := controller.GameCacheService.GameWithSameExtSystemIDExist(gameID, externalSystemID)
+	if !ok {
+		//return
+	}
 	// TODO: inject game service
 	// TODO: BAD RESPONSE: game not started | game is finished | game not found
 

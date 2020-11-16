@@ -39,4 +39,5 @@ type IScreenshotUserAnswerService interface {
 	BuildUserAnswerResponse(
 		userID string, answersBO []bo.UserAnswerCacheBO,
 	) dto.UserAnswerResponseData
+	ScreenshotIsFinished(answers []bo.UserAnswerCacheBO) bool
 }
