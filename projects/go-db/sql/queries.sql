@@ -64,6 +64,10 @@ VALUES ("some-game-id", "some-source-id", "filename.jpg", "1");
 -- users
 INSERT INTO users ("user_id")
 VALUES ('vasya_pup123');
+
+-- answers
+INSERT INTO answers ("screenshot_id", "game_id", "user_id", "value")
+VALUES ('screenshot-id-1', 'game-id-1', 'user-id-1', 'answer-value');
 -- ##############################################
 
 -- TODO: into docs
