@@ -52,14 +52,11 @@ func (controller *ScreenshotSetAnswerController) SetAnswer(ctx echo.Context) err
 
 	// another service
 
-	// if len(answers) == required... -> culc response | write in db!
-	// TODO: check count of answers
-
 	response := controller.ScreenshotUserAnswerService.BuildUserAnswerResponse(userAnswerBO.UserID, answers)
 
 	screenshotIsFinished := controller.ScreenshotUserAnswerService.ScreenshotIsFinished(answers)
 	if screenshotIsFinished {
-
+		controller.ScreenshotUserAnswerService.SaveUsersAnswers(answers, gameID, screenshotID)
 	}
 
 	fmt.Printf("UserAnswer: %+v\n", *userAnswerBO)

@@ -24,6 +24,11 @@ type IScreenshotRepository interface {
 	InsertScreenshotsWithExpertAnswer(screenshots []dao.ScreenshotWithExpertAnswerDAO) error
 }
 
+type IAnswerRepository interface {
+	InsertAnswer(answer dao.AnswerDAO) error
+	InsertAnswers(answers []dao.AnswerDAO)
+}
+
 type IUserRepository interface {
 	InsertUser(user dao.UserDAO) error
 }

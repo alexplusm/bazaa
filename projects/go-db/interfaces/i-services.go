@@ -40,6 +40,7 @@ type IScreenshotUserAnswerService interface {
 		userID string, answersBO []bo.UserAnswerCacheBO,
 	) dto.UserAnswerResponseData
 	ScreenshotIsFinished(answers []bo.UserAnswerCacheBO) bool
+	SaveUsersAnswers(answers []bo.UserAnswerCacheBO, gameID, screenshotID string)
 }
 
 type IUserService interface {

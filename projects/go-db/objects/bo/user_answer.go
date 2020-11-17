@@ -8,12 +8,14 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
 )
 
+// TODO: rename to AnswerBO
 type UserAnswerBO struct {
 	ExtSystemID string `validate:"required"`
 	UserID      string `validate:"required"`
 	Answer      string `validate:"required"`
 }
 
+// TODO: rename to AnswerBO
 type UserAnswerCacheBO struct {
 	UserID string
 	Answer string

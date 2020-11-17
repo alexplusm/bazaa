@@ -37,7 +37,7 @@ func (controller *ScreenshotGetController) GetScreenshot(ctx echo.Context) error
 	// TODO: inject game service
 	// TODO: BAD RESPONSE: game not started | game is finished | game not found
 
-	fmt.Println("OOOKKK: ", ok)
+	fmt.Println("& GameWithSameExtSystemIDExist: ", ok)
 
 	err := controller.UserService.CreateUser(userID)
 	if err != nil {

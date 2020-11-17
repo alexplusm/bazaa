@@ -1,12 +1,17 @@
 package services
 
 import (
+	"fmt"
+
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
+	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
+	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
 )
 
 type ScreenshotUserAnswerService struct {
+	AnswerRepo interfaces.IAnswerRepository
 }
 
 func (service *ScreenshotUserAnswerService) BuildUserAnswerResponse(
@@ -82,9 +87,18 @@ func (service *ScreenshotUserAnswerService) ScreenshotIsFinished(
 }
 
 func (service *ScreenshotUserAnswerService) SaveUsersAnswers(
-	answers []bo.UserAnswerCacheBO,
+	answers []bo.UserAnswerCacheBO, gameID, screenshotID string,
 ) {
-	// TODO: inject repo and insert users | answers
+	fmt.Println("+++ SaveUsersAnswers")
+
+	answersDAO := make([]dao.AnswerDAO, 0, len(answers))
+	for _, answer := range answers {
+		answerDAO := dao.AnswerDAO{}
+		answerDAO.FromCacheBO(answer, gameID, screenshotID)
+		answersDAO = append(answersDAO, answerDAO)
+	}
+
+	service.AnswerRepo.InsertAnswers(answersDAO)
 }
 
 func getRightAnswerCategoryType(answers []bo.UserAnswerCacheBO) (string, bool) {
