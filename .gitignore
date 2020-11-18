@@ -1,3 +1,6 @@
+# IDEs
+.idea
+
 # Mac OS
 .DS_Store
 
@@ -12,5 +15,5 @@ dump.rdb
 
 # projects
 .env
-*/go-db/*/media_temp/
-*/go-db/*/media_root/
+*/go-db/media_temp/
+*/go-db/media_root/
