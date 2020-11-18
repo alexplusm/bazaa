@@ -10,7 +10,8 @@ int main()
 	int data_length = 4;
 	void *data = malloc(sizeof(char) * data_length);
 	void *data2 = malloc(sizeof(char) * data_length);
-	unsigned char c = '4';
+	unsigned char c = 121;
+	int c2 = 666;
 
 	void *res = memset(data, c, data_length);
 	
