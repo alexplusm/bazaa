@@ -49,18 +49,12 @@ func (controller *ScreenshotSetAnswerController) SetAnswer(ctx echo.Context) err
 		userAnswerBO.UserID, screenshotID, userAnswerBO.Answer,
 	)
 	answers := controller.ScreenshotCacheService.GetUsersAnswers(screenshotID)
-
-	// another service
-
 	response := controller.ScreenshotUserAnswerService.BuildUserAnswerResponse(userAnswerBO.UserID, answers)
 
 	screenshotIsFinished := controller.ScreenshotUserAnswerService.ScreenshotIsFinished(answers)
 	if screenshotIsFinished {
 		controller.ScreenshotUserAnswerService.SaveUsersAnswers(answers, gameID, screenshotID)
-		// TODO: TEST
-		// TODO: remove from screenshot_list screenshot_id
-		// TODO: remove screenshot_id hash
-		//controller.ScreenshotCacheService.RemoveScreenshot(gameID, screenshotID)
+		controller.ScreenshotCacheService.RemoveScreenshot(gameID, screenshotID)
 	}
 
 	fmt.Printf("UserAnswer: %+v\n", *userAnswerBO)

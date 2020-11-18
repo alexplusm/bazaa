@@ -39,8 +39,6 @@ func (controller *ScreenshotGetController) GetScreenshot(ctx echo.Context) error
 	// TODO: inject game service
 	// TODO: BAD RESPONSE: game not started | game is finished | game not found
 
-	fmt.Println("& GameWithSameExtSystemIDExist: ", ok)
-
 	err := controller.UserService.CreateUser(userID)
 	if err != nil {
 		fmt.Println("USER SERVICE Error: ", err)
@@ -61,10 +59,7 @@ func (controller *ScreenshotGetController) GetScreenshot(ctx echo.Context) error
 		ImageURL:     screenshot.ImageURL,
 	}
 
+	fmt.Println("Get screenshot: ", userID, " | ", screenshot.ScreenshotID)
+
 	return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(res))
-
-	fmt.Printf("SCREEN: %+v\n", screenshot)
-	fmt.Println("CONTEXT: ", gameID, externalSystemID, userID)
-
-	return nil
 }

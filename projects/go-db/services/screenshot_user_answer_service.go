@@ -90,6 +90,7 @@ func (service *ScreenshotUserAnswerService) SaveUsersAnswers(
 	answers []bo.UserAnswerCacheBO, gameID, screenshotID string,
 ) {
 	fmt.Println("+++ SaveUsersAnswers")
+	fmt.Printf("answers: %+v\n\n", answers)
 
 	answersDAO := make([]dao.AnswerDAO, 0, len(answers))
 	for _, answer := range answers {

@@ -4,6 +4,7 @@ import aiohttp
 from aiohttp import ClientSession, ClientConnectorError
 import json
 import time
+import sys
 
 # TODO: port from .env
 host_and_port = "http://localhost:1234/"
@@ -18,12 +19,16 @@ general_url = host_and_port + 'api/v1/game/' + game_id + '/screenshot'
 
 def rand_answer():
     r = random()
-    return '0' if r > 0.5 else '1'
+    return '0' if r > 0.2 else '1'
 
 
 def get_users():
+    count = 100
+    if len(sys.argv) > 1:
+        count = int(sys.argv[1])
+
     users = []
-    for i in range(200):
+    for i in range(1, count + 1):
         users.append('i-user-' + str(i))
     return users
 
@@ -70,7 +75,11 @@ async def get_screenshot(user_id: str, session: ClientSession):
 
 
 def request_log(method, user_id, json_resp):
-    print(method, ':', user_id, ' | ', json_resp)
+    if json_resp is not None and json_resp['success'] and json_resp['data'] is not None:
+        print(method, ':', user_id, ' | ', json_resp['data'])
+    else:
+        print(method, ':', user_id, ' | ', json_resp)
+    print('---')
 
 
 async def user_case(user_id, session: ClientSession):
@@ -81,7 +90,7 @@ async def user_case(user_id, session: ClientSession):
     screenshot_id = resp['data']['screenshot_id']
 
     # INFO: timeout
-    # await asyncio.sleep(1 + random())
+    await asyncio.sleep(1 + random() * 2)
     await set_answer_to_screenshot(user_id, screenshot_id, session)
 
 
@@ -92,19 +101,18 @@ async def main():
 
     async with ClientSession() as session:
         tasks = []
-        users_3 = []
-        users_2 = []
-        for index, user in enumerate(users):
-            users_2.append(user)
-            if index % 10 == 0:
-                users_3.append(users_2)
-                users_2 = []
+        list_list_users = []
+        inner_users = []
+        for user in users:
+            inner_users.append(user)
+            if len(inner_users) == 5:
+                list_list_users.append(inner_users)
+                inner_users = []
 
-        for arr_us in users_3:
-
-            for us in arr_us:
+        for list_users in list_list_users:
+            for user in list_users:
                 tasks.append(
-                    user_case(us, session)
+                    user_case(user, session)
                 )
 
             await asyncio.gather(*tasks)
@@ -115,4 +123,3 @@ async def main():
         print("TIME: ", total)
 
 asyncio.run(main())
-print("lol")

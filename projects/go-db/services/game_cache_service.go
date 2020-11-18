@@ -36,13 +36,12 @@ func (service *GameCacheService) PrepareGame(gameID string) error {
 }
 
 func (service *GameCacheService) GameWithSameExtSystemIDExist(gameID, extSystemID string) bool {
+	// TODO: process error or return error
 	conn := service.RedisClient.GetConn()
 
-	// TODO: use key generator for gameID key
-	id, err := conn.HGet(context.Background(), gameID, extSystemIDKey).Result()
+	id, err := conn.HGet(context.Background(), buildGameKey(gameID), extSystemIDKey).Result()
 	if err != nil {
-		// TODO: process error or return error
-		fmt.Println("WAT GameWithSameExtSystemIDExist: ", err)
+		fmt.Println("GameWithSameExtSystemIDExist: ", err)
 		return false
 	}
 
@@ -117,8 +116,7 @@ func convertToInterfaces(screenshots []dao.ScreenshotDAOFull) ([]interface{}, ma
 	return resultList, resultMap
 }
 
-// TODO: move + add logic ?
-// TODO: another service ?
+// TODO: move + add logic | another service?
 func buildFileURL(filename string) string {
 	return filename
 }
