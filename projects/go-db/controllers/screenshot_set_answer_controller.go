@@ -57,11 +57,16 @@ func (controller *ScreenshotSetAnswerController) SetAnswer(ctx echo.Context) err
 	screenshotIsFinished := controller.ScreenshotUserAnswerService.ScreenshotIsFinished(answers)
 	if screenshotIsFinished {
 		controller.ScreenshotUserAnswerService.SaveUsersAnswers(answers, gameID, screenshotID)
+		// TODO: TEST
+		// TODO: remove from screenshot_list screenshot_id
+		// TODO: remove screenshot_id hash
+		//controller.ScreenshotCacheService.RemoveScreenshot(gameID, screenshotID)
 	}
 
 	fmt.Printf("UserAnswer: %+v\n", *userAnswerBO)
-	fmt.Println("Answers: ", answers)
-	fmt.Println("SetAnswer: Params: ", gameID, screenshotID)
+	fmt.Println("Answers: ", response)
+	fmt.Println("SetAnswer: ScreenshotID: ", screenshotID)
+	fmt.Println()
 
 	return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(response))
 }

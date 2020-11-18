@@ -37,6 +37,18 @@ func (service *ScreenshotCacheService) GetScreenshot(
 	return dao.ScreenshotURLDAO{ScreenshotID: id, ImageURL: url}, true
 }
 
+func (service *ScreenshotCacheService) RemoveScreenshot(gameID, screenshotID string) {
+	// TODO: process errors
+	ctx := context.Background()
+	conn := service.RedisClient.GetConn()
+
+	_, err := conn.LRem(ctx, buildScreenshotsListKey(gameID), 1, screenshotID).Result()
+	_, err = conn.Del(ctx, screenshotID).Result()
+	if err != nil {
+		fmt.Println("Error while deleting screenshot ID")
+	}
+}
+
 func (service *ScreenshotCacheService) CanSetUserAnswerToScreenshot(
 	userID, screenshotID string,
 ) bool {

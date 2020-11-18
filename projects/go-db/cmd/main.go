@@ -91,6 +91,5 @@ func registerRoutes(e *echo.Echo) error {
 
 func testService(i infrastructures.IInjector) {
 	gameCacheService := i.InjectGameCacheService()
-	gameID := "baabf15b-3a05-4592-9935-101637c12d67"
-	gameCacheService.PrepareGame(gameID)
+	gameCacheService.PrepareGame(consts.CurrentGameID)
 }

@@ -38,10 +38,11 @@ func (service *GameCacheService) PrepareGame(gameID string) error {
 func (service *GameCacheService) GameWithSameExtSystemIDExist(gameID, extSystemID string) bool {
 	conn := service.RedisClient.GetConn()
 
+	// TODO: use key generator for gameID key
 	id, err := conn.HGet(context.Background(), gameID, extSystemIDKey).Result()
 	if err != nil {
 		// TODO: process error or return error
-		fmt.Println("GameWithSameExtSystemIDExist: ", err)
+		fmt.Println("WAT GameWithSameExtSystemIDExist: ", err)
 		return false
 	}
 

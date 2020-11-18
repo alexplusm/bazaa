@@ -2,10 +2,12 @@ package controllers
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/labstack/echo"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
 )
 
 type ScreenshotGetController struct {
@@ -47,7 +49,19 @@ func (controller *ScreenshotGetController) GetScreenshot(ctx echo.Context) error
 	screenshot, hasScreenshot := controller.ScreenshotCacheService.GetScreenshot(gameID, userID)
 	if !hasScreenshot {
 		// TODO: game over
+		return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
 	}
+
+	// TODO:!!!!!!
+	res := struct {
+		ScreenshotID string `json:"screenshot_id"`
+		ImageURL     string `json:"image_url"`
+	}{
+		ScreenshotID: screenshot.ScreenshotID,
+		ImageURL:     screenshot.ImageURL,
+	}
+
+	return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(res))
 
 	fmt.Printf("SCREEN: %+v\n", screenshot)
 	fmt.Println("CONTEXT: ", gameID, externalSystemID, userID)
