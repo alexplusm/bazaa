@@ -42,20 +42,36 @@ func (controller *ScreenshotSetAnswerController) SetAnswer(ctx echo.Context) err
 		userAnswerBO.UserID, screenshotID,
 	) {
 		// TODO: Что делать в этому случае? Обсудить с Колей
+		// TODO: doc
 		return ctx.String(200, "Can't Set UserAnswerToScreenshot")
 	}
 
-	controller.ScreenshotCacheService.SetUserAnswerToScreenshot(
-		userAnswerBO.UserID, screenshotID, userAnswerBO.Answer,
-	)
-	answers := controller.ScreenshotCacheService.GetUsersAnswers(screenshotID)
-	response := controller.ScreenshotUserAnswerService.BuildUserAnswerResponse(userAnswerBO.UserID, answers)
+	// TODO: tx
+	//		-> SetUserAnswerToScreenshot
+	//		-> GetUsersAnswers
+	// 		-> ScreenshotIsFinished
+
+	// old
+	//controller.ScreenshotCacheService.SetUserAnswerToScreenshot(
+	//	userAnswerBO.UserID, screenshotID, userAnswerBO.Answer,
+	//)
+	//answers := controller.ScreenshotCacheService.GetUsersAnswers(screenshotID)
+	// old end
+	// new
+	answers, err := controller.ScreenshotCacheService.ABC(userAnswerBO.UserID, screenshotID, userAnswerBO.Answer)
+	if err != nil {
+		fmt.Println("EROOOOOOOR: ", err)
+	}
+	// new end
 
 	screenshotIsFinished := controller.ScreenshotUserAnswerService.ScreenshotIsFinished(answers)
 	if screenshotIsFinished {
+		fmt.Println("UserID: ", userAnswerBO.UserID)
 		controller.ScreenshotUserAnswerService.SaveUsersAnswers(answers, gameID, screenshotID)
 		controller.ScreenshotCacheService.RemoveScreenshot(gameID, screenshotID)
 	}
+
+	response := controller.ScreenshotUserAnswerService.BuildUserAnswerResponse(userAnswerBO.UserID, answers)
 
 	fmt.Printf("UserAnswer: %+v\n", *userAnswerBO)
 	fmt.Println("Answers: ", response)

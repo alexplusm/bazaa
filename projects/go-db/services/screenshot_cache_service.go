@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"fmt"
+	"sync"
 
 	"github.com/go-redis/redis/v8"
 
@@ -14,6 +15,7 @@ import (
 
 // TODO: rename RedisClient in all controllers
 type ScreenshotCacheService struct {
+	mu          sync.Mutex
 	RedisClient interfaces.IRedisHandler
 }
 
@@ -60,6 +62,17 @@ func (service *ScreenshotCacheService) CanSetUserAnswerToScreenshot(
 	return answer != ""
 }
 
+func (service *ScreenshotCacheService) ScreenshotExist(screenshotID string) bool {
+	// TODO: process error in func
+	conn := service.RedisClient.GetConn()
+	res, _ := conn.HExists(
+		context.Background(), screenshotID, screenshotURLKey,
+	).Result()
+
+	return res
+}
+
+// ---- tx: 1
 func (service *ScreenshotCacheService) SetUserAnswerToScreenshot(
 	userID, screenshotID, answer string,
 ) {
@@ -73,16 +86,7 @@ func (service *ScreenshotCacheService) SetUserAnswerToScreenshot(
 	}
 }
 
-func (service *ScreenshotCacheService) ScreenshotExist(screenshotID string) bool {
-	// TODO: process error in func
-	conn := service.RedisClient.GetConn()
-	res, _ := conn.HExists(
-		context.Background(), screenshotID, screenshotURLKey,
-	).Result()
-
-	return res
-}
-
+// ---- tx: 2
 func (service *ScreenshotCacheService) GetUsersAnswers(screenshotID string) []bo.UserAnswerCacheBO {
 	// TODO: process error in func
 	ctx := context.Background()
@@ -103,7 +107,63 @@ func (service *ScreenshotCacheService) GetUsersAnswers(screenshotID string) []bo
 		}
 	}
 
+	// TODO: screenshot is finished !!! (input from args and call it)
 	return answers
+}
+
+// ---- tx: result
+func (service *ScreenshotCacheService) ABC(
+	userID, screenshotID, answer string,
+) ([]bo.UserAnswerCacheBO, error) {
+	ctx := context.Background()
+	conn := service.RedisClient.GetConn()
+
+	answers := make([]bo.UserAnswerCacheBO, 0, consts.RequiredAnswerCountToFinishScreenshot)
+
+	trf := func(tx *redis.Tx) error {
+		service.mu.Lock()
+		err := tx.HSet(ctx, screenshotID, userID, answer).Err()
+		fmt.Println("||| SET ANSWER", userID, " | ", answer)
+
+		if err != nil {
+			fmt.Println("??? Error ? ", userID, " | ", err)
+			return err
+		}
+
+		keys := tx.HKeys(ctx, screenshotID).Val()
+
+		for _, key := range keys {
+			if serviceKeyMap[key] {
+				continue
+			}
+			userAnswer := tx.HGet(ctx, screenshotID, key).Val()
+			if userAnswer != initAnswerValue {
+				answer := bo.UserAnswerCacheBO{UserID: key, Answer: userAnswer}
+				answers = append(answers, answer)
+			}
+		}
+		fmt.Println("*** ", userID, " | ", answers)
+
+		service.mu.Unlock()
+
+		return err
+	}
+
+	for i := 0; i < consts.RedisOperationMaxRetries; i++ {
+		err := conn.Watch(ctx, trf, screenshotID)
+		if err == nil {
+			// Success
+			return answers, nil
+		}
+		fmt.Println("TX RETRY: ", i, " | ", err)
+		if err == redis.TxFailedErr {
+			// Optimistic lock lost. Retry.
+			continue
+		}
+		return answers, err
+	}
+
+	return answers, nil
 }
 
 // TODO: rename: на который не достаточно ответов

@@ -34,6 +34,9 @@ type IScreenshotCacheService interface {
 	SetUserAnswerToScreenshot(userID, screenshotID, answer string)
 	ScreenshotExist(screenshotID string) bool
 	RemoveScreenshot(gameID, screenshotID string)
+
+	// test
+	ABC(userID, screenshotID, answer string) ([]bo.UserAnswerCacheBO, error)
 }
 
 type IScreenshotUserAnswerService interface {

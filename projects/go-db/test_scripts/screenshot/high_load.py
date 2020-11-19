@@ -90,7 +90,7 @@ async def user_case(user_id, session: ClientSession):
     screenshot_id = resp['data']['screenshot_id']
 
     # INFO: timeout
-    await asyncio.sleep(1 + random() * 2)
+    # await asyncio.sleep(1 + random() * 2)
     await set_answer_to_screenshot(user_id, screenshot_id, session)
 
 
@@ -103,6 +103,10 @@ async def main():
         tasks = []
         list_list_users = []
         inner_users = []
+
+        if len(users) < 5:
+            list_list_users.append(users)
+
         for user in users:
             inner_users.append(user)
             if len(inner_users) == 5:
