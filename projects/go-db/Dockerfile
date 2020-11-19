@@ -1,5 +1,3 @@
-# https://www.digitalocean.com/community/tutorials/how-to-remove-docker-images-containers-and-volumes
-
 FROM golang:1.15-alpine
 
 # The latest alpine images don't have some tools like (`git` and `bash`).
@@ -24,17 +22,19 @@ RUN go mod download
 COPY . .
 
 # Build the Go app
-#RUN go build -o main .
+RUN go build -o main .
 
 # Expose port 8080 to the outside world
 EXPOSE 1235
 
 # Run the executable
-#CMD ["./main"]
+CMD ["./main"]
+
+
+# TODO: Docker readme !!!
+
+# https://www.digitalocean.com/community/tutorials/how-to-remove-docker-images-containers-and-volumes
 
 # INFO: For test: run deamon in container
-RUN touch test.sh && echo "while true; do ping 8.8.8.8; done" >> test.sh
-
-CMD ["sh", "test.sh"]
-
-# docker run --name centos-linux -d centos /bin/sh -c "while true; do ping 8.8.8.8;
+#RUN touch test.sh && echo "while true; do ping 8.8.8.8; done" >> test.sh
+#CMD ["sh", "test.sh"]

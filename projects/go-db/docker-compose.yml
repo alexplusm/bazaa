@@ -5,17 +5,20 @@ version: "3.8"
 services:
   server:
     build: .
+    env_file:
+      - .env
 
   database:
     image: postgres:13-alpine
-    container_name: database
+    container_name: postgres_database
     ports:
-      - '5432:5432'
-#    environment:
-#      - POSTGRES_USER=${DB_USER}
-#      - POSTGRES_PASSWORD=${DB_PASSWORD}
-#      - POSTGRES_DB=${DB_NAME}
-#      - DATABASE_HOST=${DB_HOST}
+#      todo: use DB_PORT
+      - '5431:5432'
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - DATABASE_HOST=${DB_HOST}
 #    volumes:
 #      - database_postgres:/var/lib/postgresql/data
 #    networks:
