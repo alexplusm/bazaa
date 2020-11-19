@@ -1,0 +1,29 @@
+# https://levelup.gitconnected.com/dockerized-crud-restful-api-with-go-gorm-jwt-postgresql-mysql-and-testing-61d731430bd8
+
+version: "3.8"
+
+services:
+  server:
+    build: .
+
+  database:
+    image: postgres:13-alpine
+    container_name: database
+    ports:
+      - '5432:5432'
+#    environment:
+#      - POSTGRES_USER=${DB_USER}
+#      - POSTGRES_PASSWORD=${DB_PASSWORD}
+#      - POSTGRES_DB=${DB_NAME}
+#      - DATABASE_HOST=${DB_HOST}
+#    volumes:
+#      - database_postgres:/var/lib/postgresql/data
+#    networks:
+#      - net
+
+  redis:
+    image: redis:6.0-alpine3.12
+
+networks:
+  net:
+    driver: bridge
