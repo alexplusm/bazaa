@@ -1,19 +1,6 @@
-CREATE DATABASE godb0;
-CREATE USER alex WITH ENCRYPTED PASSWORD 'admin';
-GRANT ALL PRIVILEGES ON DATABASE godb0 TO alex;
-
--- postgres://{user}:{password}@{hostname}:{port}/{database-name}
--- postgres://postgres:postgres@localhost:5432/testik
-
--- INFO: show all database tables
-SELECT table_name FROM information_schema.tables
-WHERE table_schema = 'public';
-
--- INFO: uuid extension
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 -- INFO: test uuid extension
 SELECT uuid_generate_v1();
+-- ##############################################
 
 -- games
 -- create game
@@ -69,10 +56,3 @@ VALUES ('vasya_pup123');
 INSERT INTO answers ("screenshot_id", "game_id", "user_id", "value")
 VALUES ('screenshot-id-1', 'game-id-1', 'user-id-1', 'answer-value');
 -- ##############################################
-
--- TODO: into docs
---     ExternalSystemId
--- Date1
--- Date2
---
-

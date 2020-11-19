@@ -14,6 +14,7 @@
     -- if game.answerType == 3 (Координаты прямоугольника) -> store JSON string
     -- if game.answerType == 4 (Полигональный) -> store JSON string
 
+-- INFO: uuid extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE IF NOT EXISTS games (
@@ -96,12 +97,3 @@ CREATE TABLE IF NOT EXISTS answers (
 );
 
 -- TODO: schedules (see docs)
-
--- INFO: drop tables
-DROP TABLE games;
-DROP TABLE ext_systems;
-DROP TABLE sources;
-DROP TABLE screenshots;
-DROP TABLE users;
-DROP TABLE users__ext_systems;
-DROP TABLE answers;
