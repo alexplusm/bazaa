@@ -8,7 +8,7 @@ FAR_FUTURE="@game_from_far_future.json"
 # 2285017c-f527-40d2-aead-b23cce159947 | generatedID
 # custom-ext-system-id | customID
 
-URL="http://localhost:1234/api/v1/game"
+URL="http://localhost:8080/api/v1/game"
 
 #   -d "$PAST" \
 #   -d "$FUTURE" \
