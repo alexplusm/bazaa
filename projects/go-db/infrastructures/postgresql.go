@@ -3,7 +3,9 @@ package infrastructures
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -18,6 +20,50 @@ func (handler *PSQLHandler) GetPool() *pgxpool.Pool {
 }
 
 func initPostgresql() (*pgxpool.Pool, error) {
+	dbUrl := getDbURL()
+
+	config, err := pgxpool.ParseConfig(dbUrl)
+	if err != nil {
+		return nil, fmt.Errorf("postgres connection: %v", err)
+	}
+
+	config.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
+		err := initSchema(ctx, conn)
+		if err != nil {
+			return fmt.Errorf("init postgres: %v", err)
+		}
+		// TODO: migrate()
+		fmt.Println("Postgres connected:", dbUrl)
+		return nil
+	}
+
+	pool, err := pgxpool.ConnectConfig(context.Background(), config)
+
+	return pool, err
+}
+
+func migrate() {
+	// TODO: migrate DB
+}
+
+func initSchema(ctx context.Context, conn *pgx.Conn) error {
+	file, err := ioutil.ReadFile("sql/schema.sql")
+	if err != nil {
+		return fmt.Errorf("init schema: read schema: %v", err)
+	}
+	statements := strings.Split(string(file), ";")
+
+	for _, statement := range statements {
+		_, err := conn.Exec(ctx, statement)
+		if err != nil {
+			return fmt.Errorf("init schema: %v", err)
+		}
+	}
+
+	return nil
+}
+
+func getDbURL() string {
 	host := os.Getenv("DB_HOST")
 	user := os.Getenv("DB_USER")
 	password := os.Getenv("DB_PASSWORD")
@@ -35,31 +81,5 @@ func initPostgresql() (*pgxpool.Pool, error) {
 	dbUrl := "postgres://" + user + ":" + password + "@" + host + ":" + port + "/" + name
 	dbUrl += "?pool_max_conns=" + poolMaxConns
 
-	config, err := pgxpool.ParseConfig(dbUrl)
-	if err != nil {
-		return nil, fmt.Errorf("postgres connection: %v", err)
-	}
-
-	config.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
-		migrate()
-		initSchema()
-
-		fmt.Println("Postgres connected:")
-		fmt.Println(
-			"HOST:", host, "USER:", user, "PASSWORD:", password,
-			"NAME:", name, "PORT:", port, "POOL_MAX_CONNS:", poolMaxConns,
-		)
-		return nil
-	}
-
-	pool, err := pgxpool.ConnectConfig(context.Background(), config)
-
-	return pool, err
-}
-
-func migrate() {
-	// TODO: migrate DB
-}
-func initSchema() {
-	// TODO: init schema
+	return dbUrl
 }

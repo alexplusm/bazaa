@@ -1,7 +1,3 @@
--- INFO: test uuid extension
-SELECT uuid_generate_v1();
--- ##############################################
-
 -- games
 -- create game
 INSERT INTO games ("ext_system_id", "name", "start_date", "end_date", "answer_type", "question", "options_csv")
@@ -55,4 +51,8 @@ VALUES ('vasya_pup123');
 -- answers
 INSERT INTO answers ("screenshot_id", "game_id", "user_id", "value")
 VALUES ('screenshot-id-1', 'game-id-1', 'user-id-1', 'answer-value');
+
+-- count of occurrences each screenshots in answers
+SELECT screenshot_id, COUNT(screenshot_id) occurrences
+FROM answers GROUP BY screenshot_id
 -- ##############################################
