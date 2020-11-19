@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -38,9 +39,8 @@ func main() {
 		return
 	}
 
-	// TODO: PORT from .env
 	// TODO: use own logger?
-	e.Logger.Fatal(e.Start(":1234"))
+	e.Logger.Fatal(e.Start(":" + os.Getenv("SERVER_PORT_INNER")))
 }
 
 func initDirs() {
@@ -82,7 +82,7 @@ func registerRoutes(e *echo.Echo) error {
 	)
 
 	// TODO: for test
-	e.GET("/check/alive", controllers.ItsAlive)
+	e.GET("check/alive", controllers.ItsAlive)
 
 	testService(injector)
 

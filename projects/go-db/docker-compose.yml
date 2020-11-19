@@ -7,13 +7,15 @@ services:
     build: .
     env_file:
       - .env
+    ports:
+      - '${SERVER_PORT_OUTER}:${SERVER_PORT_INNER}'
+    depends_on:
+      - database
+      - redis
 
   database:
     image: postgres:13-alpine
     container_name: postgres_database
-    ports:
-#      todo: use DB_PORT
-      - '5431:5432'
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
