@@ -5,6 +5,8 @@ import (
 	"mime/multipart"
 	"time"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
@@ -30,7 +32,7 @@ func (service *AttachSourceToGameService) AttachZipArchiveToGame(
 		return fmt.Errorf("attach zip archive: %v", err)
 	}
 
-	source := dao.SourceDAO{dao.ArchiveSourceType, time.Now().Unix(), gameID}
+	source := dao.SourceDAO{Type: dao.ArchiveSourceType, CreatedAt: time.Now().Unix(), GameID: gameID}
 	sourceID, err := service.SourceRepo.InsertSource(source)
 	if err != nil {
 		return fmt.Errorf("attach zip archive: %v", err)
@@ -60,8 +62,9 @@ func (service *AttachSourceToGameService) AttachSchedulesToGame(gameID string) e
 
 func removeArchives(filenames []string) {
 	for _, fn := range filenames {
-		if err := fileutils.RemoveFile(consts.MediaTempDir, fn); err != nil {
-			fmt.Println(err) // TODO:log // TODO:error
+		err := fileutils.RemoveFile(consts.MediaTempDir, fn)
+		if err != nil {
+			log.Error("remove archive: ", err)
 		}
 	}
 }
@@ -84,8 +87,10 @@ func split(
 				imagesWithoutExpertAnswer = append(imagesWithoutExpertAnswer, screen)
 			} else {
 				screen := dao.ScreenshotWithExpertAnswerDAO{
-					dao.ScreenshotDAO{image.Filename, gameID, sourceID},
-					image.Category,
+					ScreenshotDAO: dao.ScreenshotDAO{
+						Filename: image.Filename, GameID: gameID, SourceID: sourceID,
+					},
+					ExpertAnswer: image.Category,
 				}
 				imagesWithExpertAnswer = append(imagesWithExpertAnswer, screen)
 			}

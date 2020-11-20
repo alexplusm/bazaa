@@ -5,22 +5,20 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
-// CreateDirIfNotExists create dir
-// todo: FileUtils os.MkdirAll(rootFolder, os.ModePerm)
-// todo: os.MakeDirAll ???
 func CreateDirIfNotExists(path string) {
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		os.Mkdir(path, 0777)
+	if err := os.MkdirAll(path, 0777); err != nil {
+		log.Error("create dir: ", err)
 	}
 }
 
-// RemoveFile remove file
 func RemoveFile(dir, filename string) error {
 	fp := filepath.Join(dir, filename)
 	if err := os.Remove(fp); err != nil {
-		return fmt.Errorf("RemoveFile: %v", err)
+		return fmt.Errorf("remove file: %v", err)
 	}
 	return nil
 }

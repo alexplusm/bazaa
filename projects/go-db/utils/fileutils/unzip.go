@@ -114,8 +114,6 @@ func unzip(src string, destination string) ([]ImageParsingResult, error) {
 		fname := f.FileInfo().Name()
 		fpath := filepath.Join(rootFolder, fname)
 
-		fmt.Println("fname", fname, "| fpath", fpath)
-
 		// INFO: skip nested dirs and invalid files
 		if f.FileInfo().IsDir() || IsInvalidImageFileName(fname) {
 			continue
