@@ -6,6 +6,7 @@ import (
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/controllers"
@@ -13,14 +14,22 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/fileutils"
 )
 
-/* source: https://github.com/irahardianto/service-pattern-go */
+/*
+*	source:
+*		https://github.com/irahardianto/service-pattern-go
+*		https://medium.com/cuddle-ai/building-microservice-using-golang-echo-framework-ff10ba06d508
+ */
+
+const (
+	errorPrefix = "main: "
+)
 
 func main() {
+	setupLogger()
+
 	injector, err := infrastructures.Injector()
 	if err != nil {
-		// TODO: fatal panic?
-		fmt.Printf("main: %v\n", err)
-		return
+		log.Fatal(errorPrefix, err)
 	}
 	defer injector.CloseStoragesConnections()
 
@@ -34,13 +43,10 @@ func main() {
 
 	err = registerRoutes(e)
 	if err != nil {
-		// TODO: fatal panic?
-		fmt.Printf("main: %v\n", err)
-		return
+		log.Fatal(errorPrefix, err)
 	}
 
-	// TODO: use own logger?
-	e.Logger.Fatal(e.Start(":" + os.Getenv("SERVER_PORT_INNER")))
+	log.Fatal(e.Start(":" + os.Getenv("SERVER_PORT_INNER")))
 }
 
 func initDirs() {
@@ -92,4 +98,11 @@ func registerRoutes(e *echo.Echo) error {
 func testService(i infrastructures.IInjector) {
 	gameCacheService := i.InjectGameCacheService()
 	gameCacheService.PrepareGame(consts.CurrentGameID)
+}
+
+func setupLogger() {
+	// source: https://www.honeybadger.io/blog/golang-logging/
+	// TODO: log in file if PROD
+	// log.SetOutput()
+	log.SetFormatter(&log.JSONFormatter{})
 }
