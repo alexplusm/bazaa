@@ -1,6 +1,8 @@
 package infrastructures
 
 import (
+	"os"
+
 	"github.com/go-redis/redis/v8"
 )
 
@@ -13,9 +15,12 @@ func (r *RedisHandler) GetConn() *redis.Client {
 }
 
 func initRedis() *redis.Client {
-	// TODO: options from env
+	host := os.Getenv("REDIS_HOST")
+	port := os.Getenv("REDIS_PORT")
+	addr := host + ":" + port
+
 	client := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     addr,
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
