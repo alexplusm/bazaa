@@ -14,7 +14,7 @@ data_without_id = {
 
 def create_ext_system():
     data = {
-        "extSystemId": "keeek",
+        "extSystemId": "keeekak",
         "description": "some description",
         "postResultsUrl": "https://abc/lol.php"
     }

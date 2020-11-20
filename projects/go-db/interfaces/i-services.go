@@ -19,7 +19,7 @@ type IAttachSourceToGameService interface {
 }
 
 type IExtSystemService interface {
-	CreateExtSystem(extSystem bo.ExtSystemBO) error
+	CreateExtSystem(extSystem bo.ExtSystemBO) (string, error)
 }
 
 type IGameCacheService interface {

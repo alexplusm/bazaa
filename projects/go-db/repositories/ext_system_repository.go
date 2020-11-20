@@ -15,20 +15,24 @@ type ExtSystemRepository struct {
 const (
 	insertExtSystemWithIDStatement = `
 INSERT INTO ext_systems ("ext_system_id", "description", "post_results_url")
-VALUES ($1, $2, $3);
+VALUES ($1, $2, $3)
+RETURNING "ext_system_id";
 `
 	insertExtSystemWithoutIDStatement = `
 INSERT INTO ext_systems ("description", "post_results_url")
-VALUES ($1, $2);
+VALUES ($1, $2)
+RETURNING "ext_system_id";
 `
 )
 
-func (repo *ExtSystemRepository) InsertExtSystem(extSystemDAO dao.ExtSystemDAO) error {
+func (repo *ExtSystemRepository) InsertExtSystem(
+	extSystemDAO dao.ExtSystemDAO,
+) (string, error) {
 	p := repo.DBConn.GetPool()
 	ctx := context.Background()
 	conn, err := p.Acquire(ctx)
 	if err != nil {
-		return fmt.Errorf("insert extSystem: acquire connection: %v", err)
+		return "", fmt.Errorf("insert extSystem: acquire connection: %v", err)
 	}
 	defer conn.Release()
 
@@ -43,13 +47,14 @@ func (repo *ExtSystemRepository) InsertExtSystem(extSystemDAO dao.ExtSystemDAO) 
 		args = []interface{}{extSystemDAO.Description, extSystemDAO.PostResultsURL}
 	}
 
-	row, err := conn.Query(ctx, statement, args...)
-	if err != nil {
-		return fmt.Errorf("insert extSystem: %v", err)
-	}
-	row.Close()
+	row := conn.QueryRow(ctx, statement, args...)
 
-	return nil
+	var extSystemID string
+	if err = row.Scan(&extSystemID); err != nil {
+		return "", fmt.Errorf("insert extSystem: %v", err)
+	}
+
+	return extSystemID, nil
 }
 
 func (repo *ExtSystemRepository) SelectExtSystems() ([]dao.ExtSystemDAO, error) {

@@ -10,7 +10,7 @@ type ExtSystemService struct {
 	ExtSystemRepo interfaces.IExtSystemRepository
 }
 
-func (service *ExtSystemService) CreateExtSystem(extSystem bo.ExtSystemBO) error {
+func (service *ExtSystemService) CreateExtSystem(extSystem bo.ExtSystemBO) (string, error) {
 	extSystemDAO := dao.ExtSystemDAO{}
 	extSystemDAO.FromBO(extSystem)
 

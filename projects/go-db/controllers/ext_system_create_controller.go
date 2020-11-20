@@ -30,12 +30,14 @@ func (controller *ExtSystemCreateController) CreateExtSystem(ctx echo.Context) e
 		return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
 	}
 
-	err := controller.ExtSystemService.CreateExtSystem(*extSystem)
+	extSystemID, err := controller.ExtSystemService.CreateExtSystem(*extSystem)
 	if err != nil {
 		log.Error("extSystem create controller: ", err)
-		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
+		return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
 	}
 
-	// TODO: ctx.JSON
-	return nil
+	return ctx.JSON(
+		http.StatusOK,
+		httputils.BuildSuccessResponse(dto.CreateExtSystemResponseBody{ID: extSystemID}),
+	)
 }
