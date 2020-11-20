@@ -55,7 +55,7 @@ func (controller *GameUpdateController) UpdateGame(ctx echo.Context) error {
 			)
 		}
 
-		// TODO: return game?
+		// TODO: return gameID?
 		return ctx.JSON(http.StatusOK, httputils.BuildSuccessWithoutBodyResponse())
 	case consts.ApplicationContentJSON:
 		err := controller.AttachSourceToGameService.AttachSchedulesToGame(gameID)

@@ -76,12 +76,16 @@ func registerRoutes(e *echo.Echo) error {
 
 	// TODO: ["application/json"]
 	e.POST("api/v1/game", gameCreateController.CreateGame)
-	// TODO: ["application/json", "multipart/form-data"]
-	e.PUT("api/v1/game/:game-id", gameUpdateController.UpdateGame)
+
 	// TODO: ["application/json"]
 	e.POST("api/v1/game/prepare", gamePrepareController.PrepareGame)
+
+	// TODO: ["application/json", "multipart/form-data"]
+	e.PUT("api/v1/game/:game-id", gameUpdateController.UpdateGame)
+
 	// TODO: ["application/json"]
-	e.POST("api/v1/ext-system", extSystemCreateController.CreateExtSystem)
+	e.POST("api/v1/ext_system", extSystemCreateController.CreateExtSystem)
+
 	// TODO: ["application/json"]
 	e.GET("api/v1/game/:game-id/screenshot", screenshotGetController.GetScreenshot)
 
@@ -94,14 +98,7 @@ func registerRoutes(e *echo.Echo) error {
 	// TODO: for test
 	e.GET("check/alive", controllers.ItsAlive)
 
-	testService(injector)
-
 	return nil
-}
-
-func testService(i infrastructures.IInjector) {
-	gameCacheService := i.InjectGameCacheService()
-	gameCacheService.PrepareGame(consts.CurrentGameID)
 }
 
 func setupLogger() {
