@@ -1,13 +1,15 @@
 package controllers
 
 import (
-	"fmt"
+	"net/http"
 
 	"github.com/labstack/echo"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
 )
 
 type ExtSystemCreateController struct {
@@ -18,18 +20,22 @@ func (controller *ExtSystemCreateController) CreateExtSystem(ctx echo.Context) e
 	extSystemRaw := new(dto.CreateExtSystemRequestBody)
 
 	if err := ctx.Bind(extSystemRaw); err != nil {
-		return fmt.Errorf("extSystem create controller: %v\n", err)
+		log.Error("extSystem create controller: ", err)
+		return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
 	}
 
 	extSystem := new(bo.ExtSystemBO)
 	if err := extSystem.FromDTO(*extSystemRaw, validate); err != nil {
-		return fmt.Errorf("extSystem create controller: %v\n", err)
+		log.Error("extSystem create controller: ", err)
+		return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
 	}
 
-	fmt.Printf("ExtSystemRaw: %+v\n", *extSystemRaw)
-	fmt.Printf("ExtSystem: %+v | hasID: %v\n", extSystem, extSystem.HasID())
+	err := controller.ExtSystemService.CreateExtSystem(*extSystem)
+	if err != nil {
+		log.Error("extSystem create controller: ", err)
+		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
+	}
 
 	// TODO: ctx.JSON
-
-	return controller.ExtSystemService.CreateExtSystem(*extSystem)
+	return nil
 }

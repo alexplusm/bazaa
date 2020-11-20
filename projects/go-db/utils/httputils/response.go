@@ -33,11 +33,15 @@ func BuildSuccessWithoutBodyResponse() interface{} {
 
 func BuildErrorResponse(code int, message string) interface{} {
 	serverErr := serverError{code, message}
-	return ErrorResponse{ResponseTemplate{true}, serverErr}
+	return ErrorResponse{ResponseTemplate{false}, serverErr}
 }
 
 func BuildBadRequestErrorResponse() interface{} {
 	return BuildBadRequestErrorResponseWithMgs("")
+}
+
+func BuildInternalServerErrorResponse() interface{} {
+	return BuildErrorResponse(http.StatusOK, "internal server error")
 }
 
 func BuildBadRequestErrorResponseWithMgs(message string) interface{} {
