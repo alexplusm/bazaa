@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
@@ -19,44 +19,54 @@ type GameUpdateController struct {
 func (controller *GameUpdateController) UpdateGame(ctx echo.Context) error {
 	gameID := ctx.Param("game-id")
 
-	fmt.Println("GameUpdateController: GameID:", gameID)
-
 	switch httputils.ParseContentType(ctx) {
 	case consts.FormDataContentType:
 		form, err := ctx.MultipartForm()
 		if err != nil {
-			ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
-			return fmt.Errorf("update game controller: %v", err)
+			log.Error("game update controller: ", err)
+			return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
 		}
 
 		game, err := controller.GameService.GetGame(gameID)
 		if err != nil {
-			// TODO: ctx.JSON: return game NOT found
-			return fmt.Errorf("update game controller: %v", err)
+			log.Error("game update controller: ", err)
+			return ctx.JSON(
+				http.StatusOK,
+				httputils.BuildErrorResponse(http.StatusOK, "game not found"),
+			)
 		}
 
 		if !game.NotStarted() {
-			fmt.Println("Game NOT started")
-			// TODO: ctx.JSON: return game not started
-			return nil
+			log.Info("game update controller: ", "game started: ", gameID)
+			return ctx.JSON(
+				http.StatusOK,
+				httputils.BuildErrorResponse(http.StatusOK, "game started"),
+			)
 		}
 
 		archives := form.File["archives"]
 
 		err = controller.AttachSourceToGameService.AttachZipArchiveToGame(gameID, archives)
 		if err != nil {
-			return fmt.Errorf("update game controller: %v", err)
+			log.Error("game update controller: ", err)
+			return ctx.JSON(
+				http.StatusOK,
+				httputils.BuildBadRequestErrorResponse(),
+			)
 		}
 
-		ctx.String(http.StatusOK, "{\"success\": true}")
+		// TODO: return game?
+		return ctx.JSON(http.StatusOK, httputils.BuildSuccessWithoutBodyResponse())
 	case consts.ApplicationContentJSON:
 		err := controller.AttachSourceToGameService.AttachSchedulesToGame(gameID)
 		if err != nil {
-			return fmt.Errorf("update game controller: %v", err)
+			log.Error("game update controller: ", err)
+			return ctx.JSON(
+				http.StatusOK,
+				httputils.BuildBadRequestErrorResponse(),
+			)
 		}
-	default:
-		return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
 	}
 
-	return nil
+	return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
 }

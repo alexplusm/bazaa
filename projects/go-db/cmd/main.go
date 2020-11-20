@@ -37,8 +37,9 @@ func main() {
 
 	e := echo.New()
 	e.Pre(middleware.RemoveTrailingSlash())
+	// TODO: https://echo.labstack.com/middleware/logger
 	e.HTTPErrorHandler = func(err error, ctx echo.Context) {
-		fmt.Printf("Error: %v\n", err)
+		log.Error(errorPrefix, err)
 	}
 
 	err = registerRoutes(e)
@@ -64,6 +65,7 @@ func registerRoutes(e *echo.Echo) error {
 
 	gameCreateController := injector.InjectGameCreateController()
 	gameUpdateController := injector.InjectGameUpdateController()
+	gamePrepareController := injector.InjectGamePrepareController()
 	extSystemCreateController := injector.InjectExtSystemCreateController()
 	screenshotGetController := injector.InjectScreenshotGetController()
 	screenshotSetAnswerController := injector.InjectScreenshotSetAnswerController()
@@ -76,6 +78,8 @@ func registerRoutes(e *echo.Echo) error {
 	e.POST("api/v1/game", gameCreateController.CreateGame)
 	// TODO: ["application/json", "multipart/form-data"]
 	e.PUT("api/v1/game/:game-id", gameUpdateController.UpdateGame)
+	// TODO: ["application/json"]
+	e.POST("api/v1/game/prepare", gamePrepareController.PrepareGame)
 	// TODO: ["application/json"]
 	e.POST("api/v1/ext-system", extSystemCreateController.CreateExtSystem)
 	// TODO: ["application/json"]

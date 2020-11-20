@@ -27,6 +27,10 @@ func BuildSuccessResponse(data interface{}) interface{} {
 	return SuccessResponse{ResponseTemplate{true}, data}
 }
 
+func BuildSuccessWithoutBodyResponse() interface{} {
+	return ResponseTemplate{true}
+}
+
 func BuildErrorResponse(code int, message string) interface{} {
 	serverErr := serverError{code, message}
 	return ErrorResponse{ResponseTemplate{true}, serverErr}

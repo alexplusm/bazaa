@@ -18,6 +18,7 @@ type IInjector interface {
 	// INFO: controllers
 	InjectGameCreateController() controllers.GameCreateController
 	InjectGameUpdateController() controllers.GameUpdateController
+	InjectGamePrepareController() controllers.GamePrepareController
 	InjectExtSystemCreateController() controllers.ExtSystemCreateController
 	InjectScreenshotGetController() controllers.ScreenshotGetController
 	InjectScreenshotSetAnswerController() controllers.ScreenshotSetAnswerController
@@ -51,6 +52,13 @@ func (k *kernel) InjectGameUpdateController() controllers.GameUpdateController {
 	controller := controllers.GameUpdateController{
 		GameService: gameService, AttachSourceToGameService: attachSourceToGameService,
 	}
+
+	return controller
+}
+
+func (k *kernel) InjectGamePrepareController() controllers.GamePrepareController {
+	gameCacheService := k.InjectGameCacheService()
+	controller := controllers.GamePrepareController{GameCacheService: &gameCacheService}
 
 	return controller
 }

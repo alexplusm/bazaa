@@ -12,10 +12,6 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
 )
 
-const (
-	errorPrefix = "game create controller: "
-)
-
 type GameCreateController struct {
 	GameService interfaces.IGameService
 }
@@ -24,7 +20,7 @@ func (controller *GameCreateController) CreateGame(ctx echo.Context) error {
 	gameRaw := new(dto.CreateGameRequestBody)
 
 	if err := ctx.Bind(gameRaw); err != nil {
-		log.Error(errorPrefix, err)
+		log.Error("game create controller: ", err)
 		return ctx.JSON(
 			http.StatusOK, httputils.BuildBadRequestErrorResponse(),
 		)
@@ -32,7 +28,7 @@ func (controller *GameCreateController) CreateGame(ctx echo.Context) error {
 
 	game := new(bo.GameBO)
 	if err := game.CreateGame(*gameRaw, validate); err != nil {
-		log.Error(errorPrefix, err)
+		log.Error("game create controller: ", err)
 		return ctx.JSON(
 			http.StatusOK,
 			httputils.BuildBadRequestErrorResponseWithMgs("validation"),
@@ -41,7 +37,7 @@ func (controller *GameCreateController) CreateGame(ctx echo.Context) error {
 
 	gameID, err := controller.GameService.CreateGame(*game)
 	if err != nil {
-		log.Error(errorPrefix, err)
+		log.Error("game create controller: ", err)
 		return ctx.JSON(
 			http.StatusOK, httputils.BuildBadRequestErrorResponse(),
 		)
