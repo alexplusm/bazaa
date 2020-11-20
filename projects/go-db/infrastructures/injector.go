@@ -31,7 +31,7 @@ func (k *kernel) InjectGameCreateController() controllers.GameCreateController {
 
 	repo := &repositories.GameRepository{DBConn: handler}
 	service := &services.GameService{GameRepo: repo}
-	controller := controllers.GameCreateController{Service: service}
+	controller := controllers.GameCreateController{GameService: service}
 
 	return controller
 }

@@ -11,3 +11,7 @@ type CreateGameRequestBody struct {
 	Question    string `json:"question"`
 	Options     string `json:"options"`
 }
+
+type CreateGameResponseBody struct {
+	GameID string `json:"gameId"`
+}
