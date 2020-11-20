@@ -6,15 +6,11 @@ import json
 import time
 import sys
 
-# TODO: port from .env
-host_and_port = "http://localhost:1234/"
+# TODO: from config
+host_and_port = "http://localhost:8080/"
+
 game_id = "52d9cfed-1d03-46f5-9921-fca5cb9c116e"
 ext_system_id = 'custom-ext_system-id'
-
-general_url = host_and_port + 'api/v1/game/' + game_id + '/screenshot'
-
-# api/v1/game/:game-id/screenshot
-# api/v1/game/:game-id/screenshot/:screenshot-id/answer
 
 
 def rand_answer():
@@ -23,7 +19,7 @@ def rand_answer():
 
 
 def get_users():
-    count = 100
+    count = 10000
     if len(sys.argv) > 1:
         count = int(sys.argv[1])
 
@@ -37,7 +33,8 @@ def get_query_params(user_id: str) -> str:
     return '?extSystemId=' + ext_system_id + '&userId=' + user_id
 
 
-async def set_answer_to_screenshot(user_id: str, screenshot_id: str, session):
+async def set_answer_to_screenshot(ext_system_id, game_id, user_id: str, screenshot_id: str, session):
+    general_url = host_and_port + 'api/v1/game/' + game_id + '/screenshot'
     url = general_url + '/' + screenshot_id + '/' + 'answer'
 
     data = {
@@ -59,7 +56,8 @@ async def set_answer_to_screenshot(user_id: str, screenshot_id: str, session):
     return json_resp
 
 
-async def get_screenshot(user_id: str, session: ClientSession):
+async def get_screenshot(ext_system_id, game_id, user_id: str, session: ClientSession):
+    general_url = host_and_port + 'api/v1/game/' + game_id + '/screenshot'
     url = general_url + get_query_params(user_id)
     try:
         resp = await session.request(method="GET", url=url)
@@ -82,8 +80,8 @@ def request_log(method, user_id, json_resp):
     print('---')
 
 
-async def user_case(user_id, session: ClientSession):
-    resp = await get_screenshot(user_id, session)
+async def user_case(ext_system_id, game_id, user_id, session: ClientSession):
+    resp = await get_screenshot(ext_system_id, game_id, user_id, session)
     if resp is None or not resp['success']:
         return
 
@@ -91,10 +89,10 @@ async def user_case(user_id, session: ClientSession):
 
     # INFO: timeout
     # await asyncio.sleep(1 + random() * 2)
-    await set_answer_to_screenshot(user_id, screenshot_id, session)
+    await set_answer_to_screenshot(ext_system_id, game_id, user_id, screenshot_id, session)
 
 
-async def main():
+async def main(ext_system_id, game_id):
     users = get_users()
 
     t0 = time.time()
@@ -116,7 +114,7 @@ async def main():
         for list_users in list_list_users:
             for user in list_users:
                 tasks.append(
-                    user_case(user, session)
+                    user_case(ext_system_id, game_id, user, session)
                 )
 
             await asyncio.gather(*tasks)
@@ -126,4 +124,11 @@ async def main():
         total = t1-t0
         print("TIME: ", total)
 
-asyncio.run(main())
+
+def run_high_load(ext_system_id, game_id):
+    asyncio.run(main(ext_system_id, game_id))
+
+
+if __name__ == "__main__":
+    # run_high_load()
+    pass

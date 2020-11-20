@@ -8,6 +8,7 @@ sys.path.append('..')
 
 from tests.ext_system.ext_system import create_ext_system
 from tests.game.game import create_game, update_game, prepare_game
+from tests.screenshot.high_load import run_high_load
 from tests.utils import get_timestamp
 
 # prepare game
@@ -40,6 +41,7 @@ def main():
         print("error while game creation")
     update_game(game_id)
     prepare_game(game_id)
+    run_high_load(ext_system_id, game_id)
 
 
 if __name__ == "__main__":
