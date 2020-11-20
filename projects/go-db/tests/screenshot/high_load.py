@@ -9,7 +9,7 @@ import sys
 # TODO: port from .env
 host_and_port = "http://localhost:1234/"
 game_id = "52d9cfed-1d03-46f5-9921-fca5cb9c116e"
-ext_system_id = 'custom-ext-system-id'
+ext_system_id = 'custom-ext_system-id'
 
 general_url = host_and_port + 'api/v1/game/' + game_id + '/screenshot'
 
