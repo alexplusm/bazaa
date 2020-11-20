@@ -31,8 +31,8 @@ func ContentTypeMiddleware(ctx echo.Context, expectedContentType string) error {
 	ctxContentType := ParseContentType(ctx)
 
 	if ctxContentType != expectedContentType {
-		errMsg := GetBadRequestErrorResponseJSONStr()
-		ctx.String(http.StatusOK, errMsg)
+		// TODO: test
+		ctx.JSON(http.StatusOK, BuildBadRequestErrorResponse())
 		return fmt.Errorf("Error content-type")
 	}
 	return nil

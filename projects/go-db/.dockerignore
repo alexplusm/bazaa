@@ -1,0 +1,12 @@
+*.md
+*.rdb
+media_root/
+media_temp/
+docs/
+*.env
+server
+Dockerfile
+docker-compose.yml
+.gitignore
+.DS_Store
+.dockerignore

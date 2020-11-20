@@ -23,7 +23,50 @@ VALUES ($1, $2, $3);
 INSERT INTO screenshots ("game_id", "source_id", "filename", "expert_answer")
 VALUES ($1, $2, $3, $4);
 `
+	selectScreenshotsByGameID = `
+SELECT "screenshot_id", "source_id", "filename", "expert_answer", "users_answer"
+FROM screenshots
+WHERE screenshots.game_id = $1
+`
 )
+
+func (repo *ScreenshotRepository) SelectScreenshotsByGameID(gameID string) ([]dao.ScreenshotDAOFull, error) {
+	p := repo.DBConn.GetPool()
+	conn, err := p.Acquire(context.Background())
+	if err != nil {
+		return nil, fmt.Errorf("select screenshots: acquire connection: %v", err)
+	}
+	defer conn.Release()
+
+	row, err := conn.Query(context.Background(), selectScreenshotsByGameID, gameID)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	var screenshotID, sourceID, filename string
+	var expertAnswer, usersAnswer []byte
+	results := make([]dao.ScreenshotDAOFull, 0, 100)
+
+	for row.Next() {
+		err := row.Scan(&screenshotID, &sourceID, &filename, &expertAnswer, &usersAnswer)
+		if err != nil {
+			// TODO:log error
+			fmt.Println("Error: ", err)
+			continue
+		}
+		obj := dao.ScreenshotDAOFull{
+			ScreenshotID: screenshotID,
+			SourceID:     sourceID,
+			GameID:       gameID,
+			Filename:     filename,
+			ExpertAnswer: string(expertAnswer),
+			UsersAnswer:  string(usersAnswer),
+		}
+		results = append(results, obj)
+	}
+
+	return results, nil
+}
 
 func (repo *ScreenshotRepository) InsertScreenshots(screenshots []dao.ScreenshotDAO) error {
 	p := repo.DBConn.GetPool()
@@ -64,7 +107,6 @@ func (repo *ScreenshotRepository) InsertScreenshotsWithExpertAnswer(screenshots 
 	}
 
 	return nil
-
 }
 
 func insertScreenshot(conn *pgxpool.Conn, s dao.ScreenshotDAO) error {

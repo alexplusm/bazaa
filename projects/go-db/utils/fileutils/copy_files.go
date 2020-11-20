@@ -19,7 +19,6 @@ func CopyFiles(files []*multipart.FileHeader, copyPath string) ([]string, error)
 		if err != nil {
 			return filenames, err
 		}
-		defer src.Close()
 
 		filename := filepath.Base(file.Filename)
 		fp := filepath.Join(copyPath, filename) // TODO: validate "copyPath" ?
@@ -29,13 +28,20 @@ func CopyFiles(files []*multipart.FileHeader, copyPath string) ([]string, error)
 		if err != nil {
 			return filenames, err
 		}
-		defer dst.Close()
 
 		// Copy
 		if _, err := io.Copy(dst, src); err != nil {
 			return filenames, err
 		}
 		filenames = append(filenames, filename)
+
+		if err = src.Close(); err != nil {
+			return filenames, err
+		}
+		if err = dst.Close(); err != nil {
+			return filenames, err
+		}
+
 	}
 	return filenames, nil
 }

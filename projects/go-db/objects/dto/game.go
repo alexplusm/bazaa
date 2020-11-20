@@ -1,10 +1,19 @@
 package dto
 
 type CreateGameRequestBody struct {
-	Name       string `json:"name"`
-	AnswerType int    `json:"answer_type"`
-	StartDate  string `json:"start_date"`
-	EndDate    string `json:"end_date"`
-	Question   string `json:"question"`
-	Options    string `json:"options"`
+	ExtSystemID string `json:"extSystemId"`
+	Name        string `json:"name"`
+	AnswerType  int    `json:"answerType"`
+	StartDate   string `json:"startDate"`
+	EndDate     string `json:"endDate"`
+	Question    string `json:"question"`
+	Options     string `json:"options"`
+}
+
+type CreateGameResponseBody struct {
+	GameID string `json:"gameId"`
+}
+
+type PrepareGameResponseBody struct {
+	GameID string `json:"gameId"`
 }

@@ -13,47 +13,50 @@ import (
 )
 
 type GameBO struct {
-	Name       string    `validate:"required"`
-	AnswerType int       `validate:"gte=1,lte=4"`
-	StartDate  time.Time `validate:"required"`
-	EndDate    time.Time `validate:"required,gtcsfield=StartDate"`
-	Question   string    `validate:"required"`
-	Options    string
+	ExtSystemID string    `validate:"required"`
+	Name        string    `validate:"required"`
+	AnswerType  int       `validate:"gte=1,lte=4"`
+	StartDate   time.Time `validate:"required"`
+	EndDate     time.Time `validate:"required,gtcsfield=StartDate"`
+	Question    string    `validate:"required"`
+	Options     string
 }
 
-func (g *GameBO) CreateGame(src dto.CreateGameRequestBody, validate *validator.Validate) error {
+func (g *GameBO) FromDTO(src dto.CreateGameRequestBody, validate *validator.Validate) error {
 	startDate, err := strconv.ParseInt(src.StartDate, 10, 64)
 	if err != nil {
-		return fmt.Errorf("CreateGame: %v", err)
+		return fmt.Errorf("game: from dto: %v", err)
 	}
 	endDate, err := strconv.ParseInt(src.EndDate, 10, 64)
 	if err != nil {
-		return fmt.Errorf("CreateGame: %v", err)
+		return fmt.Errorf("game: from dto: %v", err)
 	}
 
 	g.StartDate = time.Unix(startDate, 0)
 	g.EndDate = time.Unix(endDate, 0)
 
-	upperBound := time.Now().AddDate(5, 0, 0)
+	now := time.Now()
+	if g.StartDate.Before(now) || g.EndDate.Before(now) {
+		return fmt.Errorf("game: from dto: StartDate or EndDate in the past")
+	}
+	upperBound := now.AddDate(5, 0, 0)
 	if g.StartDate.After(upperBound) || g.EndDate.After(upperBound) {
-		return fmt.Errorf("create game: StartDate or EndDate too far dates")
+		return fmt.Errorf("game: from dto: StartDate or EndDate too far dates")
 	}
 
-	// TODO: нельзя на прошлую дату создать игру: добавить валидацию
-
+	g.ExtSystemID = src.ExtSystemID
 	g.Name = src.Name
 	g.AnswerType = src.AnswerType
 	g.Question = src.Question
 	g.Options = src.Options
 
 	if err := validate.Struct(g); err != nil {
-		return fmt.Errorf("CreateGame validation: %v", err)
+		return fmt.Errorf("game: from dto: %v", err)
 	}
 	if err := g.validate(); err != nil {
-		return fmt.Errorf("CreateGame validation: %v", err)
+		return fmt.Errorf("game: from dto: %v", err)
 	}
 
-	fmt.Printf("Created game: %+v\n", g) // TODO:log: game creation
 	return nil
 }
 

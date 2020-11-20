@@ -2,8 +2,11 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/controllers"
@@ -11,24 +14,40 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/fileutils"
 )
 
-/* source: https://github.com/irahardianto/service-pattern-go */
+/*
+*	source:
+*		https://github.com/irahardianto/service-pattern-go
+*		https://medium.com/cuddle-ai/building-microservice-using-golang-echo-framework-ff10ba06d508
+ */
+
+const (
+	errorPrefix = "main: "
+)
 
 func main() {
-	defer infrastructures.Injector().CloseStoragesConnections()
+	setupLogger()
+
+	injector, err := infrastructures.Injector()
+	if err != nil {
+		log.Fatal(errorPrefix, err)
+	}
+	defer injector.CloseStoragesConnections()
 
 	initDirs()
 
 	e := echo.New()
 	e.Pre(middleware.RemoveTrailingSlash())
+	// TODO: https://echo.labstack.com/middleware/logger
 	e.HTTPErrorHandler = func(err error, ctx echo.Context) {
-		fmt.Printf("Error: %v\n", err)
+		log.Error(errorPrefix, err)
 	}
 
-	registerRoutes(e)
+	err = registerRoutes(e)
+	if err != nil {
+		log.Fatal(errorPrefix, err)
+	}
 
-	// TODO: PORT from .env
-	// TODO: use own logger?
-	e.Logger.Fatal(e.Start(":1234"))
+	log.Fatal(e.Start(":" + os.Getenv("SERVER_PORT_INNER")))
 }
 
 func initDirs() {
@@ -38,21 +57,53 @@ func initDirs() {
 	}
 }
 
-func registerRoutes(e *echo.Echo) {
-	injector := infrastructures.Injector()
+func registerRoutes(e *echo.Echo) error {
+	injector, err := infrastructures.Injector()
+	if err != nil {
+		return fmt.Errorf("register routes: %v", err)
+	}
 
-	createGameController := injector.InjectCreateGameController()
-	updateGameController := injector.InjectUpdateGameController()
+	gameCreateController := injector.InjectGameCreateController()
+	gameUpdateController := injector.InjectGameUpdateController()
+	gamePrepareController := injector.InjectGamePrepareController()
+	extSystemCreateController := injector.InjectExtSystemCreateController()
+	screenshotGetController := injector.InjectScreenshotGetController()
+	screenshotSetAnswerController := injector.InjectScreenshotSetAnswerController()
 
 	// TODO:later
 	// Create middleware for each route with whitelist of ContentTypes:
 	// ["application/json", "multipart/form-data"] | ["application/json"]
 
 	// TODO: ["application/json"]
-	e.POST("api/v1/game", createGameController.CreateGame)
-	// TODO: ["application/json", "multipart/form-data"]
-	e.PUT("api/v1/game/:game-id", updateGameController.UpdateGame)
+	e.POST("api/v1/game", gameCreateController.CreateGame)
 
-	// e.PUT("api/v1/game-12/:game-id", controllers.UpdateGame(conn)) // TODO: remove
-	e.GET("/check/alive", controllers.ItsAlive)
+	// TODO: ["application/json"]
+	e.POST("api/v1/game/prepare", gamePrepareController.PrepareGame)
+
+	// TODO: ["application/json", "multipart/form-data"]
+	e.PUT("api/v1/game/:game-id", gameUpdateController.UpdateGame)
+
+	// TODO: ["application/json"]
+	e.POST("api/v1/ext_system", extSystemCreateController.CreateExtSystem)
+
+	// TODO: ["application/json"]
+	e.GET("api/v1/game/:game-id/screenshot", screenshotGetController.GetScreenshot)
+
+	// TODO: ["application/json"]
+	e.POST(
+		"api/v1/game/:game-id/screenshot/:screenshot-id/answer",
+		screenshotSetAnswerController.SetAnswer,
+	)
+
+	// TODO: for test
+	e.GET("check/alive", controllers.ItsAlive)
+
+	return nil
+}
+
+func setupLogger() {
+	// source: https://www.honeybadger.io/blog/golang-logging/
+	// TODO: log in file if PROD
+	// log.SetOutput()
+	log.SetFormatter(&log.JSONFormatter{})
 }
