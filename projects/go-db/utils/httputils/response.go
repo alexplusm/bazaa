@@ -39,7 +39,7 @@ func BuildBadRequestErrorResponse() interface{} {
 func BuildBadRequestErrorResponseWithMgs(message string) interface{} {
 	msg := "bad request"
 	if message != "" {
-		msg += ":" + message
+		msg += ": " + message
 	}
 	return BuildErrorResponse(http.StatusBadRequest, msg)
 }
