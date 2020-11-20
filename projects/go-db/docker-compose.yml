@@ -13,6 +13,11 @@ services:
       - database
       - redis
 
+  web-client:
+    build: web-client
+    ports:
+      - '1239:80'
+
   database:
     image: postgres:13-alpine
     container_name: postgres_database

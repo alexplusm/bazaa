@@ -2,18 +2,16 @@ SRC = cmd/main.go
 RM = rm -rf
 NAME = server
 
-download-dependencies:
+install-deps:
 	go mod download
 
-# INFO: prod run
 runserver: build
 	./${NAME}
 
-# TODO: "source .env"
 run:
 	go run ${SRC}
 
-build: download-dependencies
+build:
 	go build -o $(NAME) $(SRC)
 
 fclean:

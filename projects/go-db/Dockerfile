@@ -5,19 +5,21 @@ FROM golang:1.15-alpine
 RUN apk update && apk upgrade && \
     apk add --no-cache bash git openssh make
 
-# Maintainer Info
 LABEL maintainer="Alex Mogilevskiy <dark.qvark@gmail.com>"
 
-# Set the Current Working Directory inside the container
 WORKDIR /app
 
-# Copy the source from the current directory to the Working Directory inside the container
+COPY go.mod .
+COPY go.sum .
+COPY Makefile .
+RUN make install-deps
+
 COPY . .
 
-# Build the Go app
 RUN make build
 
-# Run the executable
+EXPOSE 8080
+
 CMD ["make", "runserver"]
 
 # TODO: Docker readme in my repo !!!
