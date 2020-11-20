@@ -3,6 +3,7 @@
 media_root/
 media_temp/
 docs/
+tests/
 *.env
 server
 Dockerfile

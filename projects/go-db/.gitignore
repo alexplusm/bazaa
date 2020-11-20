@@ -1,2 +1,4 @@
 # app binary file
 server
+
+__pycache__
