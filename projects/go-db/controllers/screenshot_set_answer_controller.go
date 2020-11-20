@@ -46,23 +46,11 @@ func (controller *ScreenshotSetAnswerController) SetAnswer(ctx echo.Context) err
 		return ctx.String(200, "Can't Set UserAnswerToScreenshot")
 	}
 
-	// TODO: tx
-	//		-> SetUserAnswerToScreenshot
-	//		-> GetUsersAnswers
-	// 		-> ScreenshotIsFinished
-
-	// old
-	//controller.ScreenshotCacheService.SetUserAnswerToScreenshot(
-	//	userAnswerBO.UserID, screenshotID, userAnswerBO.Answer,
-	//)
-	//answers := controller.ScreenshotCacheService.GetUsersAnswers(screenshotID)
-	// old end
-	// new
-	answers, err := controller.ScreenshotCacheService.ABC(userAnswerBO.UserID, screenshotID, userAnswerBO.Answer)
+	answers, err := controller.ScreenshotCacheService.SetUserAnswer(
+		userAnswerBO.UserID, screenshotID, userAnswerBO.Answer,
+	)
 	if err != nil {
-		fmt.Println("EROOOOOOOR: ", err)
 	}
-	// new end
 
 	screenshotIsFinished := controller.ScreenshotUserAnswerService.ScreenshotIsFinished(answers)
 	if screenshotIsFinished {

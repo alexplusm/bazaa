@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
@@ -41,6 +42,7 @@ func (controller *ScreenshotGetController) GetScreenshot(ctx echo.Context) error
 
 	err := controller.UserService.CreateUser(userID)
 	if err != nil {
+		log.Error("Error log")
 		fmt.Println("USER SERVICE Error: ", err)
 	}
 

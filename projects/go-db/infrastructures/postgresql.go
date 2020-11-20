@@ -7,6 +7,8 @@ import (
 	"os"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
@@ -33,7 +35,7 @@ func initPostgresql() (*pgxpool.Pool, error) {
 			return fmt.Errorf("init postgres: %v", err)
 		}
 		// TODO: migrate()
-		fmt.Println("Postgres connected:", dbUrl)
+		log.Info("Postgres connected:", dbUrl)
 		return nil
 	}
 

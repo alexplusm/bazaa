@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/jackc/pgx/v4/pgxpool"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/controllers"
 	"github.com/Alexplusm/bazaa/projects/go-db/repositories"
@@ -115,10 +116,10 @@ func (k *kernel) InjectScreenshotSetAnswerController() controllers.ScreenshotSet
 
 func (k *kernel) InjectGameCacheService() services.GameCacheService {
 	redisHandler := &RedisHandler{k.redisClient}
-	DBhandler := &PSQLHandler{k.pool}
+	dbHandler := &PSQLHandler{k.pool}
 
-	screenshotRepo := &repositories.ScreenshotRepository{DBConn: DBhandler}
-	gameRepo := &repositories.GameRepository{DBConn: DBhandler}
+	screenshotRepo := &repositories.ScreenshotRepository{DBConn: dbHandler}
+	gameRepo := &repositories.GameRepository{DBConn: dbHandler}
 	service := services.GameCacheService{
 		RedisClient: redisHandler, ScreenshotRepo: screenshotRepo, GameRepo: gameRepo,
 	}
@@ -127,10 +128,9 @@ func (k *kernel) InjectGameCacheService() services.GameCacheService {
 }
 
 func (k *kernel) CloseStoragesConnections() {
-	// TODO: create dumps?
 	k.pool.Close()
 	if err := k.redisClient.Close(); err != nil {
-		fmt.Printf("redis: error while close connection: %v\n", err)
+		log.Error("redis: error while close connection: ", err)
 	}
 }
 
@@ -150,7 +150,7 @@ func Injector() (IInjector, error) {
 		singleton.Do(func() {
 			pool, pqslErr := initPostgresql()
 			if pqslErr != nil {
-				// TODO: try to reconnect? need patterns
+				// TODO: try to reconnect?
 				err = fmt.Errorf("injector: database connection: %v", pqslErr)
 			}
 			redisClient := initRedis()

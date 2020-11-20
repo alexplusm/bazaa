@@ -42,7 +42,7 @@ def main():
     update_game(game_id)
     prepare_game(game_id)
 
-    # run_high_load(ext_system_id, game_id)
+    run_high_load(ext_system_id, game_id)
 
 
 if __name__ == "__main__":

@@ -31,12 +31,10 @@ type IScreenshotCacheService interface {
 	CanSetUserAnswerToScreenshot(userID, screenshotID string) bool
 	GetScreenshot(gameID, userID string) (dao.ScreenshotURLDAO, bool)
 	GetUsersAnswers(screenshotID string) []bo.UserAnswerCacheBO
+	SetUserAnswer(userID, screenshotID, answer string) ([]bo.UserAnswerCacheBO, error)
 	SetUserAnswerToScreenshot(userID, screenshotID, answer string)
 	ScreenshotExist(screenshotID string) bool
 	RemoveScreenshot(gameID, screenshotID string)
-
-	// test
-	ABC(userID, screenshotID, answer string) ([]bo.UserAnswerCacheBO, error)
 }
 
 type IScreenshotUserAnswerService interface {
