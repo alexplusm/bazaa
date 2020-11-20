@@ -1,9 +1,0 @@
-{
-  "ext_system_id": "custom-ext-system-id",
-  "name": "Far future game",
-  "answer_type": 2,
-  "start_date": "1864598400",
-  "end_date":   "1867017600",
-  "question": "Выберите правильный ответ",
-  "options": "yep, nope"
-}
