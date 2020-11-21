@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// atoi
 void test_atoi_inner(char *s)
 {
     int rm;
@@ -36,14 +37,28 @@ void test_atoi()
     test_atoi_inner(s9);
 }
 
+// bzero
+void test_bzero() {
+    int len = 7;
+    char *dest = malloc(sizeof(char) * len);
+
+    ft_bzero(dest, len);
+
+    while (len > 0)
+    {
+        printf("Is 0: %d \n", dest[len] == '\0');
+        len--;
+    }
+}
+
 int main() 
 {
     // test_atoi();
+    // test_bzero();
+    
 
     return 0;
 }
-
-
 
 
 // TODO: test memset
