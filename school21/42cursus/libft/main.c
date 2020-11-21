@@ -85,12 +85,28 @@ void test_ft_memccpy()
     }
 }
 
+void test_ft_memmove()
+{
+    int len = 5;
+    char *dst = malloc(sizeof(len));
+    char *src = "1234567";
+    
+    char *res = ft_memmove(dst, src, len);
+
+    while (len > 0) {
+        printf("%c |", *res);
+        res++;
+        len--;
+    }
+}
+
 int main() 
 {
     // test_atoi();
     // test_bzero();
     // test_ft_memcpy();
-    test_ft_memccpy();
+    // test_ft_memccpy();
+    test_ft_memmove();
     
     return 0;
 }
