@@ -85,6 +85,7 @@ void test_ft_memccpy()
     }
 }
 
+// ft_memmove
 void test_ft_memmove()
 {
     int len = 5;
@@ -100,13 +101,26 @@ void test_ft_memmove()
     }
 }
 
+// ft_memchr
+void test_ft_memchr() 
+{
+    int len = 5;
+    char *src = "123456";
+    
+    char *res = ft_memchr(src, 'a', len);
+
+    printf("r: %p\n", res);
+}
+
+
 int main() 
 {
     // test_atoi();
     // test_bzero();
     // test_ft_memcpy();
     // test_ft_memccpy();
-    test_ft_memmove();
+    // test_ft_memmove();
+    test_ft_memchr();
     
     return 0;
 }

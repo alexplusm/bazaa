@@ -10,3 +10,10 @@ Part 1:
 3) full understanding Makefile
 Part 2:
 1) implements all functions
+
+
+## Time log
+2H
+
+s 14-45
+e ...
