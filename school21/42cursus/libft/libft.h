@@ -13,5 +13,7 @@ void *ft_memmove(void *dst, const void *src, int len);
 
 void *ft_memchr(const void *s, int c, int n);
 
+int ft_memcmp(const void *s1, const void *s2, int n);
+
 // ---
 int ft_atoi(const char *str);

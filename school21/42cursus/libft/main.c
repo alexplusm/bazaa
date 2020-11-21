@@ -112,16 +112,23 @@ void test_ft_memchr()
     printf("r: %p\n", res);
 }
 
+// ft_memcmp
+void test_ft_memcmp() 
+{
+    int r = ft_memcmp("11119", "1111", 4);
+    printf("r: %d\n", r);
+}
 
 int main() 
 {
-    // test_atoi();
     // test_bzero();
     // test_ft_memcpy();
     // test_ft_memccpy();
     // test_ft_memmove();
-    test_ft_memchr();
+    // test_ft_memchr();
+    test_ft_memcmp();
     
+    // test_atoi();
     return 0;
 }
 
