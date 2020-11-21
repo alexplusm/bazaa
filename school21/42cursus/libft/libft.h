@@ -23,3 +23,5 @@ int ft_strlcat(char * restrict dst, const char * restrict src, int dstsize);
 
 // ---
 int ft_atoi(const char *str);
+
+int ft_isdigit(int c);

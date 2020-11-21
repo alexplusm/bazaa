@@ -142,6 +142,12 @@ void test_ft_strlcpy()
 
 }
 
+void test_ft_isdigit()
+{
+    int r = ft_isdigit('1');
+    printf("r: %d\n", r);
+}
+
 int main() 
 {
     // test_bzero();
@@ -151,9 +157,11 @@ int main()
     // test_ft_memchr();
     // test_ft_memcmp();
     // test_ft_strlen();
-    test_ft_strlcpy();
+    // test_ft_strlcpy();
     
+
     // test_atoi();
+    test_ft_isdigit();
     return 0;
 }
 

@@ -1,5 +1,4 @@
 
-
 // TODO
 int ft_strlcat(char * restrict dst, const char * restrict src, int dstsize)
 {
@@ -20,6 +19,6 @@ int ft_strlcat(char * restrict dst, const char * restrict src, int dstsize)
 
             return 666;
         }
-
     }
+    return 0;
 }
