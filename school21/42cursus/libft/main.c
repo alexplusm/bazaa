@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// atoi
+// ft_atoi
 void test_atoi_inner(char *s)
 {
     int rm;
@@ -37,7 +37,7 @@ void test_atoi()
     test_atoi_inner(s9);
 }
 
-// bzero
+// ft_bzero
 void test_bzero() {
     int len = 7;
     char *dest = malloc(sizeof(char) * len);
@@ -51,10 +51,29 @@ void test_bzero() {
     }
 }
 
+// ft_memcpy
+void test_ft_memcpy()
+{
+    int len = 5;
+    char *dest = malloc(sizeof(char) * 5);
+    char *str = "12345";
+
+    char *new_d = ft_memcpy(dest, str, len);
+
+    while (len > 0)
+    {
+        printf("v: %c | %c\n", *dest, *new_d);
+        dest++;
+        new_d++;
+        len--;
+    }
+}
+
 int main() 
 {
     // test_atoi();
     // test_bzero();
+    test_ft_memcpy();
     
 
     return 0;
