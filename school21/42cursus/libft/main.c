@@ -150,7 +150,13 @@ void test_ft_isalpha()
 
 void test_ft_isdigit()
 {
-    int r = ft_isdigit('1');
+    int r = ft_isdigit('d');
+    printf("r: %d\n", r);
+}
+
+void test_ft_isalnum()
+{
+    int r = ft_isalnum('?');
     printf("r: %d\n", r);
 }
 
@@ -167,8 +173,11 @@ int main()
     
 
     // test_atoi();
-    test_ft_isalpha();
+    // test_ft_isalpha();
     // test_ft_isdigit();
+    test_ft_isalnum();
+
+
     return 0;
 }
 
