@@ -119,6 +119,12 @@ void test_ft_memcmp()
     printf("r: %d\n", r);
 }
 
+void test_ft_strlen() 
+{
+    int r1 = ft_strlen("");
+    printf("r1: %d\n", r1);
+}
+
 int main() 
 {
     // test_bzero();
@@ -126,7 +132,8 @@ int main()
     // test_ft_memccpy();
     // test_ft_memmove();
     // test_ft_memchr();
-    test_ft_memcmp();
+    // test_ft_memcmp();
+    test_ft_strlen();
     
     // test_atoi();
     return 0;
