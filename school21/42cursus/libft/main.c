@@ -119,10 +119,27 @@ void test_ft_memcmp()
     printf("r: %d\n", r);
 }
 
+// ft_strlen
 void test_ft_strlen() 
 {
     int r1 = ft_strlen("");
     printf("r1: %d\n", r1);
+}
+
+void test_ft_strlcpy()
+{
+    int len = 5;
+    char *dst = malloc(sizeof(char) * len);
+    char *src = "123456789";
+    
+    int r = ft_strlcpy(dst, src, len);
+    printf("r: %d\n", r);
+    while(len-- > 0)
+    {
+        printf("%c | ", *dst);
+        dst++;
+    }
+
 }
 
 int main() 
@@ -133,7 +150,8 @@ int main()
     // test_ft_memmove();
     // test_ft_memchr();
     // test_ft_memcmp();
-    test_ft_strlen();
+    // test_ft_strlen();
+    test_ft_strlcpy();
     
     // test_atoi();
     return 0;

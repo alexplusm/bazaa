@@ -17,5 +17,7 @@ int ft_memcmp(const void *s1, const void *s2, int n);
 
 int ft_strlen(const char *s);
 
+int ft_strlcpy(char * restrict dst, const char * restrict src, int dstsize);
+
 // ---
 int ft_atoi(const char *str);
