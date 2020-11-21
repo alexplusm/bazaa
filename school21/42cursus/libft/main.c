@@ -69,13 +69,29 @@ void test_ft_memcpy()
     }
 }
 
+// ft_memccpy
+void test_ft_memccpy() 
+{
+    int len = 6;
+    char *dest = malloc(sizeof(char) * len);
+    char *src = "123456789";
+
+    char *res = ft_memccpy(dest,src, 'a', len);
+
+    while(len > 0)
+    {
+        printf("val: %c\n", *res++);
+        len -= 1;
+    }
+}
+
 int main() 
 {
     // test_atoi();
     // test_bzero();
-    test_ft_memcpy();
+    // test_ft_memcpy();
+    test_ft_memccpy();
     
-
     return 0;
 }
 
