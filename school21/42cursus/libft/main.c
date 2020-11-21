@@ -142,6 +142,12 @@ void test_ft_strlcpy()
 
 }
 
+void test_ft_isalpha()
+{
+    int r = ft_isalpha('a');
+    printf("r: %d\n", r);
+}
+
 void test_ft_isdigit()
 {
     int r = ft_isdigit('1');
@@ -161,7 +167,8 @@ int main()
     
 
     // test_atoi();
-    test_ft_isdigit();
+    test_ft_isalpha();
+    // test_ft_isdigit();
     return 0;
 }
 
