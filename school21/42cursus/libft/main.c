@@ -216,6 +216,24 @@ void test_ft_strrchr()
     inner_ft_strrchr("", '1');
 }
 
+// ft_strnstr
+void inner_ft_strnstr(const char *haystack, const char *needle, ft_size_t len)
+{
+    char *lr = strnstr(haystack, needle, len);
+    char *mr = ft_strnstr(haystack, needle, len);
+
+    printf("mine: %s | %p | ", mr, mr);
+    printf("lib: %s | %p \n", lr, lr);
+}
+
+void test_ft_strnstr()
+{
+    inner_ft_strnstr("112", "1", 2);
+    inner_ft_strnstr("123", "2", 2);
+    inner_ft_strnstr("12345", "23", 4);
+    inner_ft_strnstr("1234-2345-aa", "2345", 4); // WTF?!
+}
+
 // ft_isalpha
 void test_ft_isalpha()
 {
@@ -248,7 +266,8 @@ int main()
     // test_ft_strlcpy();
     // test_ft_strlcat();
     // test_ft_strchr();
-    test_ft_strrchr();
+    // test_ft_strrchr();
+    test_ft_strnstr();
     
 
     // test_atoi();
@@ -258,7 +277,6 @@ int main()
 
     return 0;
 }
-
 
 // TODO: test memset
 // #include <string.h>
