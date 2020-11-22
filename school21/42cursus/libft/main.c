@@ -6,6 +6,16 @@
 #include <string.h>
 #include <ctype.h>
 
+char *success = "SUCCESS";
+char *failure = "FAILURE";
+
+char *res(int b)
+{
+    if (b == 0)
+        return failure;
+    return success;
+}
+
 // ft_atoi
 void test_atoi_inner(char *s)
 {
@@ -312,6 +322,24 @@ void test_ft_isprint()
         inner_ft_isprint(i++);   
 }
 
+// ft_toupper
+void inner_ft_toupper(int c)
+{
+    int lr = toupper(c);
+    int mr = ft_toupper(c);
+
+    printf("%s: ", res(lr == mr));
+    printf("mine: %c (%d) | ", mr, mr);
+    printf("lib: %c (%d) \n", lr, lr);
+}
+
+void test_ft_toupper()
+{
+    int i = 0;
+    while (i < 128)
+        inner_ft_toupper(i++);
+}
+
 // -----------------
 int main() 
 {
@@ -335,7 +363,8 @@ int main()
     // test_ft_isdigit();
     // test_ft_isalnum();
     // test_ft_isascii();
-    test_ft_isprint();
+    // test_ft_isprint();
+    test_ft_toupper();
 
     return 0;
 }
