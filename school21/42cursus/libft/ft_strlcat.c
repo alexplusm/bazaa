@@ -1,27 +1,26 @@
 #include "libft.h"
 
-// TODO
 int ft_strlcat(
     char * restrict dst, const char * restrict src, ft_size_t dstsize
     )
 {
-    int i;
-    unsigned char *ptr;
+    ft_size_t i, j;
+    int res;
 
-    if (dstsize == 0) {
-        return 665; // TODO: lengths
-    }
-
+    if (dstsize == 0)
+        return dstsize + ft_strlen(src);
     i = 0;
-    ptr = (unsigned char*) src;
-
     while (dst[i] != '\0')
+        i += 1;
+    res = i + ft_strlen(src);
+    if (i >= dstsize - 1)
+        return res;
+    j = 0;
+    while (src[j] != '\0' && i < dstsize - 1)
     {
-        if (i == dstsize)
-        {
-
-            return 666;
-        }
+        dst[i] = src[j];
+        i += 1;
+        j += 1;
     }
-    return 0;
+    return res;
 }

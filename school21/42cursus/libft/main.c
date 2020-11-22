@@ -151,13 +151,32 @@ void test_ft_strlcpy()
 }
 
 // ft_strlcat
-void inner_ft_strlcat(const char *dst_v, ft_size_t dst_l, const char *src) {
-    char *dst = malloc(sizeof(char) * dst_l);
+void inner_ft_strlcat(const char *dst,const char *src, ft_size_t dst_len) {
+    char *dst_l = malloc(sizeof(dst));
+    char *dst_m = malloc(sizeof(dst));
+    int i = 0;
+
+    while (dst[i] != '\0')
+    {
+        dst_l[i] = dst[i];
+        dst_m[i] = dst[i];
+        i += 1;
+    }
     
+    int mr = ft_strlcat(dst_m, src, dst_len);
+    int lr = strlcat(dst_l, src, dst_len);
+
+    printf("mine: %d | %s | ", mr, dst_m);
+    printf("lib: %d | %s\n", lr, dst_l);
 }
 
 void test_ft_strlcat() {
-    inner_ft_strlcat();
+    inner_ft_strlcat("dest", "src", 10);
+    inner_ft_strlcat("dest", "src", 5);
+    inner_ft_strlcat("d", "src", 5);
+    inner_ft_strlcat("", "src", -1);
+    inner_ft_strlcat("", "", -1000000000000000);
+    inner_ft_strlcat("abc", "123", 7);
 }
 
 // ft_isalpha
