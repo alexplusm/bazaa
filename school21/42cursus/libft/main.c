@@ -231,7 +231,29 @@ void test_ft_strnstr()
     inner_ft_strnstr("112", "1", 2);
     inner_ft_strnstr("123", "2", 2);
     inner_ft_strnstr("12345", "23", 4);
-    inner_ft_strnstr("1234-2345-aa", "2345", 4); // WTF?!
+    inner_ft_strnstr("1234-2345-aa", "2345", 4); // WTF?! 
+}
+
+// ft_strncmp
+void inner_ft_strncmp(const char *s1, const char *s2, ft_size_t n)
+{
+    int mr = ft_strncmp(s1, s2, n);
+    int lr = strncmp(s1, s2, n);
+
+    printf("mine: %d | ", mr);
+    printf("lib: %d\n", lr);
+}
+
+void test_ft_strncmp()
+{
+    inner_ft_strncmp("123", "122", 3);
+    inner_ft_strncmp("123", "123", 3);
+    inner_ft_strncmp("123ab", "12345", 3);
+    inner_ft_strncmp("123ab", "12345", 100);
+    inner_ft_strncmp("", "b", 100);
+    inner_ft_strncmp("a", "", 100);
+    inner_ft_strncmp("1", "1", 0);
+    inner_ft_strncmp("1a", "1b", 1);
 }
 
 // ft_isalpha
@@ -267,8 +289,8 @@ int main()
     // test_ft_strlcat();
     // test_ft_strchr();
     // test_ft_strrchr();
-    test_ft_strnstr();
-    
+    // test_ft_strnstr();
+    test_ft_strncmp();
 
     // test_atoi();
     // test_ft_isalpha();
