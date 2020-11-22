@@ -294,6 +294,23 @@ void test_ft_isascii()
     inner_ft_isascii(0);
 }
 
+// ft_isprint
+void inner_ft_isprint(int c)
+{
+    int lr = isprint(c);
+    int mr = ft_isprint(c);
+
+    printf("val: %c (%d) # ", c, c);
+    printf("mine: %d | ", mr);
+    printf("lib: %d\n", lr);
+}
+
+void test_ft_isprint()
+{
+    int i = 0;
+    while (i < 128)
+        inner_ft_isprint(i++);   
+}
 
 // -----------------
 int main() 
@@ -317,7 +334,8 @@ int main()
     // test_ft_isalpha();
     // test_ft_isdigit();
     // test_ft_isalnum();
-    test_ft_isascii();
+    // test_ft_isascii();
+    test_ft_isprint();
 
     return 0;
 }
