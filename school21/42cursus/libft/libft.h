@@ -1,6 +1,8 @@
 
 // todo: include guards
 
+typedef unsigned long ft_size_t;
+
 void *tf_memset(void *b, int c, int len);
 
 void ft_bzero(void *s, int n);
@@ -17,7 +19,7 @@ int ft_memcmp(const void *s1, const void *s2, int n);
 
 int ft_strlen(const char *s);
 
-int ft_strlcpy(char * restrict dst, const char * restrict src, int dstsize);
+int ft_strlcpy(char * restrict dst, const char * restrict src, ft_size_t dstsize);
 
 int ft_strlcat(char * restrict dst, const char * restrict src, int dstsize);
 

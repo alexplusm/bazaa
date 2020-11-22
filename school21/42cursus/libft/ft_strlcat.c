@@ -1,6 +1,9 @@
+#include "libft.h"
 
 // TODO
-int ft_strlcat(char * restrict dst, const char * restrict src, int dstsize)
+int ft_strlcat(
+    char * restrict dst, const char * restrict src, ft_size_t dstsize
+    )
 {
     int i;
     unsigned char *ptr;

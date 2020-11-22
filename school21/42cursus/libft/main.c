@@ -1,7 +1,9 @@
 #include "libft.h"
 
-#include <stdio.h>
 #include <stdlib.h>
+
+#include <stdio.h>
+#include <string.h>
 
 // ft_atoi
 void test_atoi_inner(char *s)
@@ -126,22 +128,39 @@ void test_ft_strlen()
     printf("r1: %d\n", r1);
 }
 
-void test_ft_strlcpy()
-{
-    int len = 5;
-    char *dst = malloc(sizeof(char) * len);
-    char *src = "123456789";
+// ft_strlcpy
+void inner_ft_strlcpy(char *src, ft_size_t dst_len, ft_size_t len)
+{    
+    char *dst_m = malloc(sizeof(char) * dst_len);
+    char *dst_l = malloc(sizeof(char) * dst_len);
     
-    int r = ft_strlcpy(dst, src, len);
-    printf("r: %d\n", r);
-    while(len-- > 0)
-    {
-        printf("%c | ", *dst);
-        dst++;
-    }
+    int mr = ft_strlcpy(dst_m, src, len);
+    int lr = strlcpy(dst_l, src, len);
 
+    printf("lib: %s (return : %d) | ", dst_l, lr);
+    printf("mine: %s (return : %d)\n",dst_m, mr);
 }
 
+void test_ft_strlcpy()
+{
+    inner_ft_strlcpy("123", 1 ,2);
+    inner_ft_strlcpy("123", 1, 0);
+    inner_ft_strlcpy("123456789", 1, -2147483649);
+    inner_ft_strlcpy("123456789", 1, 3);
+    inner_ft_strlcpy("", 1, 3);
+}
+
+// ft_strlcat
+void inner_ft_strlcat(const char *dst_v, ft_size_t dst_l, const char *src) {
+    char *dst = malloc(sizeof(char) * dst_l);
+    
+}
+
+void test_ft_strlcat() {
+    inner_ft_strlcat();
+}
+
+// ft_isalpha
 void test_ft_isalpha()
 {
     int r = ft_isalpha('a');
@@ -171,12 +190,13 @@ int main()
     // test_ft_strlen();
     // test_ft_strlcpy();
     
+    test_ft_strlcat();
+    
 
     // test_atoi();
     // test_ft_isalpha();
     // test_ft_isdigit();
-    test_ft_isalnum();
-
+    // test_ft_isalnum();
 
     return 0;
 }
