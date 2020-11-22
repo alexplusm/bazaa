@@ -179,6 +179,27 @@ void test_ft_strlcat() {
     inner_ft_strlcat("abc", "123", 7);
 }
 
+// ft_strchr
+void inner_ft_strchr(const char *s, int c)
+{
+    char *lr = strchr(s, c);
+    char *mr = ft_strchr(s, c);
+
+    printf("mine: %s | %p | ", mr, mr);
+    printf("lib: %s | %p \n", lr, lr);
+}
+
+void test_ft_strchr()
+{
+    inner_ft_strchr("1234", '2');
+    inner_ft_strchr("1234", '\0');
+    inner_ft_strchr("", '\0');
+    inner_ft_strchr("", 'a');
+    inner_ft_strchr("---", 'a');
+}
+
+//
+
 // ft_isalpha
 void test_ft_isalpha()
 {
@@ -209,7 +230,8 @@ int main()
     // test_ft_strlen();
     // test_ft_strlcpy();
     
-    test_ft_strlcat();
+    // test_ft_strlcat();
+    test_ft_strchr();
     
 
     // test_atoi();
