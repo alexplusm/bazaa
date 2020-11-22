@@ -7,7 +7,7 @@
 #include <ctype.h>
 
 char *success = "SUCCESS";
-char *failure = "FAILURE";
+char *failure = "@ FAILURE";
 
 char *res(int b)
 {
@@ -340,6 +340,25 @@ void test_ft_toupper()
         inner_ft_toupper(i++);
 }
 
+// ft_tolower
+void inner_ft_tolower(int c)
+{
+    int lr = tolower(c);
+    int mr = ft_tolower(c);
+
+    printf("%s: ", res(lr == mr));
+    printf("mine: %c (%d) | ", mr, mr);
+    printf("lib: %c (%d) \n", lr, lr);
+}
+
+void test_ft_tolower()
+{    
+    int i = 0;
+    while (i < 128)
+        inner_ft_tolower(i++);
+}
+
+
 // -----------------
 int main() 
 {
@@ -364,7 +383,7 @@ int main()
     // test_ft_isalnum();
     // test_ft_isascii();
     // test_ft_isprint();
-    test_ft_toupper();
+    // test_ft_tolower();
 
     return 0;
 }
