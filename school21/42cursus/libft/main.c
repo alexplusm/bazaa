@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 // ft_atoi
 void test_atoi_inner(char *s)
@@ -275,6 +276,26 @@ void test_ft_isalnum()
     printf("r: %d\n", r);
 }
 
+// ft_isascii
+void inner_ft_isascii(char c)
+{
+    int lr = isascii(c);
+    int mr = ft_isascii(c);
+
+    printf("mine: %d | ", mr);
+    printf("lib: %d\n", lr);
+}
+
+void test_ft_isascii()
+{
+    inner_ft_isascii('a');
+    inner_ft_isascii('?');
+    inner_ft_isascii(-1);
+    inner_ft_isascii(0);
+}
+
+
+// -----------------
 int main() 
 {
     // test_bzero();
@@ -290,12 +311,13 @@ int main()
     // test_ft_strchr();
     // test_ft_strrchr();
     // test_ft_strnstr();
-    test_ft_strncmp();
+    // test_ft_strncmp();
 
     // test_atoi();
     // test_ft_isalpha();
     // test_ft_isdigit();
     // test_ft_isalnum();
+    test_ft_isascii();
 
     return 0;
 }

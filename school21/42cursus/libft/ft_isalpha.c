@@ -1,3 +1,5 @@
+
+// TODO: if (ft_isascii)
 int ft_isalpha(int c)
 {
     char ch;

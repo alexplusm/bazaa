@@ -1,3 +1,5 @@
+
+// TODO: if (ft_isascii)
 int ft_isdigit(int c)
 {
     char digit = '0';
