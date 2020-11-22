@@ -25,6 +25,8 @@ int ft_strlcat(char * restrict dst, const char * restrict src, ft_size_t dstsize
 
 char *ft_strchr(const char *s, int c);
 
+char *ft_strrchr(const char *s, int c);
+
 // ---
 int ft_atoi(const char *str);
 
