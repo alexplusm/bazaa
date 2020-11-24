@@ -1,5 +1,6 @@
 
 // todo: include guards
+#include <stdlib.h>
 
 typedef unsigned long ft_size_t;
 
@@ -50,3 +51,5 @@ int ft_isprint(int c);
 int ft_toupper(int c);
 
 int ft_tolower(int c);
+
+void *ft_calloc(ft_size_t count, ft_size_t size);

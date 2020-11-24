@@ -359,6 +359,20 @@ void test_ft_tolower()
 }
 
 
+void test_ft_calloc()
+{
+    int count = 2;
+    int size = 5;
+    char *s = ft_calloc(count, size);
+    int i = 0;
+    while (i < count * size)
+    {
+        printf("%d | ", s[i]);
+        i++;
+    }
+    printf("\n");
+}
+
 // -----------------
 int main() 
 {
@@ -385,6 +399,8 @@ int main()
     // test_ft_isprint();
     // test_ft_tolower();
 
+    test_ft_calloc();
+    
     return 0;
 }
 
