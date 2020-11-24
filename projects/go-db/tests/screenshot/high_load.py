@@ -33,7 +33,7 @@ def get_users():
     return users
 
 
-def get_query_params(user_id: str) -> str:
+def get_query_params(user_id: str, ext_system_id) -> str:
     return '?extSystemId=' + ext_system_id + '&userId=' + user_id
 
 
@@ -62,7 +62,7 @@ async def set_answer_to_screenshot(ext_system_id, game_id, user_id: str, screens
 
 async def get_screenshot(ext_system_id, game_id, user_id: str, session: ClientSession):
     general_url = host_and_port + 'api/v1/game/' + game_id + '/screenshot'
-    url = general_url + get_query_params(user_id)
+    url = general_url + get_query_params(user_id, ext_system_id)
     try:
         resp = await session.request(method="GET", url=url)
         text = await resp.text()
