@@ -358,7 +358,7 @@ void test_ft_tolower()
         inner_ft_tolower(i++);
 }
 
-
+// ft_calloc
 void test_ft_calloc()
 {
     int count = 2;
@@ -371,6 +371,20 @@ void test_ft_calloc()
         i++;
     }
     printf("\n");
+}
+
+// ft_strdup
+void inner_ft_strdup(char *s)
+{
+    char *r = ft_strdup(s);
+
+    printf("err: %d\n",  errno);
+    printf("res: %s (%p) | src: %s (%p)\n", r, r, s, s);
+}
+
+void test_ft_strdup()
+{
+    inner_ft_strdup("abc");
 }
 
 // -----------------
@@ -399,7 +413,8 @@ int main()
     // test_ft_isprint();
     // test_ft_tolower();
 
-    test_ft_calloc();
+    // test_ft_calloc();
+    test_ft_strdup();
     
     return 0;
 }
