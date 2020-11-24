@@ -3,7 +3,8 @@ import os
 
 def get_config():
     server_port = os.environ["SERVER_PORT_OUTER"]
-    host = "http://127.0.0.1"
+    host = os.environ["SERVER_HOST"]
+    # host = "http://127.0.0.1"
 
     return {"server_port": server_port, "host": host}
 

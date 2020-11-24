@@ -70,7 +70,8 @@ def far_future_create_game():
 
 
 def update_game(game_id):
-    archive = "/Users/a.mogilevskiy/work/5gen/clean-city/archives/low1.zip"
+    archive = "/home/user/ag_highload_test/archives/medium.zip"
+    # archive = "/Users/a.mogilevskiy/work/5gen/clean-city/archives/low1.zip"
     files = {'archives': open(archive,'rb')}
     upload_url = url + "/" + game_id
     resp = requests.put(url=upload_url, files=files)

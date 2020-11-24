@@ -4,13 +4,17 @@ import aiohttp
 from aiohttp import ClientSession, ClientConnectorError
 import json
 import time
+
 import sys
+sys.path.append('../..')
+from tests.config import get_url_start
 
 # TODO: from config
-host_and_port = "http://localhost:8080/"
+# host_and_port = "http://localhost:8080/"
+host_and_port = get_url_start()
 
-game_id = "52d9cfed-1d03-46f5-9921-fca5cb9c116e"
-ext_system_id = 'custom-ext_system-id'
+# game_id = "52d9cfed-1d03-46f5-9921-fca5cb9c116e"
+# ext_system_id = 'custom-ext_system-id'
 
 
 def rand_answer():
