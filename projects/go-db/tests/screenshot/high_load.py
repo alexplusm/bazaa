@@ -23,7 +23,7 @@ def rand_answer():
 
 
 def get_users():
-    count = 10000
+    count = 10000 * 10
     if len(sys.argv) > 1:
         count = int(sys.argv[1])
 
