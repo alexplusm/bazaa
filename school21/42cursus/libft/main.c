@@ -192,8 +192,18 @@ void inner_ft_strlcpy(char *src, ft_size_t dst_len, ft_size_t len)
     printf("mine: %s (return : %d)\n",dst_m, mr);
 }
 
+void inner_ft_strlcpy_2()
+{
+    // int lr = strlcpy(NULL, NULL, 10);
+    int mr = ft_strlcpy(NULL, NULL, 10);
+    // printf("lib: (return : %d) | ", lr);
+    printf("mine: (return : %d)\n", mr);
+}
+
 void test_ft_strlcpy()
 {
+    inner_ft_strlcpy_2();
+    
     inner_ft_strlcpy("123", 1 ,2);
     inner_ft_strlcpy("123", 1, 0);
     inner_ft_strlcpy("123456789", 1, -2147483649);
@@ -221,6 +231,29 @@ void inner_ft_strlcat(const char *dst,const char *src, ft_size_t dst_len) {
     printf("lib: %d | %s\n", lr, dst_l);
 }
 
+void inner_ft_strlcat_2()
+{
+    char	s1[4] = "";
+    char	s2[4] = "";
+    size_t r1 = ft_strlcat(s1, "thx", 4);
+    size_t r2 = strlcat(s2, "thx", 4);
+
+    printf("1) mine: %zu | lib: %zu\n", r1, r2);
+}
+
+void inner_ft_strlcat_3()
+{
+    char	*str = "12";
+    char	buff1[100] = "there is no stars in the sky"; // 0xF00 == 3840
+    char	buff2[100] = "there is no stars in the sky";
+    size_t	max = strlen(str) + 4;
+
+	size_t	r1 = ft_strlcat(buff2, str, max);
+    size_t	r2 = strlcat(buff1, str, max);
+    printf("2) mine: %zu | lib: %zu\n", r1, r2);
+    printf("kek: %d\n", 0xF00);
+}
+
 void test_ft_strlcat() {
     inner_ft_strlcat("dest", "src", 10);
     inner_ft_strlcat("dest", "src", 5);
@@ -228,6 +261,11 @@ void test_ft_strlcat() {
     inner_ft_strlcat("", "src", -1);
     inner_ft_strlcat("", "", -1000000000000000);
     inner_ft_strlcat("abc", "123", 7);
+    
+    // char a[4] = "";
+    // inner_ft_strlcat(a, "thx to ntoniolo for this test !", 4);
+    inner_ft_strlcat_2();
+    inner_ft_strlcat_3();
 }
 
 // ft_strchr
@@ -433,13 +471,13 @@ int main()
     // test_bzero();
     // test_ft_memcpy();
     // test_ft_memccpy();
-    test_ft_memmove();
+    // test_ft_memmove();
     // test_ft_memchr();
     // test_ft_memcmp();
     
     // test_ft_strlen();
     // test_ft_strlcpy();
-    // test_ft_strlcat();
+    test_ft_strlcat();
     // test_ft_strchr();
     // test_ft_strrchr();
     // test_ft_strnstr();

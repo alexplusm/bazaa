@@ -2771,7 +2771,7 @@ void            test_ft_strncat(void){
 
 void			test_ft_strlcat_basic(void *ptr) {
 	typeof(strlcat)	*ft_strlcat = ptr;
-	SET_EXPLANATION("your strlcat does not work with basic input");
+	SET_EXPLANATION("your strlcat does not work with basic input - 1");
 
 	SANDBOX_RAISE(
 			char	*str = STRING_1;
@@ -2790,7 +2790,7 @@ void			test_ft_strlcat_basic(void *ptr) {
 
 void			test_ft_strlcat_return(void *ptr) {
 	typeof(strlcat)	*ft_strlcat = ptr;
-	SET_EXPLANATION("your strlcat does not work with basic input");
+	SET_EXPLANATION("your strlcat does not work with basic input - 2");
 
 	SANDBOX_RAISE(
 			char	*str = STRING_1;
@@ -2816,7 +2816,7 @@ void			test_ft_strlcat_return(void *ptr) {
 
 void			test_ft_strlcat_basic1(void *ptr) {
 	typeof(strlcat)	*ft_strlcat = ptr;
-	SET_EXPLANATION("your strlcat does not work with basic input");
+	SET_EXPLANATION("your strlcat does not work with basic input - 3");
 
 	SANDBOX_RAISE(
 			char	*str = STRING_1;

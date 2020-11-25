@@ -21,11 +21,12 @@ int ft_memcmp(const void *s1, const void *s2, int n);
 
 // ---
 
-int ft_strlen(const char *s);
+size_t ft_strlen(const char *s);
 
 int ft_strlcpy(char *dst, const char *src, ft_size_t dstsize);
 
-int ft_strlcat(char *dst, const char *src, ft_size_t dstsize);
+// int ft_strlcat(char *dst, const char *src, ft_size_t dstsize);
+size_t ft_strlcat(char *dst, const char *src, size_t dstsize);
 
 char *ft_strchr(const char *s, int c);
 
