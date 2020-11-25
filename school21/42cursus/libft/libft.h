@@ -25,7 +25,6 @@ size_t ft_strlen(const char *s);
 
 int ft_strlcpy(char *dst, const char *src, ft_size_t dstsize);
 
-// int ft_strlcat(char *dst, const char *src, ft_size_t dstsize);
 size_t ft_strlcat(char *dst, const char *src, size_t dstsize);
 
 char *ft_strchr(const char *s, int c);
@@ -57,3 +56,7 @@ int ft_tolower(int c);
 void *ft_calloc(ft_size_t count, ft_size_t size);
 
 char *ft_strdup(const char *s1);
+
+// ---
+
+char *ft_substr(char const *s, unsigned int start,size_t len);

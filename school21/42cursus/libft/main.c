@@ -466,8 +466,25 @@ void test_ft_strdup()
     inner_ft_strdup("abc");
 }
 
-// -----------------
-int main() 
+void test_ft_substr()
+{
+    char *res = ft_substr("123", 10, 1);
+    int i = strncmp(res, "", 5);
+    printf("res: %s (%p) | %d\n", res, res, i == 0);
+
+    res = ft_substr("", 0, 1);
+    i = strncmp(res, "", 5);
+    printf("res: %s (%p) | %d\n", res, res, i == 0);
+
+    res = ft_substr("123", 1, 1);
+    i = strncmp(res, "2", 5);
+    printf("res: %s (%p) | %d\n", res, res, i == 0);
+    printf("wft: %d\n", res[1] == '\0');
+
+
+}
+
+void test_1_part()
 {
     // test_bzero();
     // test_ft_memcpy();
@@ -481,7 +498,7 @@ int main()
     // test_ft_strlcat();
     // test_ft_strchr();
     // test_ft_strrchr();
-    test_ft_strnstr();
+    // test_ft_strnstr();
     // test_ft_strncmp();
 
     // test_atoi();
@@ -494,39 +511,17 @@ int main()
 
     // test_ft_calloc();
     // test_ft_strdup();
-    
-    return 0;
 }
 
-// TODO: test memset
-// #include <string.h>
-// #include <stdlib.h>
+void test_2_part()
+{
+    test_ft_substr();
+}
 
-// int main()
-// {
-// 	int data_length = 4;
-// 	void *data = malloc(sizeof(char) * data_length);
-// 	void *data2 = malloc(sizeof(char) * data_length);
-// 	unsigned char c = 121;
-// 	int c2 = 666;
+int main() 
+{
+    // test_1_part();
+    test_2_part();
 
-// 	void *res = memset(data, c, data_length);
-	
-// 	int i;
-// 	for (i = 0; i < data_length; i ++) {
-// 		printf("res: %c\n", ((char *)res)[i]);
-// 	}
-// 	for (i = 0; i < data_length; i ++) {
-// 		printf("data: %c\n", ((char *)data)[i]);
-// 	}
-
-// 	printf("----\n");
-
-// 	void *res2 = tf_memset(data2, c, data_length);
-// 	for (i = 0; i < data_length; i++) {
-// 		printf("res2: %c\n", ((char *)res2)[i]);
-// 	}
-// 	for (i = 0; i < data_length; i++) {
-// 		printf("data2: %c\n", ((char *)data2)[i]);
-// 	}
-// }
+    return 0;
+}
