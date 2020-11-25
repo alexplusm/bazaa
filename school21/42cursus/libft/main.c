@@ -125,19 +125,33 @@ void test_ft_memccpy()
 }
 
 // ft_memmove
+void inner_ft_memmove()
+{
+    char s1[10] = "12345";
+    char s2[10] = "12345";
+
+    char *rl = ft_memmove(s1 + 2, s1, 5);
+    char *rm = memmove(s2 + 2, s2, 5);
+    
+    printf("mine: %s | ", rl);
+    printf("lib: %s\n", rm);
+}
+
 void test_ft_memmove()
 {
-    int len = 5;
-    char *dst = malloc(sizeof(len));
-    char *src = "1234567";
+    // int len = 5;
+    // char *dst = malloc(sizeof(len));
+    // char *src = "1234567";
     
-    char *res = ft_memmove(dst, src, len);
+    // char *res = ft_memmove(dst, src, len);
 
-    while (len > 0) {
-        printf("%c |", *res);
-        res++;
-        len--;
-    }
+    // while (len > 0) {
+    //     printf("%c |", *res);
+    //     res++;
+    //     len--;
+    // }
+
+    inner_ft_memmove();
 }
 
 // ft_memchr
@@ -419,7 +433,7 @@ int main()
     // test_bzero();
     // test_ft_memcpy();
     // test_ft_memccpy();
-    // test_ft_memmove();
+    test_ft_memmove();
     // test_ft_memchr();
     // test_ft_memcmp();
     
