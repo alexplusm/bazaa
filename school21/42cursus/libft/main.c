@@ -320,7 +320,8 @@ void test_ft_strnstr()
     inner_ft_strnstr("112", "1", 2);
     inner_ft_strnstr("123", "2", 2);
     inner_ft_strnstr("12345", "23", 4);
-    inner_ft_strnstr("1234-2345-aa", "2345", 4); // WTF?! 
+    inner_ft_strnstr("1234-2345-aa", "2345", 4); // WTF?!
+    inner_ft_strnstr("112", "", 0);
 }
 
 // ft_strncmp
@@ -477,10 +478,10 @@ int main()
     
     // test_ft_strlen();
     // test_ft_strlcpy();
-    test_ft_strlcat();
+    // test_ft_strlcat();
     // test_ft_strchr();
     // test_ft_strrchr();
-    // test_ft_strnstr();
+    test_ft_strnstr();
     // test_ft_strncmp();
 
     // test_atoi();
