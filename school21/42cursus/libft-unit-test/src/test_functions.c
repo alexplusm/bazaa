@@ -6266,7 +6266,7 @@ void            test_ft_strjoin(void){
 
 void			test_ft_strtrim_basic(void *ptr) {
 	char *		(*ft_strtrim)(const char *, const char *) = ptr;
-	SET_EXPLANATION("your strtrim does not work with basic input");
+	SET_EXPLANATION("your strtrim does not work with basic input - 1");
 
 	SANDBOX_RAISE(
 			char	*s1 = "   \t  \n\n \t\t  \n\n\nHello \t  Please\n Trim me !\n   \n \n \t\t\n  ";
@@ -6282,7 +6282,7 @@ void			test_ft_strtrim_basic(void *ptr) {
 
 void			test_ft_strtrim_basic2(void *ptr) {
 	char *		(*ft_strtrim)(const char *, const char *) = ptr;
-	SET_EXPLANATION("your strtrim does not work with basic input");
+	SET_EXPLANATION("your strtrim does not work with basic input - 2");
 
 	SANDBOX_RAISE(
 			char	*s1 = "   \t  \n\n \t\t  \n\n\nHello \t  Please\n Trim me !";
@@ -6298,7 +6298,7 @@ void			test_ft_strtrim_basic2(void *ptr) {
 
 void			test_ft_strtrim_basic3(void *ptr) {
 	char *		(*ft_strtrim)(const char *, const char *) = ptr;
-	SET_EXPLANATION("your strtrim does not work with basic input");
+	SET_EXPLANATION("your strtrim does not work with basic input - 3");
 
 	SANDBOX_RAISE(
 			char	*s1 = "Hello \t  Please\n Trim me !";
