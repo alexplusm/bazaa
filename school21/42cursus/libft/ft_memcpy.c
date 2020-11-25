@@ -1,11 +1,11 @@
 #include "libft.h"
 
-void *ft_memcpy(void *restrict dst, const void *restrict src, int len)
+void *ft_memcpy(void *dst, const void *src, int len)
 {
-    unsigned char *ptr_d;
-    const unsigned char *ptr_s;
+    char *ptr_d;
+    const char *ptr_s;
 
-    if (len <= 0)
+    if (len <= 0 || (dst == NULL && src == NULL))
         return dst;
 
     ptr_d = dst;

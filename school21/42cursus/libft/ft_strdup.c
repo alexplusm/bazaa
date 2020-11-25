@@ -10,7 +10,7 @@ char *ft_strdup(const char *s1)
     i = 0;
     while (s1[size] != '\0')
         size += 1;
-    res = malloc(sizeof(char) * size);
+    res = malloc(sizeof(char) * (size + 1));
     if (res == NULL)
     {    
         errno = ENOMEM;

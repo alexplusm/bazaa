@@ -7,7 +7,7 @@ int ft_memcmp(const void *s1, const void *s2, int n)
     i = 0;
     ptr_1 = (unsigned char*)s1;
     ptr_2 = (unsigned char*)s2;
-    while (ptr_1[i] == ptr_2[i] && i < n)
+    while (i < n && ptr_1[i] == ptr_2[i])
         i += 1;
     return (i == n) ? 0 : ptr_1[i] - ptr_2[i];
 }

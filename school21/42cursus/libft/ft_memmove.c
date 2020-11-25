@@ -3,8 +3,8 @@
 void *ft_memmove(void *dst, const void *src, int len)
 {
     int i;
-    const unsigned char *ptr_s;
-    unsigned char *ptr_d;
+    const char *ptr_s;
+    char *ptr_d;
 
     i = 0;
     ptr_d = dst;

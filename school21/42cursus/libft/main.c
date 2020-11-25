@@ -65,37 +65,63 @@ void test_bzero() {
 }
 
 // ft_memcpy
+void inner_ft_memcpy()
+{
+    int len = 1;
+    // char *dst = malloc(len);
+    // // char *dst = NULL;
+    // char *src = "";
+    
+    char *res_l = memcpy(NULL, NULL, len);
+    char *res_m = ft_memcpy(NULL, NULL, len);
+
+    printf("lib: %s (%p) | ", res_l, res_l);
+    printf("mine: %s (%p)\n", res_m, res_m);
+}
+
 void test_ft_memcpy()
 {
-    int len = 5;
-    char *dest = malloc(sizeof(char) * 5);
-    char *str = "12345";
+    // int len = 5;
+    // char *dest = malloc(sizeof(char) * 5);
+    // char *str = "12345";
+    // char *new_d = ft_memcpy(dest, str, len);
+    // while (len > 0)
+    // {
+    //     printf("v: %c | %c\n", *dest, *new_d);
+    //     dest++;
+    //     new_d++;
+    //     len--;
+    // }
 
-    char *new_d = ft_memcpy(dest, str, len);
-
-    while (len > 0)
-    {
-        printf("v: %c | %c\n", *dest, *new_d);
-        dest++;
-        new_d++;
-        len--;
-    }
+    inner_ft_memcpy();
 }
 
 // ft_memccpy
 void test_ft_memccpy() 
 {
-    int len = 6;
-    char *dest = malloc(sizeof(char) * len);
-    char *src = "123456789";
+    // char	src[] = "test basic du memccpy !";
+    // char	buff1[22];
+    // char	buff2[22];
 
-    char *res = ft_memccpy(dest,src, 'a', len);
+    // char	*r1 = memccpy(buff1, src, 'z', 22);
+    // char	*r2 = ft_memccpy(buff2, src, 'z', 22);
 
-    while(len > 0)
-    {
-        printf("val: %c\n", *res++);
-        len -= 1;
-    }
+    // printf("r1: %s | ", r1);
+    // printf("r2: %s | ", r2);
+
+    char	buff_l[] = "abcdefghijklmnopqrstuvwxyz";
+    char	buff2[] = "abcdefghijklmnopqrstuvwxyz";
+    char	*src = "string with\200inside !";
+
+    memccpy(buff_l, src, 0200, 21);
+    ft_memccpy(buff2, src, 0200, 21);
+
+    printf("lib: %s\n", buff_l);
+    printf("buff2: %s\n", buff2);
+    printf("res: %d\n", memcmp(buff_l, buff2, 21));
+
+    printf("c: %d \n", (char)0601 + 128);
+    printf("c1: %d \n", (char)130 + 128);
 }
 
 // ft_memmove
@@ -414,7 +440,7 @@ int main()
     // test_ft_tolower();
 
     // test_ft_calloc();
-    test_ft_strdup();
+    // test_ft_strdup();
     
     return 0;
 }
