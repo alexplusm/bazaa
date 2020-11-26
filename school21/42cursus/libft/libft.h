@@ -2,8 +2,9 @@
 // todo: include guards
 #include <stdlib.h>
 #include <errno.h>
+#include <unistd.h>
 
-typedef unsigned long ft_size_t;
+typedef unsigned long ft_size_t; // TODO: remove
 
 void *tf_memset(void *b, int c, int len);
 
@@ -70,3 +71,5 @@ char **ft_split(char const *s, char c);
 char *ft_itoa(int n);
 
 char *ft_strmapi(char const *s, char (*f)(unsigned int, char));
+
+void ft_putchar_fd(char c, int fd);
