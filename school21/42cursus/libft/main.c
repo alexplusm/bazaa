@@ -563,6 +563,26 @@ void test_ft_split()
     }
 }
 
+// ft_itoa
+void test_ft_itoa()
+{
+    char *res;
+    int num;
+    
+    num = 12345;
+    res = ft_itoa(num);
+    printf("res: %s | %d\n", res, num);
+
+    num = -12;
+    res = ft_itoa(num);
+    printf("res: %s | %d\n", res, num);
+
+    num = -0;
+    res = ft_itoa(num);
+    printf("res: %s | %d\n", res, num);
+
+}
+
 void test_1_part()
 {
     // test_bzero();
@@ -597,7 +617,8 @@ void test_2_part()
     // test_ft_substr();
     // test_ft_strjoin();
     // test_ft_strtrim();
-    test_ft_split();
+    // test_ft_split();
+    test_ft_itoa();
 }
 
 int main() 
