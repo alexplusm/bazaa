@@ -504,33 +504,38 @@ void test_ft_strtrim()
     char *str1 = "   \t\nHello1 \t\n!\n   \n \n \t\t\n  ";
     char *exp1 = "Hello1 \t\n!";
     res = ft_strtrim(str1, trim_set);
-    printf("res: %d | %s\n", strcmp(res, exp1) == 0, res);
+    printf("res:%s| %d | \n", res, strcmp(res, exp1) == 0);
 
     char *str2 = "   \t  \n\n \t\t  \n\n\nHello \t  Please\n Trim me !\n   \n \n \t\t\n  ";
     char *exp2 = "Hello \t  Please\n Trim me !";
     res = ft_strtrim(str2, trim_set);
-    printf("res: %d | %s\n", strcmp(res, exp2) == 0, res);
+    printf("res:%s| %d | \n", res, strcmp(res, exp2) == 0);
 
     char	*str3 = "   \t  \n\n \t\t  \n\n\nHello \t  Please\n Trim me !\n   \n \n \t\t\n  ";
 	char	*exp3 = "Hello \t  Please\n Trim me !";
     res = ft_strtrim(str3, trim_set);
-    printf("res: %d | %s\n", strcmp(res, exp3) == 0, res);
+    printf("res:%s| %d | \n", res, strcmp(res, exp3) == 0);
 
     char	*str4 = "   \t  \n\n \t\t  \n\n\nHello \t  Please\n Trim me !";
 	char	*exp4 = "Hello \t  Please\n Trim me !";
     res = ft_strtrim(str4, trim_set);
-    printf("res: %d | %s\n", strcmp(res, exp4) == 0, res);
+    printf("res:%s| %d | \n", res, strcmp(res, exp4) == 0);
 
     char	*str5 = "123";
 	char	*exp5 = "123";
     res = ft_strtrim(str5, trim_set);
-    printf("res: %d | %s\n", strcmp(res, exp5) == 0, res);
+    printf("res:%s| %d | \n", res, strcmp(res, exp5) == 0);
 
-    char	*str6 = "333";
-	char	*exp6 = "333";
-    trim_set = "";
+    char	*str6 = "   \n  \t";
+	char	*exp6 = "";
     res = ft_strtrim(str6, trim_set);
-    printf("res: %d | %s\n", strcmp(res, exp6) == 0, res);
+    printf("res:%s| %d | \n", res, strcmp(res, exp6) == 0);
+
+    char	*str8 = "333";
+	char	*exp8 = "333";
+    trim_set = "";
+    res = ft_strtrim(str8, trim_set);
+    printf("res:%s| %d | \n", res, strcmp(res, exp8) == 0);
 }
 
 // ft_split
@@ -574,8 +579,8 @@ void test_1_part()
 void test_2_part()
 {
     // test_ft_substr();
-    test_ft_strjoin();
-    // test_ft_strtrim();
+    // test_ft_strjoin();
+    test_ft_strtrim();
     // test_ft_split();
 }
 
