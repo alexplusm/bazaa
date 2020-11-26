@@ -37,25 +37,20 @@ void test_atoi_inner(char *s)
 
 void test_atoi() 
 {
-    char *s1 = "-123";
-    char *s2 = "-2147483648";
-    char *s3 = "2147483647";
-    char *s4 = "0";
-    char *s5 = "--0";
-    char *s6 = "+023";
-    char *s7 = "-34b56";
-    char *s8 = "a)";
-    char *s9 = "99988-a";
-
-    test_atoi_inner(s1);
-    test_atoi_inner(s2);
-    test_atoi_inner(s3);
-    test_atoi_inner(s4);
-    test_atoi_inner(s5);
-    test_atoi_inner(s6);
-    test_atoi_inner(s7);
-    test_atoi_inner(s8);
-    test_atoi_inner(s9);
+    test_atoi_inner("-123");
+    test_atoi_inner("-2147483648");
+    test_atoi_inner("2147483647");
+    test_atoi_inner("0");
+    test_atoi_inner("--0");
+    test_atoi_inner("+023");
+    test_atoi_inner("-34b56");
+    test_atoi_inner("a)");
+    test_atoi_inner("99988-a");
+    test_atoi_inner("\t\v\f\r\n \f-06050");
+    test_atoi_inner("\t\v\f\r\n \f- \f\t\n\r    06050");
+    test_atoi_inner("99999999999999999999999999");
+    test_atoi_inner("9999999999999999999");
+    test_atoi_inner("9199999999999999999");
 }
 
 // ft_bzero
@@ -681,7 +676,7 @@ void test_1_part()
     // test_ft_strnstr();
     // test_ft_strncmp();
 
-    // test_atoi();
+    test_atoi();
     // test_ft_isalpha();
     // test_ft_isdigit();
     // test_ft_isalnum();
@@ -699,7 +694,7 @@ void test_2_part()
     // test_ft_strjoin();
     // test_ft_strtrim();
     // test_ft_split();
-    test_ft_itoa();
+    // test_ft_itoa();
 }
 
 void test_bonus_part()
@@ -710,9 +705,9 @@ void test_bonus_part()
 
 int main() 
 {
-    // test_1_part();
+    test_1_part();
     // test_2_part();
-    test_bonus_part();
+    // test_bonus_part();
 
     return 0;
 }

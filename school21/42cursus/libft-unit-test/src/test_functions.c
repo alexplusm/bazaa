@@ -4502,7 +4502,7 @@ void			test_ft_atoi_rand(void *ptr) {
 
 void			test_ft_atoi_blank1(void *ptr) {
 	typeof(atoi)	*ft_atoi = ptr;
-	SET_EXPLANATION("your atoi is not working with blanks");
+	SET_EXPLANATION("your atoi is not working with blanks - 1");
 
 	SANDBOX_RAISE(
 			char	*n = "\t\v\f\r\n \f-06050";
@@ -4518,7 +4518,7 @@ void			test_ft_atoi_blank1(void *ptr) {
 
 void			test_ft_atoi_blank2(void *ptr) {
 	typeof(atoi)	*ft_atoi = ptr;
-	SET_EXPLANATION("your atoi is not working with blanks");
+	SET_EXPLANATION("your atoi is not working with blanks - 2");
 
 	SANDBOX_RAISE(
 			char	*n = "\t\v\f\r\n \f- \f\t\n\r    06050";
