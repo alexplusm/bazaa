@@ -541,10 +541,26 @@ void test_ft_strtrim()
 // ft_split
 void test_ft_split()
 {
-    char *s = "123aBCD";
+    // case 1
+    char *s = "123aBCDa---";
     char **res = ft_split(s, 'a');
-    printf("1: %s\n", res[0]);
-    printf("2: %s\n", res[1]);
+    printf("0: %s\n", res[0]);
+    printf("1: %s\n", res[1]);
+    printf("2: %s\n", res[2]);
+    printf("3: %s\n", res[3]);
+
+    // case 2
+
+    char	*string = "      split       this for   me  !       ";
+    // char	**expected = ((char*[6]){"split", "this", "for", "me", "!", NULL});
+    char	**result = ft_split(string, ' ');
+    
+    int i = 0;
+    while (i < 4)
+    {
+        printf("str: %s | len: %zu | %p\n ", result[i], ft_strlen(result[i]), result[i]);
+        i++; 
+    }
 }
 
 void test_1_part()
@@ -580,8 +596,8 @@ void test_2_part()
 {
     // test_ft_substr();
     // test_ft_strjoin();
-    test_ft_strtrim();
-    // test_ft_split();
+    // test_ft_strtrim();
+    test_ft_split();
 }
 
 int main() 
