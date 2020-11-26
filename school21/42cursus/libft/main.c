@@ -583,6 +583,17 @@ void test_ft_itoa()
 
 }
 
+// ft_lstclear
+void test_ft_lstclear()
+{
+    t_list *head = ft_lstnew(ft_strdup("lol"));
+    t_list *item = ft_lstnew(ft_strdup("kek"));
+    ft_lstadd_back(&head, item);
+
+    ft_lstclear(&head, free);
+    printf("res: %p\n", head);
+}
+
 void test_1_part()
 {
     // test_bzero();
@@ -621,10 +632,16 @@ void test_2_part()
     test_ft_itoa();
 }
 
+void test_bonus_part()
+{
+    test_ft_lstclear();
+}
+
 int main() 
 {
     // test_1_part();
-    test_2_part();
+    // test_2_part();
+    test_bonus_part();
 
     return 0;
 }

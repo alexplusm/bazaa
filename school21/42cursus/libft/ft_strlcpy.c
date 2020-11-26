@@ -4,6 +4,9 @@ int ft_strlcpy(char *dst, const char *src, ft_size_t dstsize)
 {
     ft_size_t i;
 
+    if (dst == NULL || src == NULL)
+        return 0;
+
     if (dstsize == 0)
         return ft_strlen(src);
     i = 0;
