@@ -16,6 +16,14 @@ char *res(int b)
     return success;
 }
 
+void ft_print_lst(t_list *lst)
+{
+    if (lst == NULL)
+        return ;
+    printf("p: %p | %s\n", lst, lst->content);
+    ft_print_lst(lst->next);
+}
+
 // ft_atoi
 void test_atoi_inner(char *s)
 {
@@ -594,6 +602,68 @@ void test_ft_lstclear()
     printf("res: %p\n", head);
 }
 
+// ft_lstmap
+void *f_lst_m(void *s)
+{
+    char *content = (char *)s;
+    content[0] = 'A';
+    return s;
+}
+
+void f_lst_d(void *n)
+{
+    t_list *node;
+
+    node = (t_list *) n;
+    free(node->content);
+    free(node);
+}
+
+void *		lstmap_f(void *content) {
+	(void)content;
+    char *ptr;
+    ptr = ft_strdup("OK !");
+    printf("lstmap_f: %s (%p)\n", ptr, ptr);
+	return ptr;
+}
+
+
+t_list *lstnew(void *d) {
+    t_list *ret = malloc(sizeof(t_list));
+
+    if (!ret)
+        return (NULL);
+    ret->next = NULL;
+    ret->content = d;
+    return (ret);
+}
+
+void test_ft_lstmap()
+{
+    t_list *item = ft_lstnew(ft_strdup("111"));
+    item->next = ft_lstnew(ft_strdup("444"));
+    item->next->next = ft_lstnew(ft_strdup("777"));
+
+    // ft_print_lst(item);
+
+    t_list *res = ft_lstmap(item, f_lst_m, f_lst_d);
+    ft_print_lst(res);
+    // printf("rees: %p\n", item);
+    
+    // ---
+    // printf("-------\n");
+
+    // t_list	*l = lstnew(strdup(" 1 2 3 "));
+    // t_list	*ret;
+
+    // l->next = lstnew(strdup("ss"));
+    // l->next->next = lstnew(strdup("-_-"));
+
+    // ft_print_lst(l);
+    // ret = ft_lstmap(l, lstmap_f, NULL);
+    // ft_print_lst(ret);
+}
+
 void test_1_part()
 {
     // test_bzero();
@@ -634,7 +704,8 @@ void test_2_part()
 
 void test_bonus_part()
 {
-    test_ft_lstclear();
+    // test_ft_lstclear();
+    test_ft_lstmap();
 }
 
 int main() 
