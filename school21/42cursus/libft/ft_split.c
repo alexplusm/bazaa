@@ -2,8 +2,6 @@
 
 #include <stdio.h>
 
-
-
 // TODO: compare with "ft_strdel" and "ft_free_res"
 // void static ft_clean(char **array, size_t size)
 // {
