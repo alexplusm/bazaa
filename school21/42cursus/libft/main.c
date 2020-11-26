@@ -466,6 +466,7 @@ void test_ft_strdup()
     inner_ft_strdup("abc");
 }
 
+// ft_substr
 void test_ft_substr()
 {
     char *res = ft_substr("123", 10, 1);
@@ -479,9 +480,19 @@ void test_ft_substr()
     res = ft_substr("123", 1, 1);
     i = strncmp(res, "2", 5);
     printf("res: %s (%p) | %d\n", res, res, i == 0);
-    printf("wft: %d\n", res[1] == '\0');
+    // printf("wft: %d\n", res[1] == '\0');
 
+    res = ft_substr(NULL, 0, 12);
+    printf("res: %s\n", res);
+}
 
+// ft_strjoin
+void test_ft_strjoin()
+{
+    char *s1 = "1234";
+    char *s2 = "abc";
+    char *res = ft_strjoin(s1, s2);
+    printf("res: %s | %zu\n", res, ft_strlen(res));
 }
 
 // ft_strtrim
@@ -522,6 +533,15 @@ void test_ft_strtrim()
     printf("res: %d | %s\n", strcmp(res, exp6) == 0, res);
 }
 
+// ft_split
+void test_ft_split()
+{
+    char *s = "123aBCD";
+    char **res = ft_split(s, 'a');
+    printf("1: %s\n", res[0]);
+    printf("2: %s\n", res[1]);
+}
+
 void test_1_part()
 {
     // test_bzero();
@@ -554,7 +574,9 @@ void test_1_part()
 void test_2_part()
 {
     // test_ft_substr();
-    test_ft_strtrim();
+    test_ft_strjoin();
+    // test_ft_strtrim();
+    // test_ft_split();
 }
 
 int main() 
