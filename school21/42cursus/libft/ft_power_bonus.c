@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_power.c                                         :+:      :+:    :+:   */
+/*   ft_power_bonus.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cdeon <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,11 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-int		ft_power(int n, int power)
+int		ft_power_bonus(int n, int power)
 {
 	if (power < 0)
 		return (0);
 	if (power == 0)
 		return (1);
-	return (n * ft_power(n, power - 1));
+	return (n * ft_power_bonus(n, power - 1));
 }

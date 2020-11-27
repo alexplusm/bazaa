@@ -20,7 +20,7 @@ int		ft_atoi(const char *str)
 
 	result = 0;
 	i = 0;
-	while (ft_isspace(str[i]))
+	while (ft_isspace_bonus(str[i]))
 		i++;
 	sign = (str[i] == '-') ? -1 : 1;
 	if (str[i] == '-' || str[i] == '+')

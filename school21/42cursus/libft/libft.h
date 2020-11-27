@@ -111,8 +111,8 @@ t_list			*ft_lstmap(
 	t_list *lst, void *(*f)(void *), void (*del)(void *)
 );
 
-int				ft_power(int n, int power);
+int				ft_power_bonus(int n, int power);
 
-int				ft_isspace(char c);
+int				ft_isspace_bonus(char c);
 
 #endif

@@ -39,7 +39,7 @@ void		ft_putnbr_fd(int n, int fd)
 	cnt = ft_digits_cnt(num);
 	while (cnt--)
 	{
-		pow = ft_power(10, cnt);
+		pow = ft_power_bonus(10, cnt);
 		ch = (num / pow) + '0';
 		num %= pow;
 		ft_putchar_fd(ch, fd);
