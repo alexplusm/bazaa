@@ -15,19 +15,19 @@
 // TODO: INTO lib and test
 int ft_isspace(char c)
 {
-    if ((c >= 9 && c <= 13) || c == 32)
-        return c;
-    return 0;
+	if ((c >= 9 && c <= 13) || c == 32)
+		return c;
+	return 0;
 }
 
 // TODO: INTO lib and test
 int ft_pow(int num, int power) 
 {
-    if (power < 0)
-        return 0;
-    if (power == 0)
-        return 1;
-    return num * ft_pow(num, power - 1);
+	if (power < 0)
+		return 0;
+	if (power == 0)
+		return 1;
+	return num * ft_pow(num, power - 1);
 }
 
 // int ft_atoi(const char *str)
@@ -36,7 +36,7 @@ int ft_pow(int num, int power)
 //     int power = 0;
 //     int digit = 0;
 //     int sign = 1;
-    
+	
 //     while (ft_isspace(*str))
 //         str++;
 //     if (*str == '-' || *str == '+') 
