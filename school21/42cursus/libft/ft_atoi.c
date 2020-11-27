@@ -12,24 +12,15 @@
 
 #include "libft.h"
 
-#include <stdio.h>
+// #include <stdio.h>
 
 int		ft_atoi(const char *str)
 {
 	unsigned long	result;
-	unsigned long	border;
 	size_t			i;
 	int				sign;
 
-	printf("1: %zu\n", ~0l);
-	printf("2: %zu\n", (~0l) >> 1);
-	printf("3: %lu\n", (unsigned long)((long)(((unsigned long)(~0l)) >> 1) / 10));
-
 	result = 0;
-	border = (unsigned long)(FT_LONG_MAX / 10);
-
-	printf("4: %lu\n", border);
-
 	i = 0;
 	while (ft_isspace(str[i]))
 		i++;
@@ -38,13 +29,11 @@ int		ft_atoi(const char *str)
 		i++;
 	while (ft_isdigit(str[i]))
 	{
-		if ((result > border || (result == border && (str[i] - '0') > 7))
-															&& sign == 1)
-			return (-1);
-		else if ((result > border || (result == border && (str[i] - '0') > 8))
-																&& sign == -1)
-			return (0);
 		result = result * 10 + (str[i++] - '0');
+		if (result >= __LONG_MAX__ && sign == 1)
+			return (-1);
+		if ((result >= (unsigned long)__LONG_MAX__ + 1) && sign == -1)
+			return (0);
 	}
 	return ((int)(result * sign));
 }

@@ -35,7 +35,6 @@ $(NAME): all
 all:
 	$(CC) ${CFLAGS} $(SRC) -c
 	ar rcs $(NAME) ${OBJ}
-	$(MAKE) clean
 
 clean:
 	$(RM) $(OBJ)

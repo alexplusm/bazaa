@@ -13,11 +13,8 @@
 
 // todo: include guards
 #include <stdlib.h>
-#include <errno.h>
 #include <unistd.h>
-
-# define FT_ULONG_MAX	((unsigned long)(~0L))
-# define FT_LONG_MAX	((long)(FT_ULONG_MAX >> 1))
+#include <errno.h>
 
 typedef struct s_list {
     void*           content;
@@ -26,7 +23,7 @@ typedef struct s_list {
 
 typedef unsigned long ft_size_t; // TODO: remove
 
-void *tf_memset(void *b, int c, int len);
+void *ft_memset(void *b, int c, int len);
 
 void ft_bzero(void *s, int n);
 
