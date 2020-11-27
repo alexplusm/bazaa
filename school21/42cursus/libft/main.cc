@@ -184,7 +184,7 @@ void test_ft_strlen()
 }
 
 // ft_strlcpy
-void inner_ft_strlcpy(char *src, ft_size_t dst_len, ft_size_t len)
+void inner_ft_strlcpy(char *src, size_t dst_len, size_t len)
 {    
     char *dst_m = malloc(sizeof(char) * dst_len);
     char *dst_l = malloc(sizeof(char) * dst_len);
@@ -216,7 +216,7 @@ void test_ft_strlcpy()
 }
 
 // ft_strlcat
-void inner_ft_strlcat(const char *dst,const char *src, ft_size_t dst_len) {
+void inner_ft_strlcat(const char *dst,const char *src, size_t dst_len) {
     char *dst_l = malloc(sizeof(dst));
     char *dst_m = malloc(sizeof(dst));
     int i = 0;
@@ -310,7 +310,7 @@ void test_ft_strrchr()
 }
 
 // ft_strnstr
-void inner_ft_strnstr(const char *haystack, const char *needle, ft_size_t len)
+void inner_ft_strnstr(const char *haystack, const char *needle, size_t len)
 {
     char *lr = strnstr(haystack, needle, len);
     char *mr = ft_strnstr(haystack, needle, len);
@@ -329,7 +329,7 @@ void test_ft_strnstr()
 }
 
 // ft_strncmp
-void inner_ft_strncmp(const char *s1, const char *s2, ft_size_t n)
+void inner_ft_strncmp(const char *s1, const char *s2, size_t n)
 {
     int mr = ft_strncmp(s1, s2, n);
     int lr = strncmp(s1, s2, n);
