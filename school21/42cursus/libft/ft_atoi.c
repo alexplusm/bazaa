@@ -12,15 +12,15 @@
 
 #include "libft.h"
 
-// TODO: INTO lib and test
+/* TODO: INTO lib and test */
 int ft_isspace(char c)
 {
 	if ((c >= 9 && c <= 13) || c == 32)
-		return c;
-	return 0;
+		return (c);
+	return (0);
 }
 
-// TODO: INTO lib and test
+/* TODO: INTO lib and test */
 int ft_pow(int num, int power) 
 {
 	if (power < 0)
@@ -30,34 +30,35 @@ int ft_pow(int num, int power)
 	return num * ft_pow(num, power - 1);
 }
 
-// int ft_atoi(const char *str)
-// {
-//     int unsigned result = 0;
-//     int power = 0;
-//     int digit = 0;
-//     int sign = 1;
+/*
+int ft_atoi(const char *str)
+{
+    int unsigned result = 0;
+    int power = 0;
+    int digit = 0;
+    int sign = 1;
 	
-//     while (ft_isspace(*str))
-//         str++;
-//     if (*str == '-' || *str == '+') 
-//     {
-//         if (*str == '-')
-//             sign = -1;
-//         str++;
-//     }
-//     while (ft_isdigit(*str))
-//         str++;
-//     str--;
-//     while (ft_isdigit(*str))
-//     {
-//         digit = *str - '0';
-//         result += digit * ft_pow(10, power);
-//         str--;
-//         power++;
-//     }
-//     return result * sign;
-// }
-
+    while (ft_isspace(*str))
+        str++;
+    if (*str == '-' || *str == '+') 
+    {
+        if (*str == '-')
+            sign = -1;
+        str++;
+    }
+    while (ft_isdigit(*str))
+        str++;
+    str--;
+    while (ft_isdigit(*str))
+    {
+        digit = *str - '0';
+        result += digit * ft_pow(10, power);
+        str--;
+        power++;
+    }
+    return result * sign;
+}
+*/
 
 
 

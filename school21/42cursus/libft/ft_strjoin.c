@@ -25,6 +25,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	if ((res = malloc(sizeof(char) * (s1_size + s2_size + 1))) == NULL)
 		return (NULL);
 	ft_strlcpy(res, s1, s1_size + 1);
-	ft_strlcpy(res+s1_size, s2, s2_size + 1);
+	ft_strlcpy(res + s1_size, s2, s2_size + 1);
 	return (res);
 }

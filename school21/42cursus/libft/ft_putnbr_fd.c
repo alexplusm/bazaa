@@ -12,38 +12,39 @@
 
 #include "libft.h"
 
-static int ft_digits_cnt(unsigned int n)
+static int	ft_digits_cnt(unsigned int n)
 {
-	int res;
+	int	res;
 
 	res = 1;
 	while (n /= 10)
 		res++;
-	return res;
+	return (res);
 }
 
-static int ft_pow(int n, int pow)
+/* TODO: ft_power */
+static int	ft_pow(int n, int pow)
 {
 	if (pow <= 0)
-		return 1;
-	return n * ft_pow(n, pow - 1);
+		return (1);
+	return (n * ft_pow(n, pow - 1));
 }
 
-void ft_putnbr_fd(int n, int fd)
+void		ft_putnbr_fd(int n, int fd)
 {
 	unsigned int	num;
-	char ch;
-	int pow;
-	
+	char			ch;
+	int				pow;
+	int				cnt;
+
 	if (n < 0)
 	{
 		ft_putchar_fd('-', fd);
 		num = -n;
 	}
-	else	
+	else
 		num = n;
-	
-	int cnt = ft_digits_cnt(num);
+	cnt = ft_digits_cnt(num);
 	while (cnt--)
 	{
 		pow = ft_pow(10, cnt);

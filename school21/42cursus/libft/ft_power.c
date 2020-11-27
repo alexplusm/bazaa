@@ -1,27 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strrchr.c                                       :+:      :+:    :+:   */
+/*   ft_power.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cdeon <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/27 09:15:17 by cdeon             #+#    #+#             */
-/*   Updated: 2020/11/27 09:15:18 by cdeon            ###   ########.fr       */
+/*   Created: 2020/11/27 10:16:27 by cdeon             #+#    #+#             */
+/*   Updated: 2020/11/27 10:16:29 by cdeon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-char	*ft_strrchr(const char *s, int c)
+int		ft_power(int n, int power)
 {
-	char	*ptr;
-
-	ptr = (char *)s;
-	while (*ptr != '\0')
-		ptr++;
-	while (ptr != s)
-	{
-		if (*ptr == c)
-			return (ptr);
-		ptr--;
-	}
-	return ((*ptr == c) ? ptr : 0);
+	if (power < 0)
+		return (0);
+	if (power == 0)
+		return (1);
+	return (n * ft_power(n, power - 1));
 }
