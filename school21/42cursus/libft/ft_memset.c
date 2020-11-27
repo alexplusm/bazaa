@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-void	*tf_memset(void *b, int c, int len)
+void	*ft_memset(void *b, int c, int len)
 {
 	unsigned char *ptr;
 
