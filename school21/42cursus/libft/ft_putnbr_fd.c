@@ -22,14 +22,6 @@ static int	ft_digits_cnt(unsigned int n)
 	return (res);
 }
 
-/* TODO: ft_power */
-static int	ft_pow(int n, int pow)
-{
-	if (pow <= 0)
-		return (1);
-	return (n * ft_pow(n, pow - 1));
-}
-
 void		ft_putnbr_fd(int n, int fd)
 {
 	unsigned int	num;
@@ -47,7 +39,7 @@ void		ft_putnbr_fd(int n, int fd)
 	cnt = ft_digits_cnt(num);
 	while (cnt--)
 	{
-		pow = ft_pow(10, cnt);
+		pow = ft_power(10, cnt);
 		ch = (num / pow) + '0';
 		num %= pow;
 		ft_putchar_fd(ch, fd);
