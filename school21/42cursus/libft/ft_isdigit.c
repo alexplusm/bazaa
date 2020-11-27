@@ -10,18 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
-// TODO: if (ft_isascii)
-int ft_isdigit(int c)
+int	ft_isdigit(int c)
 {
-    char digit = '0';
-
-    while (digit <= '9')
-    {
-        if (c == digit)
-            return c;
-        digit++;
-    }
-    return 0;
+	return (c >= '0' && c <= '9');
 }
-
