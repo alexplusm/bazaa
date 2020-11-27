@@ -51,6 +51,7 @@ void test_atoi()
     test_atoi_inner("99999999999999999999999999");
     test_atoi_inner("9999999999999999999");
     test_atoi_inner("9199999999999999999");
+    test_atoi_inner("-99999999999999999999999999");
 }
 
 // ft_bzero

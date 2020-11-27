@@ -16,6 +16,9 @@
 #include <errno.h>
 #include <unistd.h>
 
+# define FT_ULONG_MAX	((unsigned long)(~0L))
+# define FT_LONG_MAX	((long)(FT_ULONG_MAX >> 1))
+
 typedef struct s_list {
     void*           content;
     struct s_list    *next;
@@ -116,3 +119,5 @@ void ft_lstiter(t_list *lst, void (*f)(void *));
 t_list *ft_lstmap(t_list *lst, void *(*f)(void *),void (*del)(void *));
 
 int		ft_power(int n, int power);
+
+int     ft_isspace(char c);

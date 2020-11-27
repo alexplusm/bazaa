@@ -12,58 +12,7 @@
 
 #include "libft.h"
 
-/* TODO: INTO lib and test */
-int ft_isspace(char c)
-{
-	if ((c >= 9 && c <= 13) || c == 32)
-		return (c);
-	return (0);
-}
-
-/* TODO: INTO lib and test */
-int ft_pow(int num, int power) 
-{
-	if (power < 0)
-		return 0;
-	if (power == 0)
-		return 1;
-	return num * ft_pow(num, power - 1);
-}
-
-/*
-int ft_atoi(const char *str)
-{
-    int unsigned result = 0;
-    int power = 0;
-    int digit = 0;
-    int sign = 1;
-	
-    while (ft_isspace(*str))
-        str++;
-    if (*str == '-' || *str == '+') 
-    {
-        if (*str == '-')
-            sign = -1;
-        str++;
-    }
-    while (ft_isdigit(*str))
-        str++;
-    str--;
-    while (ft_isdigit(*str))
-    {
-        digit = *str - '0';
-        result += digit * ft_pow(10, power);
-        str--;
-        power++;
-    }
-    return result * sign;
-}
-*/
-
-
-
-# define FT_ULONG_MAX	((unsigned long)(~0L))
-# define FT_LONG_MAX	((long)(FT_ULONG_MAX >> 1))
+#include <stdio.h>
 
 int		ft_atoi(const char *str)
 {
@@ -72,8 +21,15 @@ int		ft_atoi(const char *str)
 	size_t			i;
 	int				sign;
 
+	printf("1: %zu\n", ~0l);
+	printf("2: %zu\n", (~0l) >> 1);
+	printf("3: %lu\n", (unsigned long)((long)(((unsigned long)(~0l)) >> 1) / 10));
+
 	result = 0;
 	border = (unsigned long)(FT_LONG_MAX / 10);
+
+	printf("4: %lu\n", border);
+
 	i = 0;
 	while (ft_isspace(str[i]))
 		i++;
