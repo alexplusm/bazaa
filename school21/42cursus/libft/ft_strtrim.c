@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-int static ft_includes(char c, char const *str, size_t len)
+static int		ft_includes(char c, char const *str, size_t len)
 {
 	while (len--)
 		if (str[len] == c)
@@ -20,7 +20,7 @@ int static ft_includes(char c, char const *str, size_t len)
 	return (0);
 }
 
-size_t static ft_right_idx(
+static size_t	ft_right_idx(
 	char const *s1, char const *set, size_t s_len, size_t set_len
 )
 {
@@ -30,7 +30,7 @@ size_t static ft_right_idx(
 	return (s_len + 1);
 }
 
-size_t static ft_left_idx(
+static size_t	ft_left_idx(
 	char const *s1, char const *set, size_t s_len, size_t set_len
 )
 {
@@ -40,13 +40,13 @@ size_t static ft_left_idx(
 	while (i < s_len)
 	{
 		if (!ft_includes(s1[i], set, set_len))
-			return i;
+			return (i);
 		i++;
 	}
-	return i;
+	return (i);
 }
 
-size_t static ft_get_memcnt_and_set_left_idx(
+static size_t	ft_get_memcnt_and_set_left_idx(
 	char const *s1, char const *set, size_t *left_idx
 )
 {
@@ -60,10 +60,10 @@ size_t static ft_get_memcnt_and_set_left_idx(
 	right_i = ft_right_idx(s1, set, s_len, set_len);
 	left_i = ft_left_idx(s1, set, s_len, set_len);
 	*left_idx = left_i;
-	return (left_i < right_i) ? s_len + 2 - left_i - (s_len - right_i) : 1;
+	return ((left_i < right_i) ? s_len + 2 - left_i - (s_len - right_i) : 1);
 }
 
-char *ft_strtrim(char const *s1, char const *set)
+char			*ft_strtrim(char const *s1, char const *set)
 {
 	size_t	mem_cnt;
 	size_t	left_i;
