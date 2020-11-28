@@ -93,8 +93,10 @@ def prepare_game(game_id):
 
 
 # ------ GAME LIST
-def get_games():
-    url = get_url_start() + "/api/v1/game"
+
+
+def get_games(ext_system_id):
+    url = get_url_start() + "/api/v1/game" + "?extSystemId=" + ext_system_id
     resp = requests.get(url)
     resp_body = json.loads(resp.text)
     print("GET games")

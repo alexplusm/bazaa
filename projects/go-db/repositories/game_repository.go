@@ -32,7 +32,7 @@ FROM games
 WHERE "game_id" = $1;
 `
 	selectGames = `
-SELECT "ext_system_id", "name", "start_date", "end_date", "answer_type", "question", "options_csv"
+SELECT "game_id", "ext_system_id", "name", "start_date", "end_date", "answer_type", "question", "options_csv"
 FROM games;
 `
 )
@@ -115,7 +115,7 @@ func (repo *GameRepository) SelectGames() ([]dao.GameDAO, error) {
 	for rows.Next() {
 		g := new(dao.GameDAO)
 		err = rows.Scan(
-			&g.ExtSystemID, &g.Name, &g.StartDate,
+			&g.GameID, &g.ExtSystemID, &g.Name, &g.StartDate,
 			&g.EndDate, &g.AnswerType, &g.Question, &g.Options,
 		)
 		if err != nil {

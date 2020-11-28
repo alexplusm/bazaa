@@ -17,3 +17,15 @@ type CreateGameResponseBody struct {
 type PrepareGameResponseBody struct {
 	GameID string `json:"gameId"`
 }
+
+type GameListResponseBody struct {
+	Games []GameItemResponseBody `json:"games"`
+}
+
+type GameItemResponseBody struct {
+	GameID string `json:"gameId"`
+	Name   string `json:"name"`
+	Status string `json:"status"`
+	From   string `json:"from"`
+	To     string `json:"to"`
+}

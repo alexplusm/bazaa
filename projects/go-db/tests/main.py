@@ -32,6 +32,7 @@ game = {
     "options": "yep, nope"
 }
 
+
 def complete_test():
     print("Config: ", get_url_start())
     ext_system_id = create_ext_system(ext_system)
@@ -50,7 +51,8 @@ def complete_test():
 
 def main():
     # complete_test()
-    get_games()
+    ext_system_id = "custom-ext-system-id"
+    get_games(ext_system_id)
 
 
 if __name__ == "__main__":
