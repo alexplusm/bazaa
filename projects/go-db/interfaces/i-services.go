@@ -50,3 +50,7 @@ type IScreenshotUserAnswerService interface {
 type IUserService interface {
 	CreateUser(userID string) error
 }
+
+type IAnswerService interface {
+	GetUserStatistics(userID, gameID string) error
+}

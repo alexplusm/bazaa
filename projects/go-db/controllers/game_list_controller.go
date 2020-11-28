@@ -24,7 +24,7 @@ func (controller *GameListController) GetGames(ctx echo.Context) error {
 	exist, err := controller.ExtSystemService.ExtSystemExist(extSystemID)
 	if err != nil {
 		log.Error("get games controller: ", err)
-		// TODO: return bad request or internal system error?
+		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
 	}
 
 	if !exist {

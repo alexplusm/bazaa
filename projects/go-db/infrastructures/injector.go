@@ -68,8 +68,8 @@ func (k *kernel) InjectGameListController() controllers.GameListController {
 	gameRepo := &repositories.GameRepository{DBConn: handler}
 	extSystemRepo := &repositories.ExtSystemRepository{DBConn: handler}
 
-	extSystemService := &services.ExtSystemService{ExtSystemRepo: extSystemRepo}
 	gameService := &services.GameService{GameRepo: gameRepo}
+	extSystemService := &services.ExtSystemService{ExtSystemRepo: extSystemRepo}
 
 	controller := controllers.GameListController{
 		GameService: gameService, ExtSystemService: extSystemService,
@@ -136,7 +136,17 @@ func (k *kernel) InjectScreenshotSetAnswerController() controllers.ScreenshotSet
 }
 
 func (k *kernel) InjectStatisticsUserController() controllers.StatisticsUserController {
-	controller := controllers.StatisticsUserController{}
+	handler := &PSQLHandler{k.pool}
+
+	answerRepo := &repositories.AnswerRepository{DBConn: handler}
+	extSystemRepo := &repositories.ExtSystemRepository{DBConn: handler}
+
+	answerService := &services.AnswerService{AnswerRepo: answerRepo}
+	extSystemService := &services.ExtSystemService{ExtSystemRepo: extSystemRepo}
+
+	controller := controllers.StatisticsUserController{
+		ExtSystemService: extSystemService, AnswerService: answerService,
+	}
 
 	return controller
 }
