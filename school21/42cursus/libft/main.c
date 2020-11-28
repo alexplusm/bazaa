@@ -312,11 +312,17 @@ void test_ft_strrchr()
 // ft_strnstr
 void inner_ft_strnstr(const char *haystack, const char *needle, size_t len)
 {
-    char *lr = strnstr(haystack, needle, len);
+    char *lr;
     char *mr = ft_strnstr(haystack, needle, len);
 
     printf("mine: %s | %p | ", mr, mr);
-    printf("lib: %s | %p \n", lr, lr);
+    if (needle == NULL)
+        printf("\n");
+    else
+    {
+        lr = strnstr(haystack, needle, len);
+        printf("lib: %s | %p \n", lr, lr);
+    }
 }
 
 void test_ft_strnstr()
@@ -326,6 +332,10 @@ void test_ft_strnstr()
     inner_ft_strnstr("12345", "23", 4);
     inner_ft_strnstr("1234-2345-aa", "2345", 4); // WTF?!
     inner_ft_strnstr("112", "", 0);
+    inner_ft_strnstr("", "", 0);
+    inner_ft_strnstr(NULL, "", 0);
+    inner_ft_strnstr("", NULL, 0);
+    inner_ft_strnstr(NULL, NULL, 0);
 }
 
 // ft_strncmp
@@ -471,23 +481,41 @@ void test_ft_strdup()
 }
 
 // ft_substr
+void inner_ft_substr(char *s, unsigned int start, size_t len, char *expected)
+{
+    char *res;
+    int i;
+
+    res = ft_substr(s, start, len);
+    i = strcmp(res, expected);
+    printf("(%d) res: %s (%p) | expected: %s\n", i == 0, res, res, expected);
+    printf("-----\n");
+    // free(res);
+}
+
 void test_ft_substr()
 {
-    char *res = ft_substr("123", 10, 1);
-    int i = strncmp(res, "", 5);
-    printf("res: %s (%p) | %d\n", res, res, i == 0);
+    inner_ft_substr("123", 10, 1, "");
+    inner_ft_substr("test", 1, 6, "est");
+    inner_ft_substr("", 0, 1, "");
 
-    res = ft_substr("", 0, 1);
-    i = strncmp(res, "", 5);
-    printf("res: %s (%p) | %d\n", res, res, i == 0);
+    inner_ft_substr("abc", 0, 100, "abc");
 
-    res = ft_substr("123", 1, 1);
-    i = strncmp(res, "2", 5);
-    printf("res: %s (%p) | %d\n", res, res, i == 0);
-    // printf("wft: %d\n", res[1] == '\0');
+    inner_ft_substr("123", 0, 100, "123");
+    // inner_ft_substr("123", 0, 2, "12"); // TODO
+    
+ 
+ 
+    // inner_ft_substr(NULL, 12, 123, NULL);
+    
 
-    res = ft_substr(NULL, 0, 12);
-    printf("res: %s\n", res);
+
+    // res = ft_substr("123", 1, 1);
+    // i = strncmp(res, "2", 5);
+    // printf("res: %s (%p) | %d\n", res, res, i == 0);
+
+
+    // res = ft_substr("", 0, 1);
 }
 
 // ft_strjoin
@@ -555,16 +583,16 @@ void test_ft_split()
 
     // case 2
 
-    char	*string = "      split       this for   me  !       ";
-    // char	**expected = ((char*[6]){"split", "this", "for", "me", "!", NULL});
-    char	**result = ft_split(string, ' ');
+    // char	*string = "      split       this for   me  !       ";
+    // // char	**expected = ((char*[6]){"split", "this", "for", "me", "!", NULL});
+    // char	**result = ft_split(string, ' ');
     
-    int i = 0;
-    while (i < 4)
-    {
-        printf("str: %s | len: %zu | %p\n ", result[i], ft_strlen(result[i]), result[i]);
-        i++; 
-    }
+    // int i = 0;
+    // while (i < 4)
+    // {
+    //     printf("str: %s | len: %zu | %p\n ", result[i], ft_strlen(result[i]), result[i]);
+    //     i++; 
+    // }
 }
 
 // ft_itoa
@@ -674,10 +702,10 @@ void test_1_part()
     // test_ft_strlcat();
     // test_ft_strchr();
     // test_ft_strrchr();
-    // test_ft_strnstr();
+    test_ft_strnstr();
     // test_ft_strncmp();
 
-    test_atoi();
+    // test_atoi();
     // test_ft_isalpha();
     // test_ft_isdigit();
     // test_ft_isalnum();
@@ -691,7 +719,7 @@ void test_1_part()
 
 void test_2_part()
 {
-    // test_ft_substr();
+    test_ft_substr();
     // test_ft_strjoin();
     // test_ft_strtrim();
     // test_ft_split();
@@ -701,13 +729,13 @@ void test_2_part()
 void test_bonus_part()
 {
     // test_ft_lstclear();
-    test_ft_lstmap();
+    // test_ft_lstmap();
 }
 
 int main() 
 {
-    test_1_part();
-    // test_2_part();
+    // test_1_part();
+    test_2_part();
     // test_bonus_part();
 
     return 0;
