@@ -335,7 +335,7 @@ void test_ft_strnstr()
     inner_ft_strnstr("", "", 0);
     inner_ft_strnstr(NULL, "", 0);
     inner_ft_strnstr("", NULL, 0);
-    inner_ft_strnstr(NULL, NULL, 0);
+    // inner_ft_strnstr(NULL, NULL, 0);
 }
 
 // ft_strncmp
@@ -734,8 +734,8 @@ void test_bonus_part()
 
 int main() 
 {
-    // test_1_part();
-    test_2_part();
+    test_1_part();
+    // test_2_part();
     // test_bonus_part();
 
     return 0;
