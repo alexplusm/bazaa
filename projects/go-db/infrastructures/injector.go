@@ -28,6 +28,7 @@ type IInjector interface {
 	InjectScreenshotSetAnswerController() controllers.ScreenshotSetAnswerController
 
 	InjectStatisticsUserController() controllers.StatisticsUserController
+	InjectStatisticsLeaderboardController() controllers.StatisticsLeaderboardController
 
 	// INFO: services
 	InjectGameCacheService() services.GameCacheService
@@ -147,6 +148,17 @@ func (k *kernel) InjectStatisticsUserController() controllers.StatisticsUserCont
 	controller := controllers.StatisticsUserController{
 		ExtSystemService: extSystemService, AnswerService: answerService,
 	}
+
+	return controller
+}
+
+func (k *kernel) InjectStatisticsLeaderboardController() controllers.StatisticsLeaderboardController {
+	handler := &PSQLHandler{k.pool}
+
+	extSystemRepo := &repositories.ExtSystemRepository{DBConn: handler}
+	extSystemService := &services.ExtSystemService{ExtSystemRepo: extSystemRepo}
+
+	controller := controllers.StatisticsLeaderboardController{ExtSystemService: extSystemService}
 
 	return controller
 }

@@ -7,4 +7,5 @@ const (
 	GameIDsQueryParamName     = "gameIds"
 	FromQueryParamName        = "from"
 	ToQueryParamName          = "to"
+	LimitQueryParamName       = "limit"
 )

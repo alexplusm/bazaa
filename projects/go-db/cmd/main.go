@@ -72,6 +72,7 @@ func registerRoutes(e *echo.Echo) error {
 	screenshotGetController := injector.InjectScreenshotGetController()
 	screenshotSetAnswerController := injector.InjectScreenshotSetAnswerController()
 	statisticsUserController := injector.InjectStatisticsUserController()
+	statisticsLeaderboardController := injector.InjectStatisticsLeaderboardController()
 
 	// TODO:later
 	// Create middleware for each route with whitelist of ContentTypes:
@@ -100,6 +101,7 @@ func registerRoutes(e *echo.Echo) error {
 	)
 
 	e.GET("api/v1/statistics/user/:user-id", statisticsUserController.GetStatistics)
+	e.GET("api/v1/statistics/users/leaderboard", statisticsLeaderboardController.GetStatistics)
 
 	// TODO: for test
 	e.GET("check/alive", controllers.ItsAlive)
