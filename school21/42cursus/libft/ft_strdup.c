@@ -25,7 +25,6 @@ char	*ft_strdup(const char *s1)
 	res = malloc(sizeof(char) * (size + 1));
 	if (res == NULL)
 	{
-		errno = ENOMEM;
 		return (NULL);
 	}
 	while (i < size)
