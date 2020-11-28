@@ -76,15 +76,12 @@ func (repo *ExtSystemRepository) ExtSystemExist(extSystemID string) (bool, error
 	}
 	defer conn.Release()
 
-	row := conn.QueryRow(ctx, existExtSystemStatement, extSystemID)
-
 	var count int64
 
+	row := conn.QueryRow(ctx, existExtSystemStatement, extSystemID)
 	if row.Scan(&count) != nil {
 		return false, fmt.Errorf("extSystem exist: %v", err)
 	}
-
-	fmt.Println("COUNT: ", count, extSystemID)
 
 	return count != 0, nil
 }

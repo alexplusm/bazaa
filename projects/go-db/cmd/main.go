@@ -71,6 +71,7 @@ func registerRoutes(e *echo.Echo) error {
 	extSystemCreateController := injector.InjectExtSystemCreateController()
 	screenshotGetController := injector.InjectScreenshotGetController()
 	screenshotSetAnswerController := injector.InjectScreenshotSetAnswerController()
+	statisticsUserController := injector.InjectStatisticsUserController()
 
 	// TODO:later
 	// Create middleware for each route with whitelist of ContentTypes:
@@ -79,7 +80,6 @@ func registerRoutes(e *echo.Echo) error {
 	// TODO: ["application/json"]
 	e.POST("api/v1/game", gameCreateController.CreateGame)
 
-	// TODO: ["application/json"] (пока не нужно)
 	e.GET("api/v1/game", gameListController.GetGames)
 
 	// TODO: ["application/json"]
@@ -91,7 +91,6 @@ func registerRoutes(e *echo.Echo) error {
 	// TODO: ["application/json"]
 	e.POST("api/v1/ext_system", extSystemCreateController.CreateExtSystem)
 
-	// TODO: ["application/json"]
 	e.GET("api/v1/game/:game-id/screenshot", screenshotGetController.GetScreenshot)
 
 	// TODO: ["application/json"]
@@ -99,6 +98,8 @@ func registerRoutes(e *echo.Echo) error {
 		"api/v1/game/:game-id/screenshot/:screenshot-id/answer",
 		screenshotSetAnswerController.SetAnswer,
 	)
+
+	e.GET("api/v1/statistics/user/:user-id", statisticsUserController.GetStatistics)
 
 	// TODO: for test
 	e.GET("check/alive", controllers.ItsAlive)
