@@ -10,6 +10,7 @@ from tests.ext_system.ext_system import create_ext_system
 from tests.game.game import create_game, update_game, prepare_game
 from tests.screenshot.high_load import run_high_load
 from tests.utils import get_timestamp
+from tests.config import get_url_start
 
 # prepare game
 
@@ -31,6 +32,7 @@ game = {
 
 
 def main():
+    print("Config: ", get_url_start())
     ext_system_id = create_ext_system(ext_system)
     if ext_system_id is None:
         ext_system_id = ext_system["extSystemId"]
