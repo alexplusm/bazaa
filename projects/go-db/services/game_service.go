@@ -29,3 +29,7 @@ func (service *GameService) GetGame(gameID string) (bo.GameBO, error) {
 
 	return gameBO, nil
 }
+
+func (service *GameService) GetGames() {
+	fmt.Println("get games!!!")
+}

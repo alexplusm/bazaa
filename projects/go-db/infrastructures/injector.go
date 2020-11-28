@@ -19,6 +19,7 @@ type IInjector interface {
 	// INFO: controllers
 	InjectGameCreateController() controllers.GameCreateController
 	InjectGameUpdateController() controllers.GameUpdateController
+	InjectGameListController() controllers.GameListController
 	InjectGamePrepareController() controllers.GamePrepareController
 	InjectExtSystemCreateController() controllers.ExtSystemCreateController
 	InjectScreenshotGetController() controllers.ScreenshotGetController
@@ -53,6 +54,17 @@ func (k *kernel) InjectGameUpdateController() controllers.GameUpdateController {
 	controller := controllers.GameUpdateController{
 		GameService: gameService, AttachSourceToGameService: attachSourceToGameService,
 	}
+
+	return controller
+}
+
+func (k *kernel) InjectGameListController() controllers.GameListController {
+	handler := &PSQLHandler{k.pool}
+
+	gameRepo := &repositories.GameRepository{DBConn: handler}
+	gameService := &services.GameService{GameRepo: gameRepo}
+
+	controller := controllers.GameListController{GameService: gameService}
 
 	return controller
 }

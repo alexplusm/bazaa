@@ -11,6 +11,7 @@ import (
 type IGameService interface {
 	CreateGame(game bo.GameBO) (string, error)
 	GetGame(gameID string) (bo.GameBO, error)
+	GetGames()
 }
 
 type IAttachSourceToGameService interface {
