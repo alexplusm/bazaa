@@ -30,6 +30,21 @@ func (service *GameService) GetGame(gameID string) (bo.GameBO, error) {
 	return gameBO, nil
 }
 
-func (service *GameService) GetGames() {
-	fmt.Println("get games!!!")
+func (service *GameService) GetGames(extSystemID string) ([]bo.GameBO, error) {
+	// INFO: filter by "extSystemID" in SQL statement | for performance
+	// remove filtering in this func
+	gamesDAO, err := service.GameRepo.SelectGames()
+	if err != nil {
+		return nil, fmt.Errorf("get games: %v", err)
+	}
+
+	list := make([]bo.GameBO, 0, len(gamesDAO))
+
+	for _, gameDAO := range gamesDAO {
+		if gameDAO.ExtSystemID == extSystemID {
+			list = append(list, gameDAO.ToBO())
+		}
+	}
+
+	return list, nil
 }

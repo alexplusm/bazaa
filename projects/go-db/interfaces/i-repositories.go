@@ -7,6 +7,7 @@ import (
 type IGameRepository interface {
 	InsertGame(game dao.GameDAO) (string, error)
 	SelectGame(gameID string) (dao.GameDAO, error)
+	SelectGames() ([]dao.GameDAO, error)
 }
 
 type IExtSystemRepository interface {

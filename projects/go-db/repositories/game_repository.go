@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
@@ -28,6 +30,10 @@ RETURNING "game_id";
 SELECT "ext_system_id", "name", "start_date", "end_date", "answer_type", "question", "options_csv"
 FROM games
 WHERE "game_id" = $1;
+`
+	selectGames = `
+SELECT "ext_system_id", "name", "start_date", "end_date", "answer_type", "question", "options_csv"
+FROM games;
 `
 )
 
@@ -88,4 +94,39 @@ func (repo *GameRepository) SelectGame(gameID string) (dao.GameDAO, error) {
 	}
 
 	return *g, nil
+}
+
+func (repo *GameRepository) SelectGames() ([]dao.GameDAO, error) {
+	p := repo.DBConn.GetPool()
+	conn, err := p.Acquire(context.Background())
+	if err != nil {
+		return nil, fmt.Errorf("select games: acquire connection: %v", err)
+	}
+	defer conn.Release()
+
+	rows, err := conn.Query(context.Background(), selectGames)
+	if err != nil {
+		return nil, fmt.Errorf("select games: %v", err)
+	}
+	defer rows.Close()
+
+	list := make([]dao.GameDAO, 0, 1024)
+
+	for rows.Next() {
+		g := new(dao.GameDAO)
+		err = rows.Scan(
+			&g.ExtSystemID, &g.Name, &g.StartDate,
+			&g.EndDate, &g.AnswerType, &g.Question, &g.Options,
+		)
+		if err != nil {
+			log.Error("select games: retrieve game: ", err)
+			continue
+		}
+		list = append(list, *g)
+	}
+	if rows.Err() != nil {
+		log.Error("select games: ", rows.Err())
+	}
+
+	return list, nil
 }
