@@ -36,6 +36,7 @@ func main() {
 	initDirs()
 
 	e := echo.New()
+	e.Use(middleware.Logger())
 	e.Pre(middleware.RemoveTrailingSlash())
 	// TODO: https://echo.labstack.com/middleware/logger
 	e.HTTPErrorHandler = func(err error, ctx echo.Context) {

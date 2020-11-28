@@ -77,3 +77,10 @@ Tasks:
 3) если wireguard с интерфейсом, то в него кидаешь конфиг
 4) коннектишься
 5) переходишь на ssh user@ip
+
+# TODOS:
+-- insert user in not exist!
+now postgresql throw error:
+postgres_database | 2020-11-28 10:37:50.732 UTC [40] ERROR:  duplicate key value violates unique constraint "users_pkey"
+postgres_database | 2020-11-28 10:37:50.732 UTC [40] DETAIL:  Key (user_id)=(i-user-103) already exists.
+postgres_database | 2020-11-28 10:37:50.732 UTC [40] STATEMENT:  INSERT INTO users ("user_id") VALUES ($1);
