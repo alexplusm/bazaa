@@ -67,3 +67,13 @@ Tasks:
 * method for adding new external system
     * with exist uuid
     * with generating new uuid
+
+
+# INFO
+
+Подключение к удаленному серверу по VPN
+1) ставишь wireguard
+2) распаковываешь конфиг куда-нибудь
+3) если wireguard с интерфейсом, то в него кидаешь конфиг
+4) коннектишься
+5) переходишь на ssh user@ip

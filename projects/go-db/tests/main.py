@@ -14,7 +14,7 @@ from tests.utils import get_timestamp
 # prepare game
 
 ext_system = {
-    "extSystemId": "ext-id-3",
+    # "extSystemId": "ext-id-5",
     "description": "some description",
     "postResultsUrl": "https://abc/lol.php"
 }
