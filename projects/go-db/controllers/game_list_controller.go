@@ -14,13 +14,25 @@ import (
 )
 
 type GameListController struct {
-	GameService interfaces.IGameService
+	GameService      interfaces.IGameService
+	ExtSystemService interfaces.IExtSystemService
 }
 
 func (controller *GameListController) GetGames(ctx echo.Context) error {
 	extSystemID := ctx.QueryParam(consts.ExtSystemIDQueryParamName)
 
-	// TODO: check existance of extSystemID -> don't exist
+	exist, err := controller.ExtSystemService.ExtSystemExist(extSystemID)
+	if err != nil {
+		log.Error("get games controller: ", err)
+		// TODO: return bad request or internal system error?
+	}
+
+	if !exist {
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildBadRequestErrorResponseWithMgs("extSystem not found"),
+		)
+	}
 
 	fmt.Println("extSystemID: ", extSystemID)
 

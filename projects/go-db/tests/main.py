@@ -51,7 +51,8 @@ def complete_test():
 
 def main():
     # complete_test()
-    ext_system_id = "custom-ext-system-id"
+
+    ext_system_id = "ext-id-3"
     get_games(ext_system_id)
 
 

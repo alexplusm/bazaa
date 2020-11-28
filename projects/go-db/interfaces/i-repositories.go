@@ -13,6 +13,7 @@ type IGameRepository interface {
 type IExtSystemRepository interface {
 	InsertExtSystem(extSystemDAO dao.ExtSystemDAO) (string, error)
 	SelectExtSystems() ([]dao.ExtSystemDAO, error)
+	ExtSystemExist(extSystemID string) (bool, error)
 }
 
 type ISourceRepository interface {

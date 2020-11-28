@@ -21,6 +21,7 @@ type IAttachSourceToGameService interface {
 
 type IExtSystemService interface {
 	CreateExtSystem(extSystem bo.ExtSystemBO) (string, error)
+	ExtSystemExist(extSystemID string) (bool, error)
 }
 
 type IGameCacheService interface {

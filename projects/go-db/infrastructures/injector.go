@@ -62,9 +62,14 @@ func (k *kernel) InjectGameListController() controllers.GameListController {
 	handler := &PSQLHandler{k.pool}
 
 	gameRepo := &repositories.GameRepository{DBConn: handler}
+	extSystemRepo := &repositories.ExtSystemRepository{DBConn: handler}
+
+	extSystemService := &services.ExtSystemService{ExtSystemRepo: extSystemRepo}
 	gameService := &services.GameService{GameRepo: gameRepo}
 
-	controller := controllers.GameListController{GameService: gameService}
+	controller := controllers.GameListController{
+		GameService: gameService, ExtSystemService: extSystemService,
+	}
 
 	return controller
 }
