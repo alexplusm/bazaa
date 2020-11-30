@@ -33,7 +33,8 @@ WHERE "game_id" = $1;
 `
 	selectGames = `
 SELECT "game_id", "ext_system_id", "name", "start_date", "end_date", "answer_type", "question", "options_csv"
-FROM games;
+FROM games
+WHERE "ext_system_id" = ($1);
 `
 )
 
@@ -96,7 +97,7 @@ func (repo *GameRepository) SelectGame(gameID string) (dao.GameDAO, error) {
 	return *g, nil
 }
 
-func (repo *GameRepository) SelectGames() ([]dao.GameDAO, error) {
+func (repo *GameRepository) SelectGames(extSystemID string) ([]dao.GameDAO, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -104,7 +105,7 @@ func (repo *GameRepository) SelectGames() ([]dao.GameDAO, error) {
 	}
 	defer conn.Release()
 
-	rows, err := conn.Query(context.Background(), selectGames)
+	rows, err := conn.Query(context.Background(), selectGames, extSystemID)
 	if err != nil {
 		return nil, fmt.Errorf("select games: %v", err)
 	}

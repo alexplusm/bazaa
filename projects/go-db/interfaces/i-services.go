@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"mime/multipart"
+	"time"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
@@ -53,6 +54,6 @@ type IUserService interface {
 
 type IAnswerService interface {
 	GetUserStatistics(
-		userID, totalOnly, gameIDs, from, to string,
+		userID string, totalOnly bool, games []bo.GameBO, from, to time.Time,
 	) error
 }

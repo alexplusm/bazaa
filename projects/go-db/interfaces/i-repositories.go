@@ -2,12 +2,13 @@ package interfaces
 
 import (
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
+	"time"
 )
 
 type IGameRepository interface {
 	InsertGame(game dao.GameDAO) (string, error)
 	SelectGame(gameID string) (dao.GameDAO, error)
-	SelectGames() ([]dao.GameDAO, error)
+	SelectGames(extSystemID string) ([]dao.GameDAO, error)
 }
 
 type IExtSystemRepository interface {
@@ -29,6 +30,9 @@ type IScreenshotRepository interface {
 type IAnswerRepository interface {
 	InsertAnswer(answer dao.AnswerDAO) error
 	InsertAnswers(answers []dao.AnswerDAO)
+	SelectAnswersByUser(
+		userID string, gameIDs []string, from, to time.Time,
+	) ([]dao.AnswerStatDAO, error)
 }
 
 type IUserRepository interface {
