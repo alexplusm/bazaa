@@ -23,7 +23,7 @@ def rand_answer():
 
 
 def get_users():
-    count = 10000 * 10
+    count = 100000
     if len(sys.argv) > 1:
         count = int(sys.argv[1])
 
@@ -87,13 +87,16 @@ def request_log(method, user_id, json_resp):
 async def user_case(ext_system_id, game_id, user_id, session: ClientSession):
     resp = await get_screenshot(ext_system_id, game_id, user_id, session)
     if resp is None or not resp['success']:
-        return
+        return 0
+
+    # resp['error']['message'] = "game is finished"
 
     screenshot_id = resp['data']['screenshot_id']
 
     # INFO: timeout
     # await asyncio.sleep(1 + random() * 2)
     await set_answer_to_screenshot(ext_system_id, game_id, user_id, screenshot_id, session)
+    return 1
 
 
 async def main(ext_system_id, game_id):
@@ -121,8 +124,10 @@ async def main(ext_system_id, game_id):
                     user_case(ext_system_id, game_id, user, session)
                 )
 
-            await asyncio.gather(*tasks)
+            results = await asyncio.gather(*tasks)
             tasks = []
+            if 0 in results:
+                break
 
         t1 = time.time()
         total = t1-t0

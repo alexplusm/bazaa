@@ -13,6 +13,9 @@ from tests.game.game import (
 from tests.screenshot.high_load import run_high_load
 from tests.utils import get_timestamp
 from tests.config import get_url_start
+from tests.statistics.statistics import (
+    get_statistics_user
+)
 
 # prepare game
 
@@ -49,11 +52,28 @@ def complete_test():
     run_high_load(ext_system_id, game_id)
 
 
+def test_statistics():
+    user_id = "user-id-1"
+    game_id = "5c7713c7-3960-4c0d-ae7f-c27417ed234d"
+    ext_system_id = "e23d6e88-7a4d-4945-aeb0-eaed9c6761eb"
+    params = {
+        "extSystemId": ext_system_id,
+        "gameIds": game_id + "," + game_id + "asd",
+        "totalOnly": "TrUe",
+        "from": str(get_timestamp(timedelta(days=-10))),
+        "to": str(get_timestamp(timedelta(days=1))),
+    }
+    res = get_statistics_user(user_id, params)
+    print("result: ", res)
+
+
 def main():
+    test_statistics()
+
     # complete_test()
 
-    ext_system_id = "ext-id-3"
-    get_games(ext_system_id)
+    # ext_system_id = "ext-id-3"
+    # get_games(ext_system_id)
 
 
 if __name__ == "__main__":
