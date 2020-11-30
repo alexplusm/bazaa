@@ -36,7 +36,7 @@ game = {
 }
 
 
-def complete_test():
+def complete_test(ext_system_id):
     print("Config: ", get_url_start())
     ext_system_id = create_ext_system(ext_system)
     if ext_system_id is None:
@@ -52,13 +52,25 @@ def complete_test():
     run_high_load(ext_system_id, game_id)
 
 
+def complete_test_without_ext_sys(ext_system_id):
+    print("Config: ", get_url_start())
+    game["extSystemId"] = ext_system_id
+    game_id = create_game(game)
+    if game_id is None:
+        print("error while game creation")
+    update_game(game_id)
+    prepare_game(game_id)
+
+    run_high_load(ext_system_id, game_id)
+
+
 def test_statistics():
-    user_id = "user-id-1"
+    user_id = "i-user-2"
     game_id = "5c7713c7-3960-4c0d-ae7f-c27417ed234d"
-    ext_system_id = "e23d6e88-7a4d-4945-aeb0-eaed9c6761eb"
+    ext_system_id = "b0e4c252-9b72-4761-b574-fff694965dcf"
     params = {
         "extSystemId": ext_system_id,
-        "gameIds": game_id + "," + game_id + "asd",
+        # "gameIds": game_id,
         "totalOnly": "TrUe",
         "from": str(get_timestamp(timedelta(days=-10))),
         "to": str(get_timestamp(timedelta(days=1))),
@@ -68,9 +80,11 @@ def test_statistics():
 
 
 def main():
+    # complete_test()
+
     test_statistics()
 
-    # complete_test()
+    # complete_test_without_ext_sys("b0e4c252-9b72-4761-b574-fff694965dcf")
 
     # ext_system_id = "ext-id-3"
     # get_games(ext_system_id)
