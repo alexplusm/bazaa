@@ -95,7 +95,17 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 		}
 	}
 
-	controller.AnswerService.GetUserStatistics(userID, qp.TotalOnly, expectedGames, fromTime, toTime)
+	stats, err := controller.AnswerService.GetUserStatistics(userID, qp.TotalOnly, expectedGames, fromTime, toTime)
+	if err != nil {
+		// TODO: LOG ERROR
+		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
+	}
 
-	return nil
+	if qp.TotalOnly {
+		resp := bo.StatsToTotalOnlyDTO(stats)
+		return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(resp))
+	} else {
+		resp := bo.StatsToDTO(stats)
+		return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(resp))
+	}
 }

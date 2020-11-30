@@ -19,7 +19,7 @@ host_and_port = get_url_start() + '/'
 
 def rand_answer():
     r = random()
-    return '0' if r > 0.2 else '1'
+    return '0' if r > 0.59 else '1'
 
 
 def get_users():

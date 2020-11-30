@@ -55,5 +55,5 @@ type IUserService interface {
 type IAnswerService interface {
 	GetUserStatistics(
 		userID string, totalOnly bool, games []bo.GameBO, from, to time.Time,
-	) error
+	) ([]bo.StatisticsUserBO, error)
 }

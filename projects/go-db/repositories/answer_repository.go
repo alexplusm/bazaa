@@ -22,7 +22,7 @@ INSERT INTO answers ("screenshot_id", "game_id", "user_id", "value", "answer_dat
 VALUES ($1, $2, $3, $4, $5);
 `
 	selectAnswersByUserStatement = `
-SELECT ans.game_id, ans.screenshot_id, ans.answer_date, s.expert_answer, s.users_answer
+SELECT ans.game_id, ans.screenshot_id, ans.answer_date, ans.value, s.expert_answer, s.users_answer
 FROM answers ans
 INNER JOIN screenshots s
 ON s.screenshot_id = ans.screenshot_id
@@ -80,8 +80,6 @@ func (repo *AnswerRepository) SelectAnswersByUser(
 	// TODO: костыль : добавлены ковычки! и аппендиться список gameID
 	statement := selectAnswersByUserStatement + "('" + gamesVal + "');"
 
-	fmt.Println("statement: ", statement)
-
 	rows, err := conn.Query(
 		context.Background(), statement,
 		userID, from.Unix(), to.Unix(),
@@ -100,7 +98,7 @@ func (repo *AnswerRepository) SelectAnswersByUser(
 
 		err = rows.Scan(
 			&a.GameID, &a.ScreenshotID, &a.AnswerDate,
-			&a.ExpertAnswer, &usersAnswer,
+			&a.Value, &a.ExpertAnswer, &usersAnswer,
 		)
 		a.UsersAnswer = string(usersAnswer)
 		if err != nil {
