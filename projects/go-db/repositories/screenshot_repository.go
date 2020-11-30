@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgx/v4/pgxpool"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
@@ -28,6 +29,11 @@ SELECT "screenshot_id", "source_id", "filename", "expert_answer", "users_answer"
 FROM screenshots
 WHERE screenshots.game_id = $1
 `
+	updateScreenshotUsersAnswerStatement = `
+UPDATE screenshots
+SET users_answer = ($1)
+WHERE screenshots.screenshot_id = ($2)
+`
 )
 
 func (repo *ScreenshotRepository) SelectScreenshotsByGameID(gameID string) ([]dao.ScreenshotDAOFull, error) {
@@ -50,8 +56,7 @@ func (repo *ScreenshotRepository) SelectScreenshotsByGameID(gameID string) ([]da
 	for row.Next() {
 		err := row.Scan(&screenshotID, &sourceID, &filename, &expertAnswer, &usersAnswer)
 		if err != nil {
-			// TODO:log error
-			fmt.Println("Error: ", err)
+			log.Error("select screenshots by game id: ", err)
 			continue
 		}
 		obj := dao.ScreenshotDAOFull{
@@ -133,6 +138,26 @@ func insertScreenshotWithExpertAnswer(conn *pgxpool.Conn, s dao.ScreenshotWithEx
 		return fmt.Errorf("insert screenshot: %v", err)
 	}
 	row.Close()
+
+	return nil
+}
+
+func (repo *ScreenshotRepository) UpdateScreenshotUsersAnswer(screenshotID, usersAnswer string) error {
+	p := repo.DBConn.GetPool()
+	conn, err := p.Acquire(context.Background())
+	if err != nil {
+		return fmt.Errorf("update screenshot users answer: acquire connection: %v", err)
+	}
+	defer conn.Release()
+
+	row, err := conn.Query(
+		context.Background(), updateScreenshotUsersAnswerStatement,
+		usersAnswer, screenshotID,
+	)
+	if err != nil {
+		return fmt.Errorf("update screenshot users answer: %v", err)
+	}
+	defer row.Close()
 
 	return nil
 }

@@ -49,7 +49,7 @@ attribs:
 
 // NOTE
 * how work with TIMESTAMP in postgresql
-- new Date().toISOString() from JavasSript give correct date ISO string for postgresql!
+- new Date().toISOString() from JavaScript give correct date ISO string for postgresql!
 CREATE TABLE test_ts (
 	ts TIMESTAMP
 );

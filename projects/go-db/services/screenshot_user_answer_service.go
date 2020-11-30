@@ -1,7 +1,7 @@
 package services
 
 import (
-	"fmt"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
@@ -11,7 +11,8 @@ import (
 )
 
 type ScreenshotUserAnswerService struct {
-	AnswerRepo interfaces.IAnswerRepository
+	AnswerRepo     interfaces.IAnswerRepository
+	ScreenshotRepo interfaces.IScreenshotRepository
 }
 
 func (service *ScreenshotUserAnswerService) BuildUserAnswerResponse(
@@ -89,16 +90,28 @@ func (service *ScreenshotUserAnswerService) ScreenshotIsFinished(
 func (service *ScreenshotUserAnswerService) SaveUsersAnswers(
 	answers []bo.UserAnswerCacheBO, gameID, screenshotID string,
 ) {
-	fmt.Println("+++ SaveUsersAnswers")
-	fmt.Printf("answers: %+v\n\n", answers)
-
+	answersCountMap := make(map[string]int)
+	// TODO: config?! "-1": default usersAnswer
+	// (когда пользователи не выбрали ответ достаточно однозначно)
+	//  < 7 одинаковых ответов
+	usersAnswer := "-1"
 	answersDAO := make([]dao.AnswerDAO, 0, len(answers))
 	for _, answer := range answers {
 		answerDAO := dao.AnswerDAO{}
 		answerDAO.FromCacheBO(answer, gameID, screenshotID)
+		answersCountMap[answerDAO.Value]++
 		answersDAO = append(answersDAO, answerDAO)
 	}
 
+	for key, value := range answersCountMap {
+		if value >= consts.RightAnswerThreshold {
+			usersAnswer = key
+		}
+	}
+	err := service.ScreenshotRepo.UpdateScreenshotUsersAnswer(screenshotID, usersAnswer)
+	if err != nil {
+		log.Error("save users answer: ", err)
+	}
 	service.AnswerRepo.InsertAnswers(answersDAO)
 }
 

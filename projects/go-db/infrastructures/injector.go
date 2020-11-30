@@ -125,9 +125,12 @@ func (k *kernel) InjectScreenshotSetAnswerController() controllers.ScreenshotSet
 	dbHandler := &PSQLHandler{k.pool}
 
 	answerRepo := &repositories.AnswerRepository{DBConn: dbHandler}
+	screenshotRepo := &repositories.ScreenshotRepository{DBConn: dbHandler}
 
 	screenshotCacheService := &services.ScreenshotCacheService{RedisClient: redisHandler}
-	screenshotUserAnswerService := &services.ScreenshotUserAnswerService{AnswerRepo: answerRepo}
+	screenshotUserAnswerService := &services.ScreenshotUserAnswerService{
+		AnswerRepo: answerRepo, ScreenshotRepo: screenshotRepo,
+	}
 
 	controller := controllers.ScreenshotSetAnswerController{
 		ScreenshotCacheService:      screenshotCacheService,

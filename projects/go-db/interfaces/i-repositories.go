@@ -25,6 +25,7 @@ type IScreenshotRepository interface {
 	SelectScreenshotsByGameID(gameID string) ([]dao.ScreenshotDAOFull, error)
 	InsertScreenshots(screenshots []dao.ScreenshotDAO) error
 	InsertScreenshotsWithExpertAnswer(screenshots []dao.ScreenshotWithExpertAnswerDAO) error
+	UpdateScreenshotUsersAnswer(screenshotID, usersAnswer string) error
 }
 
 type IAnswerRepository interface {
