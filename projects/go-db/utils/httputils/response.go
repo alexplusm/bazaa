@@ -51,3 +51,7 @@ func BuildBadRequestErrorResponseWithMgs(message string) interface{} {
 	}
 	return BuildErrorResponse(http.StatusBadRequest, msg)
 }
+
+func BuildNotFoundRequestErrorResponse(message string) interface{} {
+	return BuildErrorResponse(http.StatusNotFound, message)
+}

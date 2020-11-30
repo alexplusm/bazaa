@@ -48,8 +48,10 @@ func (controller *ScreenshotGetController) GetScreenshot(ctx echo.Context) error
 
 	screenshot, hasScreenshot := controller.ScreenshotCacheService.GetScreenshot(gameID, userID)
 	if !hasScreenshot {
-		// TODO: game over
-		return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildNotFoundRequestErrorResponse("game is finished"),
+		)
 	}
 
 	// TODO:!!!!!!

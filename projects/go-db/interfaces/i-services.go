@@ -52,5 +52,7 @@ type IUserService interface {
 }
 
 type IAnswerService interface {
-	GetUserStatistics(userID, gameID string) error
+	GetUserStatistics(
+		userID, totalOnly, gameIDs, from, to string,
+	) error
 }
