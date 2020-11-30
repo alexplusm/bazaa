@@ -33,6 +33,11 @@ func (qp *StatisticsUserQueryParams) FromCTX(ctx echo.Context) {
 
 	qp.ExtSystemID = ctx.QueryParam(consts.ExtSystemIDQueryParamName)
 	qp.TotalOnly = strings.ToLower(totalOnly) == "true"
-	qp.GameIDs = strings.Split(gameIDs, ",")
 	qp.Duration = duration
+
+	if gameIDs == "" {
+		qp.GameIDs = make([]string, 0, 0)
+	} else {
+		qp.GameIDs = strings.Split(gameIDs, ",")
+	}
 }

@@ -33,6 +33,8 @@ func (g *GameBO) FromDTO(src dto.CreateGameRequestBody, validate *validator.Vali
 		return fmt.Errorf("game: from dto: %v", err)
 	}
 
+	// TODO: use FromTimestampToTime
+
 	g.StartDate = time.Unix(startDate, 0)
 	g.EndDate = time.Unix(endDate, 0)
 
