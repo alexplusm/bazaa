@@ -2,11 +2,9 @@ package services
 
 import (
 	"fmt"
-	"strconv"
-	"strings"
-	"time"
-
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
+	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
+	"time"
 )
 
 type AnswerService struct {
@@ -14,37 +12,21 @@ type AnswerService struct {
 }
 
 func (service *AnswerService) GetUserStatistics(
-	userID, totalOnly, gameIDs, from, to string,
+	userID string, totalOnly bool, games []bo.GameBO, from, to time.Time,
 ) error {
-	//var toBO, fromBO time.Time
-	//var result
+	gameIds := make([]string, 0, len(games))
 
-	toBO := time.Now()
-	fromBO := time.Now()
-
-	if to != "" {
-		i, _ := strconv.ParseInt(to, 10, 64)
-		toBO = time.Unix(i, 0)
-	} else {
-		toBO = time.Now()
-	}
-	if from != "" {
-		i, _ := strconv.ParseInt(from, 10, 64)
-		fromBO = time.Unix(i, 0)
-	} else {
-		// TODO: достать первую игру пользователя
-		fromBO = time.Date(2019, 1, 1, 1, 0, 0, 0, time.UTC)
+	for _, game := range games {
+		gameIds = append(gameIds, game.GameID)
 	}
 
-	fmt.Println(toBO, fromBO)
-
-	gIds := strings.Split(gameIDs, ",")
-
-	if len(gIds) == 0 {
-		//service.AnswerRepo.
+	res, err := service.AnswerRepo.SelectAnswersByUser(userID, gameIds, from, to)
+	if err != nil {
+		fmt.Println("error: ", err)
+		return fmt.Errorf("get user statistics: %v", err)
 	}
 
-	// gameIDs if == "" retrieve
+	fmt.Printf("Res: %+v | %v\n", res, len(res))
 
 	return nil
 }
