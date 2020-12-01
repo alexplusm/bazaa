@@ -66,3 +66,7 @@ type IAnswerService interface {
 type IScreenshotService interface {
 	ScreenshotExist(screenshotID string) (bool, error)
 }
+
+type ISourceService interface {
+	GetSourcesByGame(gameID string) ([]dao.Source2DAO, error)
+}

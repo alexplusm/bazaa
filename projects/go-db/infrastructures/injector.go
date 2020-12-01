@@ -92,10 +92,14 @@ func (k *kernel) InjectGamePrepareController() controllers.GamePrepareController
 func (k *kernel) InjectGameInfoController() controllers.GameInfoController {
 	handler := &PSQLHandler{k.pool}
 
+	sourceRepo := &repositories.SourceRepository{DBConn: handler}
 	gameRepo := &repositories.GameRepository{DBConn: handler}
 	gameService := &services.GameService{GameRepo: gameRepo}
+	sourceService := &services.SourceService{SourceRepo: sourceRepo}
 
-	controller := controllers.GameInfoController{GameService: gameService}
+	controller := controllers.GameInfoController{
+		GameService: gameService, SourceService: sourceService,
+	}
 
 	return controller
 }

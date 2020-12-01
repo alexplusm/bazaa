@@ -14,7 +14,8 @@ import (
 )
 
 type GameInfoController struct {
-	GameService interfaces.IGameService
+	GameService   interfaces.IGameService
+	SourceService interfaces.ISourceService
 }
 
 func (controller *GameInfoController) GetGameInfo(ctx echo.Context) error {
@@ -28,6 +29,7 @@ func (controller *GameInfoController) GetGameInfo(ctx echo.Context) error {
 			httputils.BuildNotFoundRequestErrorResponse("game not found"),
 		)
 	}
+	sources, err := controller.SourceService.GetSourcesByGame(gameID)
 
 	fmt.Println("Game: ", game)
 
@@ -48,7 +50,12 @@ func (controller *GameInfoController) GetGameInfo(ctx echo.Context) error {
 
 	resp.Question = question
 
-	// TODO: source
+	sourcesDTO := make([]dto.SourceDTO, 0, len(sources))
+	for _, s := range sources {
+		// TODO:!!!! s.Type -> "file"
+		sourcesDTO = append(sourcesDTO, dto.SourceDTO{Type: "file", SourceID: s.SourceID})
+	}
+	resp.Sources = sourcesDTO
 
 	return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(resp))
 }

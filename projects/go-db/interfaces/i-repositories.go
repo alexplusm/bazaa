@@ -20,6 +20,7 @@ type IExtSystemRepository interface {
 
 type ISourceRepository interface {
 	InsertSource(source dao.SourceDAO) (string, error)
+	SelectSourcesByGame(gameID string) ([]dao.Source2DAO, error)
 }
 
 type IScreenshotRepository interface {
