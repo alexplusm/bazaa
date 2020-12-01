@@ -31,14 +31,14 @@ game = {
     "extSystemId": None,
     "name": "new game",
     "answerType": 2,
-    "startDate":   str(get_timestamp(timedelta(days=1))),
-    "endDate":     str(get_timestamp(timedelta(days=2))),
+    "startDate":   str(get_timestamp(timedelta(days=2))),
+    "endDate":     str(get_timestamp(timedelta(days=3))),
     "question": "Choose answer",
     "options": "yep, nope"
 }
 
 
-def complete_test(ext_system_id):
+def complete_test():
     print("Config: ", get_url_start())
     ext_system_id = create_ext_system(ext_system)
     if ext_system_id is None:
@@ -50,6 +50,9 @@ def complete_test(ext_system_id):
         print("error while game creation")
     update_game(game_id)
     prepare_game(game_id)
+
+    # print("game_id: ", game_id)
+    # print("ext_system_id: ", ext_system_id)
 
     run_high_load(ext_system_id, game_id)
 
@@ -92,9 +95,9 @@ def main():
     # complete_test()
 
     # test_user_statistics()
-    screenshot_results()
+    # screenshot_results()
 
-    # complete_test_without_ext_sys("b0e4c252-9b72-4761-b574-fff694965dcf")
+    complete_test_without_ext_sys("b0e4c252-9b72-4761-b574-fff694965dcf")
 
     # ext_system_id = "ext-id-3"
     # get_games(ext_system_id)

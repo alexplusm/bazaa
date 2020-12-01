@@ -12,3 +12,8 @@ type SourceDAO struct {
 	CreatedAt int64
 	GameID    string
 }
+
+type Source2DAO struct {
+	SourceID string
+	Type     int
+}

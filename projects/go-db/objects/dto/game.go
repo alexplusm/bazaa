@@ -29,3 +29,28 @@ type GameItemResponseBody struct {
 	From   string `json:"from"`
 	To     string `json:"to"`
 }
+
+//“sources”: [ { “type”: “schedule” | “file” | “url”, “sourceId”: “someid” } ]
+
+type OptionDTO struct {
+	Option int    `json:"option"`
+	Text   string `json:"text"`
+}
+
+type SourceDTO struct {
+	Type     string `json:"type"`
+	SourceID string `json:"sourceId"`
+}
+
+type QuestionDTO struct {
+	AnswerType int         `json:"answerType"`
+	Text       string      `json:"text"`
+	Options    []OptionDTO `json:"options"`
+}
+
+type GameInfoResponseBody struct {
+	StartDate  string      `json:"startDate"`
+	FinishDate string      `json:"finishDate"`
+	Question   QuestionDTO `json:"question"`
+	Sources    []SourceDTO `json:"sources"`
+}

@@ -20,6 +20,7 @@ type IExtSystemRepository interface {
 
 type ISourceRepository interface {
 	InsertSource(source dao.SourceDAO) (string, error)
+	SelectSourcesByGame(gameID string) ([]dao.Source2DAO, error)
 }
 
 type IScreenshotRepository interface {
@@ -28,6 +29,7 @@ type IScreenshotRepository interface {
 	InsertScreenshotsWithExpertAnswer(screenshots []dao.ScreenshotWithExpertAnswerDAO) error
 	UpdateScreenshotUsersAnswer(screenshotID, usersAnswer string) error
 	ScreenshotExist(screenshotID string) (bool, error)
+	ScreenshotCountByGame(gameID string) (int, error)
 }
 
 type IAnswerRepository interface {

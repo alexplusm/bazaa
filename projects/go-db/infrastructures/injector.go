@@ -21,6 +21,7 @@ type IInjector interface {
 	InjectGameUpdateController() controllers.GameUpdateController
 	InjectGameListController() controllers.GameListController
 	InjectGamePrepareController() controllers.GamePrepareController
+	InjectGameInfoController() controllers.GameInfoController
 
 	InjectExtSystemCreateController() controllers.ExtSystemCreateController
 
@@ -84,6 +85,21 @@ func (k *kernel) InjectGameListController() controllers.GameListController {
 func (k *kernel) InjectGamePrepareController() controllers.GamePrepareController {
 	gameCacheService := k.InjectGameCacheService()
 	controller := controllers.GamePrepareController{GameCacheService: &gameCacheService}
+
+	return controller
+}
+
+func (k *kernel) InjectGameInfoController() controllers.GameInfoController {
+	handler := &PSQLHandler{k.pool}
+
+	sourceRepo := &repositories.SourceRepository{DBConn: handler}
+	gameRepo := &repositories.GameRepository{DBConn: handler}
+	gameService := &services.GameService{GameRepo: gameRepo}
+	sourceService := &services.SourceService{SourceRepo: sourceRepo}
+
+	controller := controllers.GameInfoController{
+		GameService: gameService, SourceService: sourceService,
+	}
 
 	return controller
 }
@@ -198,7 +214,16 @@ func (k *kernel) InjectStatisticsGameController() controllers.StatisticsGameCont
 	extSystemRepo := &repositories.ExtSystemRepository{DBConn: handler}
 	extSystemService := &services.ExtSystemService{ExtSystemRepo: extSystemRepo}
 
-	controller := controllers.StatisticsGameController{ExtSystemService: extSystemService}
+	gameRepo := &repositories.GameRepository{DBConn: handler}
+	gameService := &services.GameService{GameRepo: gameRepo}
+
+	screenshotRepo := &repositories.ScreenshotRepository{DBConn: handler}
+	screenshotService := &services.ScreenshotService{ScreenshotRepo: screenshotRepo}
+
+	controller := controllers.StatisticsGameController{
+		ExtSystemService: extSystemService, GameService: gameService,
+		ScreenshotService: screenshotService,
+	}
 
 	return controller
 }
