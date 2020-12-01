@@ -27,6 +27,7 @@ type IScreenshotRepository interface {
 	InsertScreenshots(screenshots []dao.ScreenshotDAO) error
 	InsertScreenshotsWithExpertAnswer(screenshots []dao.ScreenshotWithExpertAnswerDAO) error
 	UpdateScreenshotUsersAnswer(screenshotID, usersAnswer string) error
+	ScreenshotExist(screenshotID string) (bool, error)
 }
 
 type IAnswerRepository interface {

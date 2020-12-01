@@ -14,8 +14,9 @@ import (
 )
 
 type ScreenshotResultsController struct {
-	AnswerService interfaces.IAnswerService
-	GameService   interfaces.IGameService
+	AnswerService     interfaces.IAnswerService
+	GameService       interfaces.IGameService
+	ScreenshotService interfaces.IScreenshotService
 }
 
 func (controller *ScreenshotResultsController) GetResult(ctx echo.Context) error {
@@ -36,7 +37,17 @@ func (controller *ScreenshotResultsController) GetResult(ctx echo.Context) error
 		)
 	}
 
-	// TODO: screenshot exist | game exist
+	screenshotExist, err := controller.ScreenshotService.ScreenshotExist(screenshotID)
+	if err != nil {
+		log.Error("get result: ", err)
+		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
+	}
+	if !screenshotExist {
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildNotFoundRequestErrorResponse("screenshot not found"),
+		)
+	}
 
 	res, err := controller.AnswerService.GetScreenshotResults(gameID, screenshotID)
 	if err != nil {

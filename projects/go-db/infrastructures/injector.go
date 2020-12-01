@@ -146,12 +146,15 @@ func (k *kernel) InjectScreenshotResultsController() controllers.ScreenshotResul
 
 	answerRepo := &repositories.AnswerRepository{DBConn: handler}
 	gameRepo := &repositories.GameRepository{DBConn: handler}
+	screenshotRepo := &repositories.ScreenshotRepository{DBConn: handler}
 
 	answerService := &services.AnswerService{AnswerRepo: answerRepo}
 	gameService := &services.GameService{GameRepo: gameRepo}
+	screenshotService := &services.ScreenshotService{ScreenshotRepo: screenshotRepo}
 
 	controller := controllers.ScreenshotResultsController{
 		AnswerService: answerService, GameService: gameService,
+		ScreenshotService: screenshotService,
 	}
 
 	return controller

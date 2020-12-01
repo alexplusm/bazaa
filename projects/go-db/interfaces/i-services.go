@@ -62,3 +62,7 @@ type IAnswerService interface {
 		gameID, screenshotID string,
 	) ([]dto.UserAnswerForScreenshotResultDTO, error)
 }
+
+type IScreenshotService interface {
+	ScreenshotExist(screenshotID string) (bool, error)
+}

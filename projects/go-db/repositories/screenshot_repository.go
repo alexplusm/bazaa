@@ -34,6 +34,11 @@ UPDATE screenshots
 SET users_answer = ($1)
 WHERE screenshots.screenshot_id = ($2)
 `
+	existScreenshotStatement = `
+SELECT COUNT(1)
+FROM screenshots
+WHERE "screenshot_id" = ($1);
+`
 )
 
 func (repo *ScreenshotRepository) SelectScreenshotsByGameID(gameID string) ([]dao.ScreenshotDAOFull, error) {
@@ -160,4 +165,22 @@ func (repo *ScreenshotRepository) UpdateScreenshotUsersAnswer(screenshotID, user
 	defer row.Close()
 
 	return nil
+}
+
+func (repo *ScreenshotRepository) ScreenshotExist(screenshotID string) (bool, error) {
+	p := repo.DBConn.GetPool()
+	conn, err := p.Acquire(context.Background())
+	if err != nil {
+		return false, fmt.Errorf("screenshot exist: acquire connection: %v", err)
+	}
+	defer conn.Release()
+
+	var count int64
+
+	row := conn.QueryRow(context.Background(), existScreenshotStatement, screenshotID)
+	if row.Scan(&count) != nil {
+		return false, fmt.Errorf("screenshot exist: %v", err)
+	}
+
+	return count != 0, nil
 }
