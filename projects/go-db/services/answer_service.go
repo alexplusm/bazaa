@@ -13,7 +13,18 @@ type AnswerService struct {
 	AnswerRepo interfaces.IAnswerRepository
 }
 
-// TODO: total only !!!
+func (service *AnswerService) GetScreenshotResults(gameID, screenshotID string) error {
+	res, err := service.AnswerRepo.SelectScreenshotResult(gameID, screenshotID)
+	if err != nil {
+		return fmt.Errorf("get screenshot results: %v", err)
+	}
+
+	fmt.Printf("res: %+v\n", res)
+
+	return nil
+}
+
+// TODO: total only !!! remove
 func (service *AnswerService) GetUserStatistics(
 	userID string, totalOnly bool, games []bo.GameBO, from, to time.Time,
 ) ([]bo.StatisticsUserBO, error) {

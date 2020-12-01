@@ -27,3 +27,9 @@ type AnswerStatDAO struct {
 	ExpertAnswer string
 	UsersAnswer  string
 }
+
+type ScreenshotResultDAO struct {
+	Value       string
+	UsersAnswer string
+	UserID      string
+}

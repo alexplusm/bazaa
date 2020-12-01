@@ -82,8 +82,8 @@ def test_user_statistics():
 
 
 def screenshot_results():
-    game_id = "game-qwe"
-    screenshot_id = "123"
+    game_id = "79771e18-e8ec-4828-8d17-3a40644dd2c4"
+    screenshot_id = "750ac32c-306b-4a67-bfd3-99979daed189"
     res = get_screenshot_results(game_id, screenshot_id)
     print(res)
 

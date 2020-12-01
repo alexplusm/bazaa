@@ -142,7 +142,15 @@ func (k *kernel) InjectScreenshotSetAnswerController() controllers.ScreenshotSet
 }
 
 func (k *kernel) InjectScreenshotResultsController() controllers.ScreenshotResultsController {
-	controller := controllers.ScreenshotResultsController{}
+	handler := &PSQLHandler{k.pool}
+
+	answerRepo := &repositories.AnswerRepository{DBConn: handler}
+
+	//gameRepo := &repositories.GameRepository{DBConn: handler}
+
+	answerService := &services.AnswerService{AnswerRepo: answerRepo}
+
+	controller := controllers.ScreenshotResultsController{AnswerService: answerService}
 
 	return controller
 }

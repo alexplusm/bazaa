@@ -20,3 +20,14 @@ type StatsUserDTO struct {
 type StatsUserTotalOnlyDTO struct {
 	Total StatisticsUsersInnerDTO `json:"total"`
 }
+
+type UserAnswerForScreenshotResultDTO struct {
+	UserID string `json:"userId"`
+	Answer string `json:"answer"`
+	Result string `json:"result"`
+}
+
+type ScreenshotResultsDTO struct {
+	Finished bool                               `json:"finished"`
+	Answers  []UserAnswerForScreenshotResultDTO `json:"answers"`
+}

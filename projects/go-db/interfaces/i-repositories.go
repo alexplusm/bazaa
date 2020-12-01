@@ -34,6 +34,7 @@ type IAnswerRepository interface {
 	SelectAnswersByUser(
 		userID string, gameIDs []string, from, to time.Time,
 	) ([]dao.AnswerStatDAO, error)
+	SelectScreenshotResult(gameID, screenshotID string) ([]dao.ScreenshotResultDAO, error)
 }
 
 type IUserRepository interface {

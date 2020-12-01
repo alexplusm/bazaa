@@ -21,6 +21,14 @@ const (
 INSERT INTO answers ("screenshot_id", "game_id", "user_id", "value", "answer_date")
 VALUES ($1, $2, $3, $4, $5);
 `
+	selectScreenshotResultsStatement = `
+SELECT ans.user_id, ans.value, s.users_answer
+FROM answers ans
+INNER JOIN screenshots s
+ON s.screenshot_id = ans.screenshot_id
+WHERE
+ans.game_id = ($1) AND ans.screenshot_id = ($2) 
+`
 	selectAnswersByUserStatement = `
 SELECT ans.game_id, ans.screenshot_id, ans.answer_date, ans.value, s.expert_answer, s.users_answer
 FROM answers ans
@@ -109,6 +117,41 @@ func (repo *AnswerRepository) SelectAnswersByUser(
 	}
 	if rows.Err() != nil {
 		log.Error("select answers by user: ", rows.Err())
+	}
+
+	return list, nil
+}
+
+func (repo *AnswerRepository) SelectScreenshotResult(gameID, screenshotID string) ([]dao.ScreenshotResultDAO, error) {
+	p := repo.DBConn.GetPool()
+	conn, err := p.Acquire(context.Background())
+	if err != nil {
+		return nil, fmt.Errorf("select screenshot result: acquire connection: %v", err)
+	}
+	defer conn.Release()
+
+	rows, err := conn.Query(
+		context.Background(), selectScreenshotResultsStatement,
+		gameID, screenshotID,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("select screenshot result: %v", err)
+	}
+	defer rows.Close()
+
+	list := make([]dao.ScreenshotResultDAO, 0, 10)
+
+	for rows.Next() {
+		r := dao.ScreenshotResultDAO{}
+		var usersAnswer []byte
+
+		err = rows.Scan(&r.UserID, &r.Value, &usersAnswer)
+		r.UsersAnswer = string(usersAnswer)
+
+		list = append(list, r)
+	}
+	if rows.Err() != nil {
+		log.Error("select screenshot result: ", rows.Err())
 	}
 
 	return list, nil
