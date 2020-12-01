@@ -88,6 +88,7 @@ CREATE TABLE IF NOT EXISTS answers (
 	"game_id"           uuid        NOT NULL,
 	"user_id"           VARCHAR     NOT NULL,
 	"value"             VARCHAR     NOT NULL,
+	"answer_date"       BIGINT      NOT NULL,
 
 	PRIMARY KEY ("answer_id"),
 

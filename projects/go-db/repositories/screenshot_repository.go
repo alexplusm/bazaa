@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgx/v4/pgxpool"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
@@ -28,6 +29,16 @@ SELECT "screenshot_id", "source_id", "filename", "expert_answer", "users_answer"
 FROM screenshots
 WHERE screenshots.game_id = $1
 `
+	updateScreenshotUsersAnswerStatement = `
+UPDATE screenshots
+SET users_answer = ($1)
+WHERE screenshots.screenshot_id = ($2)
+`
+	existScreenshotStatement = `
+SELECT COUNT(1)
+FROM screenshots
+WHERE "screenshot_id" = ($1);
+`
 )
 
 func (repo *ScreenshotRepository) SelectScreenshotsByGameID(gameID string) ([]dao.ScreenshotDAOFull, error) {
@@ -50,8 +61,7 @@ func (repo *ScreenshotRepository) SelectScreenshotsByGameID(gameID string) ([]da
 	for row.Next() {
 		err := row.Scan(&screenshotID, &sourceID, &filename, &expertAnswer, &usersAnswer)
 		if err != nil {
-			// TODO:log error
-			fmt.Println("Error: ", err)
+			log.Error("select screenshots by game id: ", err)
 			continue
 		}
 		obj := dao.ScreenshotDAOFull{
@@ -135,4 +145,42 @@ func insertScreenshotWithExpertAnswer(conn *pgxpool.Conn, s dao.ScreenshotWithEx
 	row.Close()
 
 	return nil
+}
+
+func (repo *ScreenshotRepository) UpdateScreenshotUsersAnswer(screenshotID, usersAnswer string) error {
+	p := repo.DBConn.GetPool()
+	conn, err := p.Acquire(context.Background())
+	if err != nil {
+		return fmt.Errorf("update screenshot users answer: acquire connection: %v", err)
+	}
+	defer conn.Release()
+
+	row, err := conn.Query(
+		context.Background(), updateScreenshotUsersAnswerStatement,
+		usersAnswer, screenshotID,
+	)
+	if err != nil {
+		return fmt.Errorf("update screenshot users answer: %v", err)
+	}
+	defer row.Close()
+
+	return nil
+}
+
+func (repo *ScreenshotRepository) ScreenshotExist(screenshotID string) (bool, error) {
+	p := repo.DBConn.GetPool()
+	conn, err := p.Acquire(context.Background())
+	if err != nil {
+		return false, fmt.Errorf("screenshot exist: acquire connection: %v", err)
+	}
+	defer conn.Release()
+
+	var count int64
+
+	row := conn.QueryRow(context.Background(), existScreenshotStatement, screenshotID)
+	if row.Scan(&count) != nil {
+		return false, fmt.Errorf("screenshot exist: %v", err)
+	}
+
+	return count != 0, nil
 }

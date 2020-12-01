@@ -7,6 +7,7 @@ import (
 )
 
 type GameDAO struct {
+	GameID      string
 	ExtSystemID string
 	Name        string
 	AnswerType  int
@@ -29,6 +30,7 @@ func (g *GameDAO) FromBO(bo bo.GameBO) {
 func (g *GameDAO) ToBO() bo.GameBO {
 	gameBO := new(bo.GameBO)
 
+	gameBO.GameID = g.GameID
 	gameBO.ExtSystemID = g.ExtSystemID
 	gameBO.Name = g.Name
 	gameBO.StartDate = time.Unix(g.StartDate, 0)

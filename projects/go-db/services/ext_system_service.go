@@ -16,3 +16,7 @@ func (service *ExtSystemService) CreateExtSystem(extSystem bo.ExtSystemBO) (stri
 
 	return service.ExtSystemRepo.InsertExtSystem(extSystemDAO)
 }
+
+func (service *ExtSystemService) ExtSystemExist(extSystemID string) (bool, error) {
+	return service.ExtSystemRepo.ExtSystemExist(extSystemID)
+}

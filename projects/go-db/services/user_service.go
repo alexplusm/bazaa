@@ -15,3 +15,7 @@ func (service *UserService) CreateUser(userID string) error {
 	// TODO: why user already exist not error while insert?
 	return service.UserRepo.InsertUser(userDAO)
 }
+
+func (service *UserService) UserExist(userID string) (bool, error) {
+	return service.UserRepo.UserExist(userID)
+}

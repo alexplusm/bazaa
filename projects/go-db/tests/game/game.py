@@ -92,5 +92,16 @@ def prepare_game(game_id):
     print(resp_body)
 
 
+# ------ GAME LIST
+
+
+def get_games(ext_system_id):
+    url = get_url_start() + "/api/v1/game" + "?extSystemId=" + ext_system_id
+    resp = requests.get(url)
+    resp_body = json.loads(resp.text)
+    print("GET games")
+    print(resp_body)
+
+
 if __name__ == '__main__':
     far_future_create_game()

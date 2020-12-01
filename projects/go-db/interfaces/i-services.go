@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"mime/multipart"
+	"time"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
@@ -11,6 +12,8 @@ import (
 type IGameService interface {
 	CreateGame(game bo.GameBO) (string, error)
 	GetGame(gameID string) (bo.GameBO, error)
+	GetGames(extSystemID string) ([]bo.GameBO, error)
+	GameExist(gameID string) (bool, error)
 }
 
 type IAttachSourceToGameService interface {
@@ -20,6 +23,7 @@ type IAttachSourceToGameService interface {
 
 type IExtSystemService interface {
 	CreateExtSystem(extSystem bo.ExtSystemBO) (string, error)
+	ExtSystemExist(extSystemID string) (bool, error)
 }
 
 type IGameCacheService interface {
@@ -47,4 +51,18 @@ type IScreenshotUserAnswerService interface {
 
 type IUserService interface {
 	CreateUser(userID string) error
+	UserExist(userID string) (bool, error)
+}
+
+type IAnswerService interface {
+	GetUserStatistics(
+		userID string, totalOnly bool, games []bo.GameBO, from, to time.Time,
+	) ([]bo.StatisticsUserBO, error)
+	GetScreenshotResults(
+		gameID, screenshotID string,
+	) ([]dto.UserAnswerForScreenshotResultDTO, error)
+}
+
+type IScreenshotService interface {
+	ScreenshotExist(screenshotID string) (bool, error)
 }

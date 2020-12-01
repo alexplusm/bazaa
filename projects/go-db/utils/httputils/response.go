@@ -41,7 +41,7 @@ func BuildBadRequestErrorResponse() interface{} {
 }
 
 func BuildInternalServerErrorResponse() interface{} {
-	return BuildErrorResponse(http.StatusOK, "internal server error")
+	return BuildErrorResponse(http.StatusInternalServerError, "internal server error")
 }
 
 func BuildBadRequestErrorResponseWithMgs(message string) interface{} {
@@ -50,4 +50,8 @@ func BuildBadRequestErrorResponseWithMgs(message string) interface{} {
 		msg += ": " + message
 	}
 	return BuildErrorResponse(http.StatusBadRequest, msg)
+}
+
+func BuildNotFoundRequestErrorResponse(message string) interface{} {
+	return BuildErrorResponse(http.StatusNotFound, message)
 }

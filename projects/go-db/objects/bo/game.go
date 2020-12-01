@@ -13,6 +13,7 @@ import (
 )
 
 type GameBO struct {
+	GameID      string
 	ExtSystemID string    `validate:"required"`
 	Name        string    `validate:"required"`
 	AnswerType  int       `validate:"gte=1,lte=4"`
@@ -31,6 +32,8 @@ func (g *GameBO) FromDTO(src dto.CreateGameRequestBody, validate *validator.Vali
 	if err != nil {
 		return fmt.Errorf("game: from dto: %v", err)
 	}
+
+	// TODO: use FromTimestampToTime
 
 	g.StartDate = time.Unix(startDate, 0)
 	g.EndDate = time.Unix(endDate, 0)
@@ -60,6 +63,17 @@ func (g *GameBO) FromDTO(src dto.CreateGameRequestBody, validate *validator.Vali
 	return nil
 }
 
+func (g *GameBO) ToListItemDTO() dto.GameItemResponseBody {
+	gameDTO := new(dto.GameItemResponseBody)
+	gameDTO.GameID = g.GameID
+	gameDTO.Name = g.Name
+	gameDTO.Status = g.Status()
+	gameDTO.From = strconv.FormatInt(g.StartDate.Unix(), 10)
+	gameDTO.To = strconv.FormatInt(g.EndDate.Unix(), 10)
+
+	return *gameDTO
+}
+
 func (g *GameBO) validate() error {
 	if g.AnswerType == consts.CategoricalAnswerType {
 		options := strings.Split(g.Options, ",")
@@ -77,6 +91,26 @@ func (g *GameBO) validate() error {
 	return nil
 }
 
+func (g *GameBO) Status() string {
+	// TODO: statuses in consts
+	switch {
+	case g.InProcess():
+		return "inProcess"
+	case g.Finished():
+		return "finished"
+	}
+	return "notStarted"
+}
+
 func (g *GameBO) NotStarted() bool {
 	return time.Now().Before(g.StartDate)
+}
+
+func (g *GameBO) InProcess() bool {
+	now := time.Now()
+	return now.After(g.StartDate) && now.Before(g.EndDate)
+}
+
+func (g *GameBO) Finished() bool {
+	return time.Now().After(g.EndDate)
 }

@@ -15,11 +15,13 @@ RETURNING "game_id";
 -- ##############################################
 
 -- ext_systems
-INSERT INTO external_systems ("external_system_id", "description", "post_results_url")
+INSERT INTO ext_systems ("external_system_id", "description", "post_results_url")
 VALUES ('ex-1', 'Активный гражданин', 'https://hello.php');
 --
-INSERT INTO external_systems ("description", "post_results_url")
+INSERT INTO ext_systems ("description", "post_results_url")
 VALUES ('Активный гражданин', 'https://hello.php');
+-- ext_system exist check
+SELECT COUNT(1) FROM ext_systems WHERE "ext_system_id" = '$1';
 -- ##############################################
 
 -- sources

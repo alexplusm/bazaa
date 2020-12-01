@@ -23,6 +23,11 @@ INSERT INTO ext_systems ("description", "post_results_url")
 VALUES ($1, $2)
 RETURNING "ext_system_id";
 `
+	existExtSystemStatement = `
+SELECT COUNT(1)
+FROM ext_systems
+WHERE "ext_system_id" = ($1);
+`
 )
 
 func (repo *ExtSystemRepository) InsertExtSystem(
@@ -60,4 +65,23 @@ func (repo *ExtSystemRepository) InsertExtSystem(
 func (repo *ExtSystemRepository) SelectExtSystems() ([]dao.ExtSystemDAO, error) {
 	// TODO: for web client need list of extSystems [{id, description}, ...]
 	return nil, nil
+}
+
+func (repo *ExtSystemRepository) ExtSystemExist(extSystemID string) (bool, error) {
+	p := repo.DBConn.GetPool()
+	ctx := context.Background()
+	conn, err := p.Acquire(ctx)
+	if err != nil {
+		return false, fmt.Errorf("extSystem exist: acquire connection: %v", err)
+	}
+	defer conn.Release()
+
+	var count int64
+
+	row := conn.QueryRow(ctx, existExtSystemStatement, extSystemID)
+	if row.Scan(&count) != nil {
+		return false, fmt.Errorf("extSystem exist: %v", err)
+	}
+
+	return count != 0, nil
 }

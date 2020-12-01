@@ -67,9 +67,16 @@ func registerRoutes(e *echo.Echo) error {
 	gameCreateController := injector.InjectGameCreateController()
 	gameUpdateController := injector.InjectGameUpdateController()
 	gamePrepareController := injector.InjectGamePrepareController()
+	gameListController := injector.InjectGameListController()
 	extSystemCreateController := injector.InjectExtSystemCreateController()
+
 	screenshotGetController := injector.InjectScreenshotGetController()
 	screenshotSetAnswerController := injector.InjectScreenshotSetAnswerController()
+	screenshotResultsController := injector.InjectScreenshotResultsController()
+
+	statisticsUserController := injector.InjectStatisticsUserController()
+	statisticsLeaderboardController := injector.InjectStatisticsLeaderboardController()
+	statisticsGameController := injector.InjectStatisticsGameController()
 
 	// TODO:later
 	// Create middleware for each route with whitelist of ContentTypes:
@@ -77,6 +84,8 @@ func registerRoutes(e *echo.Echo) error {
 
 	// TODO: ["application/json"]
 	e.POST("api/v1/game", gameCreateController.CreateGame)
+
+	e.GET("api/v1/game", gameListController.GetGames)
 
 	// TODO: ["application/json"]
 	e.POST("api/v1/game/prepare", gamePrepareController.PrepareGame)
@@ -87,7 +96,6 @@ func registerRoutes(e *echo.Echo) error {
 	// TODO: ["application/json"]
 	e.POST("api/v1/ext_system", extSystemCreateController.CreateExtSystem)
 
-	// TODO: ["application/json"]
 	e.GET("api/v1/game/:game-id/screenshot", screenshotGetController.GetScreenshot)
 
 	// TODO: ["application/json"]
@@ -95,6 +103,11 @@ func registerRoutes(e *echo.Echo) error {
 		"api/v1/game/:game-id/screenshot/:screenshot-id/answer",
 		screenshotSetAnswerController.SetAnswer,
 	)
+	e.GET("/api/v1/game/:game-id/screenshot/:screenshot-id/result", screenshotResultsController.GetResult)
+
+	e.GET("api/v1/statistics/user/:user-id", statisticsUserController.GetStatistics)
+	e.GET("api/v1/statistics/users/leaderboard", statisticsLeaderboardController.GetStatistics)
+	e.GET("api/v1/statistics/games", statisticsGameController.GetStatistics)
 
 	// TODO: for test
 	e.GET("check/alive", controllers.ItsAlive)

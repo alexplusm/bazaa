@@ -1,8 +1,19 @@
 import requests
-
+import json
 
 # --- async requests
 # https://stackoverflow.com/questions/2632520/what-is-the-fastest-way-to-send-100-000-http-requests-in-python
+
+import sys
+sys.path.append('../..')
+from tests.config import get_url_start
+
+
+def get_screenshot_results(game_id, screenshot_id):
+    url = get_url_start() + "/api/v1/game/" + game_id + "/screenshot/" + screenshot_id + "/result"
+    resp = requests.get(url)
+    return json.loads(resp.text)
+
 
 # TODO: port from .env
 host_and_port = "http://localhost:1234/"
@@ -41,4 +52,4 @@ def set_answer():
 
 
 # get_answer()
-set_answer()
+# set_answer()

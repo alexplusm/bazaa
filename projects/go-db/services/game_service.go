@@ -29,3 +29,22 @@ func (service *GameService) GetGame(gameID string) (bo.GameBO, error) {
 
 	return gameBO, nil
 }
+
+func (service *GameService) GetGames(extSystemID string) ([]bo.GameBO, error) {
+	gamesDAO, err := service.GameRepo.SelectGames(extSystemID)
+	if err != nil {
+		return nil, fmt.Errorf("get games: %v", err)
+	}
+
+	list := make([]bo.GameBO, 0, len(gamesDAO))
+
+	for _, gameDAO := range gamesDAO {
+		list = append(list, gameDAO.ToBO())
+	}
+
+	return list, nil
+}
+
+func (service *GameService) GameExist(gameID string) (bool, error) {
+	return service.GameRepo.GameExist(gameID)
+}

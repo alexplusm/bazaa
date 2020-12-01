@@ -19,10 +19,18 @@ type IInjector interface {
 	// INFO: controllers
 	InjectGameCreateController() controllers.GameCreateController
 	InjectGameUpdateController() controllers.GameUpdateController
+	InjectGameListController() controllers.GameListController
 	InjectGamePrepareController() controllers.GamePrepareController
+
 	InjectExtSystemCreateController() controllers.ExtSystemCreateController
+
 	InjectScreenshotGetController() controllers.ScreenshotGetController
 	InjectScreenshotSetAnswerController() controllers.ScreenshotSetAnswerController
+	InjectScreenshotResultsController() controllers.ScreenshotResultsController
+
+	InjectStatisticsUserController() controllers.StatisticsUserController
+	InjectStatisticsLeaderboardController() controllers.StatisticsLeaderboardController
+	InjectStatisticsGameController() controllers.StatisticsGameController
 
 	// INFO: services
 	InjectGameCacheService() services.GameCacheService
@@ -52,6 +60,22 @@ func (k *kernel) InjectGameUpdateController() controllers.GameUpdateController {
 
 	controller := controllers.GameUpdateController{
 		GameService: gameService, AttachSourceToGameService: attachSourceToGameService,
+	}
+
+	return controller
+}
+
+func (k *kernel) InjectGameListController() controllers.GameListController {
+	handler := &PSQLHandler{k.pool}
+
+	gameRepo := &repositories.GameRepository{DBConn: handler}
+	extSystemRepo := &repositories.ExtSystemRepository{DBConn: handler}
+
+	gameService := &services.GameService{GameRepo: gameRepo}
+	extSystemService := &services.ExtSystemService{ExtSystemRepo: extSystemRepo}
+
+	controller := controllers.GameListController{
+		GameService: gameService, ExtSystemService: extSystemService,
 	}
 
 	return controller
@@ -102,14 +126,79 @@ func (k *kernel) InjectScreenshotSetAnswerController() controllers.ScreenshotSet
 	dbHandler := &PSQLHandler{k.pool}
 
 	answerRepo := &repositories.AnswerRepository{DBConn: dbHandler}
+	screenshotRepo := &repositories.ScreenshotRepository{DBConn: dbHandler}
 
 	screenshotCacheService := &services.ScreenshotCacheService{RedisClient: redisHandler}
-	screenshotUserAnswerService := &services.ScreenshotUserAnswerService{AnswerRepo: answerRepo}
+	screenshotUserAnswerService := &services.ScreenshotUserAnswerService{
+		AnswerRepo: answerRepo, ScreenshotRepo: screenshotRepo,
+	}
 
 	controller := controllers.ScreenshotSetAnswerController{
 		ScreenshotCacheService:      screenshotCacheService,
 		ScreenshotUserAnswerService: screenshotUserAnswerService,
 	}
+
+	return controller
+}
+
+func (k *kernel) InjectScreenshotResultsController() controllers.ScreenshotResultsController {
+	handler := &PSQLHandler{k.pool}
+
+	answerRepo := &repositories.AnswerRepository{DBConn: handler}
+	gameRepo := &repositories.GameRepository{DBConn: handler}
+	screenshotRepo := &repositories.ScreenshotRepository{DBConn: handler}
+
+	answerService := &services.AnswerService{AnswerRepo: answerRepo}
+	gameService := &services.GameService{GameRepo: gameRepo}
+	screenshotService := &services.ScreenshotService{ScreenshotRepo: screenshotRepo}
+
+	controller := controllers.ScreenshotResultsController{
+		AnswerService: answerService, GameService: gameService,
+		ScreenshotService: screenshotService,
+	}
+
+	return controller
+}
+
+func (k *kernel) InjectStatisticsUserController() controllers.StatisticsUserController {
+	handler := &PSQLHandler{k.pool}
+
+	answerRepo := &repositories.AnswerRepository{DBConn: handler}
+	extSystemRepo := &repositories.ExtSystemRepository{DBConn: handler}
+	gameRepo := &repositories.GameRepository{DBConn: handler}
+	userRepo := &repositories.UserRepository{DBConn: handler}
+
+	answerService := &services.AnswerService{AnswerRepo: answerRepo}
+	extSystemService := &services.ExtSystemService{ExtSystemRepo: extSystemRepo}
+	gameService := &services.GameService{GameRepo: gameRepo}
+	userService := &services.UserService{UserRepo: userRepo}
+
+	controller := controllers.StatisticsUserController{
+		GameService: gameService, ExtSystemService: extSystemService,
+		AnswerService: answerService, UserService: userService,
+	}
+
+	return controller
+}
+
+func (k *kernel) InjectStatisticsLeaderboardController() controllers.StatisticsLeaderboardController {
+	handler := &PSQLHandler{k.pool}
+
+	extSystemRepo := &repositories.ExtSystemRepository{DBConn: handler}
+	extSystemService := &services.ExtSystemService{ExtSystemRepo: extSystemRepo}
+
+	controller := controllers.StatisticsLeaderboardController{ExtSystemService: extSystemService}
+
+	return controller
+}
+
+func (k *kernel) InjectStatisticsGameController() controllers.StatisticsGameController {
+	handler := &PSQLHandler{k.pool}
+
+	extSystemRepo := &repositories.ExtSystemRepository{DBConn: handler}
+	extSystemService := &services.ExtSystemService{ExtSystemRepo: extSystemRepo}
+
+	controller := controllers.StatisticsGameController{ExtSystemService: extSystemService}
 
 	return controller
 }
