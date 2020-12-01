@@ -220,9 +220,12 @@ func (k *kernel) InjectStatisticsGameController() controllers.StatisticsGameCont
 	screenshotRepo := &repositories.ScreenshotRepository{DBConn: handler}
 	screenshotService := &services.ScreenshotService{ScreenshotRepo: screenshotRepo}
 
+	answerRepo := &repositories.AnswerRepository{DBConn: handler}
+	answerService := &services.AnswerService{AnswerRepo: answerRepo}
+
 	controller := controllers.StatisticsGameController{
 		ExtSystemService: extSystemService, GameService: gameService,
-		ScreenshotService: screenshotService,
+		ScreenshotService: screenshotService, AnswerService: answerService,
 	}
 
 	return controller

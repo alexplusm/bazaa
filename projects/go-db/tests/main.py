@@ -97,7 +97,7 @@ def main():
     # test_user_statistics()
     # screenshot_results()
 
-    complete_test_without_ext_sys("b0e4c252-9b72-4761-b574-fff694965dcf")
+    complete_test_without_ext_sys("ee6fd809-8740-4490-8c6e-e9435168b399")
 
     # ext_system_id = "ext-id-3"
     # get_games(ext_system_id)
