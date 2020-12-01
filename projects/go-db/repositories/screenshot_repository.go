@@ -39,6 +39,10 @@ SELECT COUNT(1)
 FROM screenshots
 WHERE "screenshot_id" = ($1);
 `
+	selectScreenshotCountByUserStatement = `
+SELECT COUNT(*) FROM screenshots 
+WHERE screenshots.game_id = ($1)
+`
 )
 
 func (repo *ScreenshotRepository) SelectScreenshotsByGameID(gameID string) ([]dao.ScreenshotDAOFull, error) {
@@ -183,4 +187,22 @@ func (repo *ScreenshotRepository) ScreenshotExist(screenshotID string) (bool, er
 	}
 
 	return count != 0, nil
+}
+
+func (repo *ScreenshotRepository) ScreenshotCountByGame(gameID string) (int, error) {
+	p := repo.DBConn.GetPool()
+	conn, err := p.Acquire(context.Background())
+	if err != nil {
+		return -1, fmt.Errorf("screenshot count by game: acquire connection: %v", err)
+	}
+	defer conn.Release()
+
+	var count int64
+
+	row := conn.QueryRow(context.Background(), selectScreenshotCountByUserStatement, gameID)
+	if row.Scan(&count) != nil {
+		return -1, fmt.Errorf("screenshot count by game: %v", err)
+	}
+
+	return int(count), nil
 }

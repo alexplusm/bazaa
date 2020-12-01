@@ -9,3 +9,7 @@ type ScreenshotService struct {
 func (repo *ScreenshotService) ScreenshotExist(screenshotID string) (bool, error) {
 	return repo.ScreenshotRepo.ScreenshotExist(screenshotID)
 }
+
+func (repo *ScreenshotService) ScreenshotCountByGame(gameID string) (int, error) {
+	return repo.ScreenshotRepo.ScreenshotCountByGame(gameID)
+}

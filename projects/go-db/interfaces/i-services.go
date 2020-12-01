@@ -65,6 +65,7 @@ type IAnswerService interface {
 
 type IScreenshotService interface {
 	ScreenshotExist(screenshotID string) (bool, error)
+	ScreenshotCountByGame(gameID string) (int, error)
 }
 
 type ISourceService interface {

@@ -214,7 +214,16 @@ func (k *kernel) InjectStatisticsGameController() controllers.StatisticsGameCont
 	extSystemRepo := &repositories.ExtSystemRepository{DBConn: handler}
 	extSystemService := &services.ExtSystemService{ExtSystemRepo: extSystemRepo}
 
-	controller := controllers.StatisticsGameController{ExtSystemService: extSystemService}
+	gameRepo := &repositories.GameRepository{DBConn: handler}
+	gameService := &services.GameService{GameRepo: gameRepo}
+
+	screenshotRepo := &repositories.ScreenshotRepository{DBConn: handler}
+	screenshotService := &services.ScreenshotService{ScreenshotRepo: screenshotRepo}
+
+	controller := controllers.StatisticsGameController{
+		ExtSystemService: extSystemService, GameService: gameService,
+		ScreenshotService: screenshotService,
+	}
 
 	return controller
 }

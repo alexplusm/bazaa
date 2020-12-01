@@ -24,3 +24,8 @@ type ScreenshotURLDAO struct {
 	ScreenshotID string
 	ImageURL     string
 }
+
+type AnsweredScreenshotsDAO struct {
+	UserID []string
+	Count  int
+}

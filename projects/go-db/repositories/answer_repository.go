@@ -38,6 +38,13 @@ WHERE
 ans.user_id = ($1) AND
 (ans.answer_date BETWEEN ($2) AND ($3)) AND
 ans.game_id IN `
+	selectAnsweredScreenshotsCountStatement = `
+select COUNT(DISTINCT screenshot_id) FROM answers
+WHERE answers.game_id = ($1)
+`
+	selectUniqueUsersInGameStatement = `
+
+`
 )
 
 func (repo *AnswerRepository) InsertAnswers(answers []dao.AnswerDAO) {
@@ -155,4 +162,54 @@ func (repo *AnswerRepository) SelectScreenshotResult(gameID, screenshotID string
 	}
 
 	return list, nil
+}
+
+// TODO: check
+func (repo *AnswerRepository) SelectAnsweredScreenshotsByGame(
+	gameID string,
+) (dao.AnsweredScreenshotsDAO, error) {
+	p := repo.DBConn.GetPool()
+	conn, err := p.Acquire(context.Background())
+	if err != nil {
+		return dao.AnsweredScreenshotsDAO{},
+			fmt.Errorf("select answered screenshots by game: acquire connection: %v", err)
+	}
+	defer conn.Release()
+
+	var count int64
+
+	row := conn.QueryRow(context.Background(), selectAnsweredScreenshotsCountStatement, gameID)
+	if row.Scan(&count) != nil {
+		return dao.AnsweredScreenshotsDAO{},
+			fmt.Errorf("select answered screenshots by game: %v", err)
+	}
+
+	rows, err := conn.Query(context.Background(), selectUniqueUsersInGameStatement, gameID)
+	if err != nil {
+		return dao.AnsweredScreenshotsDAO{},
+			fmt.Errorf("select answered screenshots by game: %v", err)
+	}
+	defer rows.Close()
+
+	listUsers := make([]string, 0, 1024)
+
+	for rows.Next() {
+		var user string
+		err = rows.Scan(&user)
+		if err != nil {
+			log.Error("select answered screenshots by game: ", err)
+			continue
+		}
+		listUsers = append(listUsers, user)
+	}
+	if rows.Err() != nil {
+		log.Error("select answered screenshots by game: ", rows.Err())
+	}
+
+	res := dao.AnsweredScreenshotsDAO{
+		Count:  int(count),
+		UserID: listUsers,
+	}
+
+	return res, nil
 }

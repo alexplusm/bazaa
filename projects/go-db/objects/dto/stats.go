@@ -31,3 +31,16 @@ type ScreenshotResultsDTO struct {
 	Finished bool                               `json:"finished"`
 	Answers  []UserAnswerForScreenshotResultDTO `json:"answers"`
 }
+
+//{
+//"screenshotsResolved": 653,
+//"screenshotsLeft": 10265,
+//"usersUnique": 210,
+//"usersActive": 154
+//}
+type GameStatsDTO struct {
+	ScreenshotsResolved int `json:"screenshotsResolved"`
+	ScreenshotsLeft     int `json:"screenshotsLeft"`
+	UsersUnique         int `json:"usersUnique"`
+	UsersActive         int `json:"usersActive"`
+}
