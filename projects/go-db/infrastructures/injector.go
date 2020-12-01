@@ -26,6 +26,7 @@ type IInjector interface {
 
 	InjectScreenshotGetController() controllers.ScreenshotGetController
 	InjectScreenshotSetAnswerController() controllers.ScreenshotSetAnswerController
+	InjectScreenshotResultsController() controllers.ScreenshotResultsController
 
 	InjectStatisticsUserController() controllers.StatisticsUserController
 	InjectStatisticsLeaderboardController() controllers.StatisticsLeaderboardController
@@ -136,6 +137,12 @@ func (k *kernel) InjectScreenshotSetAnswerController() controllers.ScreenshotSet
 		ScreenshotCacheService:      screenshotCacheService,
 		ScreenshotUserAnswerService: screenshotUserAnswerService,
 	}
+
+	return controller
+}
+
+func (k *kernel) InjectScreenshotResultsController() controllers.ScreenshotResultsController {
+	controller := controllers.ScreenshotResultsController{}
 
 	return controller
 }

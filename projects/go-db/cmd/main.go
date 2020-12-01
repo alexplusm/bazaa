@@ -69,8 +69,10 @@ func registerRoutes(e *echo.Echo) error {
 	gamePrepareController := injector.InjectGamePrepareController()
 	gameListController := injector.InjectGameListController()
 	extSystemCreateController := injector.InjectExtSystemCreateController()
+
 	screenshotGetController := injector.InjectScreenshotGetController()
 	screenshotSetAnswerController := injector.InjectScreenshotSetAnswerController()
+	screenshotResultsController := injector.InjectScreenshotResultsController()
 
 	statisticsUserController := injector.InjectStatisticsUserController()
 	statisticsLeaderboardController := injector.InjectStatisticsLeaderboardController()
@@ -101,6 +103,7 @@ func registerRoutes(e *echo.Echo) error {
 		"api/v1/game/:game-id/screenshot/:screenshot-id/answer",
 		screenshotSetAnswerController.SetAnswer,
 	)
+	e.GET("/api/v1/game/:game-id/screenshot/:screenshot-id/result", screenshotResultsController.GetResult)
 
 	e.GET("api/v1/statistics/user/:user-id", statisticsUserController.GetStatistics)
 	e.GET("api/v1/statistics/users/leaderboard", statisticsLeaderboardController.GetStatistics)

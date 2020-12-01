@@ -16,6 +16,8 @@ from tests.config import get_url_start
 from tests.statistics.statistics import (
     get_statistics_user
 )
+from tests.screenshot.screenshot import (get_screenshot_results)
+
 
 # prepare game
 
@@ -64,7 +66,7 @@ def complete_test_without_ext_sys(ext_system_id):
     run_high_load(ext_system_id, game_id)
 
 
-def test_statistics():
+def test_user_statistics():
     user_id = "i-user-2"
     game_id = "5c7713c7-3960-4c0d-ae7f-c27417ed234d"
     ext_system_id = "b0e4c252-9b72-4761-b574-fff694965dcf"
@@ -79,10 +81,18 @@ def test_statistics():
     print("result: ", res)
 
 
+def screenshot_results():
+    game_id = "game-qwe"
+    screenshot_id = "123"
+    res = get_screenshot_results(game_id, screenshot_id)
+    print(res)
+
+
 def main():
     # complete_test()
 
-    test_statistics()
+    # test_user_statistics()
+    screenshot_results()
 
     # complete_test_without_ext_sys("b0e4c252-9b72-4761-b574-fff694965dcf")
 
