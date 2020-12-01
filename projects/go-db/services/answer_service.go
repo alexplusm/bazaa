@@ -8,6 +8,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
+	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
 )
 
@@ -121,4 +122,10 @@ func (service *AnswerService) GetUserStatistics(
 	}
 
 	return resuults, nil
+}
+
+func (service *AnswerService) GetUsersAndScreenshotCountByGame(
+	gameID string,
+) (dao.AnsweredScreenshotsDAO, error) {
+	return service.AnswerRepo.SelectAnsweredScreenshotsByGame(gameID)
 }

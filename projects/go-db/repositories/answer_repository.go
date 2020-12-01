@@ -43,7 +43,8 @@ select COUNT(DISTINCT screenshot_id) FROM answers
 WHERE answers.game_id = ($1)
 `
 	selectUniqueUsersInGameStatement = `
-
+SELECT DISTINCT user_id FROM answers
+WHERE answers.game_id = ($1)
 `
 )
 
@@ -210,6 +211,8 @@ func (repo *AnswerRepository) SelectAnsweredScreenshotsByGame(
 		Count:  int(count),
 		UserID: listUsers,
 	}
+
+	fmt.Printf("reees: %+v\n", res)
 
 	return res, nil
 }

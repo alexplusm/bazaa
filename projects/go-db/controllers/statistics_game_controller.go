@@ -2,30 +2,32 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"net/http"
 
 	"github.com/labstack/echo"
 	log "github.com/sirupsen/logrus"
 
-	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
+	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
 )
 
 type StatisticsGameController struct {
-	GameService       interfaces.IGameService
-	ExtSystemService  interfaces.IExtSystemService
-	ScreenshotService interfaces.IScreenshotService
+	GameService        interfaces.IGameService
+	ExtSystemService   interfaces.IExtSystemService
+	ScreenshotService  interfaces.IScreenshotService
+	AnswerService      interfaces.IAnswerService
+	ActiveUsersService interfaces.IActiveUsersService
 }
 
 func (controller *StatisticsGameController) GetStatistics(ctx echo.Context) error {
-	// TODO: qp
-	extSystemID := ctx.QueryParam(consts.ExtSystemIDQueryParamName)
-	//gameIDs := ctx.QueryParam(consts.GameIDsQueryParamName)
+	qp := dto.StatisticsUserQueryParams{}
+	qp.FromCTX(ctx)
 
-	exist, err := controller.ExtSystemService.ExtSystemExist(extSystemID)
+	fmt.Println("ExtSystemID: ", qp.ExtSystemID)
+
+	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID)
 	if err != nil {
 		log.Error("get games controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
@@ -33,17 +35,11 @@ func (controller *StatisticsGameController) GetStatistics(ctx echo.Context) erro
 	if !exist {
 		return ctx.JSON(
 			http.StatusOK,
-			httputils.BuildBadRequestErrorResponseWithMgs("extSystem not found"),
+			httputils.BuildNotFoundRequestErrorResponse("extSystem not found"),
 		)
 	}
 
-	qp := dto.StatisticsUserQueryParams{}
-	qp.FromCTX(ctx)
-
-	fmt.Println("AZAZAZAZAZAZAZAZZAZAZA", qp.ExtSystemID)
-
 	games, err := controller.GameService.GetGames(qp.ExtSystemID)
-	fmt.Println("Error: ", err)
 	expectedGames := make([]bo.GameBO, 0, len(games))
 
 	// filter games
@@ -59,25 +55,32 @@ func (controller *StatisticsGameController) GetStatistics(ctx echo.Context) erro
 		expectedGames = games
 	}
 
-	fmt.Printf("GAMES: %+v\n", expectedGames)
-
-	//filteredGamesIDs := make([]string, 0, len(expectedGames))
-	//for _, g := range expectedGames {
-	//	filteredGamesIDs = append(filteredGamesIDs, g.GameID)
-	//}
-
-	count := 0
+	totalCount := 0
+	answeredCount := 0
+	activityUsers := 0
+	usersList := make([]string, 0, 1024)
 
 	for _, g := range expectedGames {
 		c, _ := controller.ScreenshotService.ScreenshotCountByGame(g.GameID)
-		count += c
+		res, _ := controller.AnswerService.GetUsersAndScreenshotCountByGame(g.GameID)
+		answeredCount += res.Count
+		totalCount += c
+		usersList = append(usersList, res.UserID...)
+		actUsers, _ := controller.ActiveUsersService.CountOfActiveUsers(g.GameID)
+		activityUsers += actUsers
 	}
 
-	fmt.Println("COUNT: ", count)
+	usersMap := make(map[string]bool)
+	for _, userID := range usersList {
+		usersMap[userID] = true
+	}
 
-	// get Screenshots
-
-	resp := dto.GameStatsDTO{}
+	resp := dto.GameStatsDTO{
+		ScreenshotsResolved: answeredCount,
+		ScreenshotsLeft:     totalCount - answeredCount,
+		UsersUnique:         len(usersMap),
+		UsersActive:         activityUsers,
+	}
 
 	return ctx.JSON(
 		http.StatusOK,

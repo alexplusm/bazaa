@@ -58,9 +58,8 @@ type IAnswerService interface {
 	GetUserStatistics(
 		userID string, totalOnly bool, games []bo.GameBO, from, to time.Time,
 	) ([]bo.StatisticsUserBO, error)
-	GetScreenshotResults(
-		gameID, screenshotID string,
-	) ([]dto.UserAnswerForScreenshotResultDTO, error)
+	GetScreenshotResults(gameID, screenshotID string) ([]dto.UserAnswerForScreenshotResultDTO, error)
+	GetUsersAndScreenshotCountByGame(gameID string) (dao.AnsweredScreenshotsDAO, error)
 }
 
 type IScreenshotService interface {
@@ -70,4 +69,9 @@ type IScreenshotService interface {
 
 type ISourceService interface {
 	GetSourcesByGame(gameID string) ([]dao.Source2DAO, error)
+}
+
+type IActiveUsersService interface {
+	SetUserActivity(gameID, userID string)
+	CountOfActiveUsers(gameID string) (int, error)
 }
