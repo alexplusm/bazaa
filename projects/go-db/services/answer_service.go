@@ -5,23 +5,50 @@ import (
 	"sort"
 	"time"
 
+	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
+	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
 )
 
 type AnswerService struct {
 	AnswerRepo interfaces.IAnswerRepository
 }
 
-func (service *AnswerService) GetScreenshotResults(gameID, screenshotID string) error {
+func (service *AnswerService) GetScreenshotResults(
+	gameID, screenshotID string,
+) ([]dto.UserAnswerForScreenshotResultDTO, error) {
 	res, err := service.AnswerRepo.SelectScreenshotResult(gameID, screenshotID)
 	if err != nil {
-		return fmt.Errorf("get screenshot results: %v", err)
+		return nil, fmt.Errorf("get screenshot results: %v", err)
+	}
+
+	res_len := len(res)
+	list := make([]dto.UserAnswerForScreenshotResultDTO, 0, res_len)
+
+	for _, r := range res {
+		dtoo := dto.UserAnswerForScreenshotResultDTO{}
+		dtoo.UserID = r.UserID
+		dtoo.Answer = r.Value
+		if res_len < consts.RequiredAnswerCountToFinishScreenshot {
+			dtoo.Result = "inProcess"
+		} else {
+			if r.UsersAnswer == "-1" {
+				dtoo.Result = "undefined"
+			} else {
+				if r.Value == r.UsersAnswer {
+					dtoo.Result = "right"
+				} else {
+					dtoo.Result = "wrong"
+				}
+			}
+		}
+		list = append(list, dtoo)
 	}
 
 	fmt.Printf("res: %+v\n", res)
 
-	return nil
+	return list, nil
 }
 
 // TODO: total only !!! remove

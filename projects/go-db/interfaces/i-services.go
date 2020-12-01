@@ -57,5 +57,7 @@ type IAnswerService interface {
 	GetUserStatistics(
 		userID string, totalOnly bool, games []bo.GameBO, from, to time.Time,
 	) ([]bo.StatisticsUserBO, error)
-	GetScreenshotResults(gameID, screenshotID string) error
+	GetScreenshotResults(
+		gameID, screenshotID string,
+	) ([]dto.UserAnswerForScreenshotResultDTO, error)
 }
