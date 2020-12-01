@@ -70,3 +70,8 @@ type IScreenshotService interface {
 type ISourceService interface {
 	GetSourcesByGame(gameID string) ([]dao.Source2DAO, error)
 }
+
+type IActiveUsersService interface {
+	SetUserActivity(gameID, userID string)
+	CountOfActiveUsers(gameID string) (int, error)
+}

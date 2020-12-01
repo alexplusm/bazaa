@@ -148,10 +148,12 @@ func (k *kernel) InjectScreenshotSetAnswerController() controllers.ScreenshotSet
 	screenshotUserAnswerService := &services.ScreenshotUserAnswerService{
 		AnswerRepo: answerRepo, ScreenshotRepo: screenshotRepo,
 	}
+	activeUsersService := &services.ActiveUsersService{RedisClient: redisHandler}
 
 	controller := controllers.ScreenshotSetAnswerController{
 		ScreenshotCacheService:      screenshotCacheService,
 		ScreenshotUserAnswerService: screenshotUserAnswerService,
+		ActiveUsersService:          activeUsersService,
 	}
 
 	return controller
@@ -210,6 +212,7 @@ func (k *kernel) InjectStatisticsLeaderboardController() controllers.StatisticsL
 
 func (k *kernel) InjectStatisticsGameController() controllers.StatisticsGameController {
 	handler := &PSQLHandler{k.pool}
+	redisHandler := &RedisHandler{k.redisClient}
 
 	extSystemRepo := &repositories.ExtSystemRepository{DBConn: handler}
 	extSystemService := &services.ExtSystemService{ExtSystemRepo: extSystemRepo}
@@ -223,9 +226,12 @@ func (k *kernel) InjectStatisticsGameController() controllers.StatisticsGameCont
 	answerRepo := &repositories.AnswerRepository{DBConn: handler}
 	answerService := &services.AnswerService{AnswerRepo: answerRepo}
 
+	activeUsersService := &services.ActiveUsersService{RedisClient: redisHandler}
+
 	controller := controllers.StatisticsGameController{
 		ExtSystemService: extSystemService, GameService: gameService,
 		ScreenshotService: screenshotService, AnswerService: answerService,
+		ActiveUsersService: activeUsersService,
 	}
 
 	return controller

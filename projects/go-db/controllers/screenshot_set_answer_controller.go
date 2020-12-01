@@ -15,6 +15,7 @@ import (
 type ScreenshotSetAnswerController struct {
 	ScreenshotCacheService      interfaces.IScreenshotCacheService
 	ScreenshotUserAnswerService interfaces.IScreenshotUserAnswerService
+	ActiveUsersService          interfaces.IActiveUsersService
 }
 
 func (controller *ScreenshotSetAnswerController) SetAnswer(ctx echo.Context) error {
@@ -65,6 +66,8 @@ func (controller *ScreenshotSetAnswerController) SetAnswer(ctx echo.Context) err
 	fmt.Println("Answers: ", response)
 	fmt.Println("SetAnswer: ScreenshotID: ", screenshotID)
 	fmt.Println()
+
+	controller.ActiveUsersService.SetUserActivity(gameID, userAnswerBO.UserID)
 
 	return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(response))
 }
