@@ -25,6 +25,8 @@ type StatisticsUserController struct {
 func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error {
 	// TODO: params in urls -> consts
 	userID := ctx.Param("user-id")
+	// получить самую раннюю игру
+	fmt.Println(userID)
 
 	qp := dto.StatisticsUserQueryParams{}
 	qp.FromCTX(ctx)
@@ -77,9 +79,6 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 			httputils.BuildNotFoundRequestErrorResponse("game not found"),
 		)
 	}
-
-	// получить самую раннюю игру
-	fmt.Println(userID)
 
 	firstGame := expectedGames[0]
 	for _, game := range expectedGames {

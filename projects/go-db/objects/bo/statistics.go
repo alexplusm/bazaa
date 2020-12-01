@@ -32,7 +32,11 @@ func StatsToDTO(stats []StatisticsUserBO) dto.StatsUserDTO {
 		d.Statistics.AverageAccuracy = s.Statistics.AverageAccuracy
 
 		// TODO: не место!!!
-		d.Statistics.AverageAccuracy = float64(d.Statistics.RightAnswers) / float64(d.Statistics.TotalScreenshots)
+		if d.Statistics.TotalScreenshots != 0 {
+			d.Statistics.AverageAccuracy = float64(d.Statistics.RightAnswers) / float64(d.Statistics.TotalScreenshots)
+		} else {
+			d.Statistics.AverageAccuracy = 0
+		}
 
 		history = append(history, d)
 
@@ -40,9 +44,15 @@ func StatsToDTO(stats []StatisticsUserBO) dto.StatsUserDTO {
 		total.RightAnswers += s.Statistics.RightAnswers
 		total.MatchWithExpert += s.Statistics.MatchWithExpert
 	}
-	total.AverageAccuracy = float64(total.RightAnswers) / float64(total.TotalScreenshots)
+	if total.TotalScreenshots != 0 {
+		total.AverageAccuracy = float64(total.RightAnswers) / float64(total.TotalScreenshots)
+	} else {
+		total.AverageAccuracy = 0
+	}
 
-	return dto.StatsUserDTO{Total: total, History: history}
+	val := dto.StatsUserDTO{Total: total, History: history}
+
+	return val
 }
 
 func StatsToTotalOnlyDTO(stats []StatisticsUserBO) dto.StatsUserTotalOnlyDTO {
