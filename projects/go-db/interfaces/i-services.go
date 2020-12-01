@@ -50,6 +50,7 @@ type IScreenshotUserAnswerService interface {
 
 type IUserService interface {
 	CreateUser(userID string) error
+	UserExist(userID string) (bool, error)
 }
 
 type IAnswerService interface {

@@ -146,13 +146,16 @@ func (k *kernel) InjectStatisticsUserController() controllers.StatisticsUserCont
 	answerRepo := &repositories.AnswerRepository{DBConn: handler}
 	extSystemRepo := &repositories.ExtSystemRepository{DBConn: handler}
 	gameRepo := &repositories.GameRepository{DBConn: handler}
+	userRepo := &repositories.UserRepository{DBConn: handler}
 
 	answerService := &services.AnswerService{AnswerRepo: answerRepo}
 	extSystemService := &services.ExtSystemService{ExtSystemRepo: extSystemRepo}
 	gameService := &services.GameService{GameRepo: gameRepo}
+	userService := &services.UserService{UserRepo: userRepo}
 
 	controller := controllers.StatisticsUserController{
-		GameService: gameService, ExtSystemService: extSystemService, AnswerService: answerService,
+		GameService: gameService, ExtSystemService: extSystemService,
+		AnswerService: answerService, UserService: userService,
 	}
 
 	return controller

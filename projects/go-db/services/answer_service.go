@@ -82,7 +82,5 @@ func (service *AnswerService) GetUserStatistics(
 		currentDay = currentDay.AddDate(0, 0, 1)
 	}
 
-	//fmt.Printf("WATF: %+v\n", resuults)
-
 	return resuults, nil
 }

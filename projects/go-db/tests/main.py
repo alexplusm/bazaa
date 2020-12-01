@@ -70,8 +70,8 @@ def test_statistics():
     ext_system_id = "b0e4c252-9b72-4761-b574-fff694965dcf"
     params = {
         "extSystemId": ext_system_id,
-        # "gameIds": game_id,
-        "totalOnly": "TrUe1",
+        "gameIds": game_id,
+        # "totalOnly": "TrUe",
         "from": str(get_timestamp(timedelta(days=-10))),
         "to": str(get_timestamp(timedelta(days=1))),
     }

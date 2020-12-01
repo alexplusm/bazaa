@@ -19,6 +19,7 @@ type StatisticsUserController struct {
 	GameService      interfaces.IGameService
 	ExtSystemService interfaces.IExtSystemService
 	AnswerService    interfaces.IAnswerService
+	UserService      interfaces.IUserService
 }
 
 func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error {
@@ -28,17 +29,27 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 	qp := dto.StatisticsUserQueryParams{}
 	qp.FromCTX(ctx)
 
-	fmt.Printf("Params: %+v\n", qp)
-
 	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID)
 	if err != nil {
-		log.Error("get games controller: ", err)
+		log.Error("get user statistics controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
 	}
 	if !exist {
 		return ctx.JSON(
 			http.StatusOK,
-			httputils.BuildBadRequestErrorResponseWithMgs("extSystem not found"),
+			httputils.BuildNotFoundRequestErrorResponse("extSystem not found"),
+		)
+	}
+
+	userExist, err := controller.UserService.UserExist(userID)
+	if err != nil {
+		log.Error("get user statistics controller: ", err)
+		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
+	}
+	if !userExist {
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildNotFoundRequestErrorResponse("user not found"),
 		)
 	}
 
@@ -60,7 +71,11 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 	}
 
 	if len(expectedGames) == 0 {
-		// return: GAME NOT FOUND
+		// TODO: log
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildNotFoundRequestErrorResponse("game not found"),
+		)
 	}
 
 	// получить самую раннюю игру
