@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo"
-	//log "github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
@@ -15,6 +15,7 @@ import (
 
 type ScreenshotResultsController struct {
 	AnswerService interfaces.IAnswerService
+	GameService   interfaces.IGameService
 }
 
 func (controller *ScreenshotResultsController) GetResult(ctx echo.Context) error {
@@ -22,6 +23,18 @@ func (controller *ScreenshotResultsController) GetResult(ctx echo.Context) error
 	screenshotID := ctx.Param("screenshot-id")
 
 	fmt.Println(gameID, screenshotID)
+
+	gameExist, err := controller.GameService.GameExist(gameID)
+	if err != nil {
+		log.Error("get result: ", err)
+		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
+	}
+	if !gameExist {
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildNotFoundRequestErrorResponse("game not found"),
+		)
+	}
 
 	// TODO: screenshot exist | game exist
 

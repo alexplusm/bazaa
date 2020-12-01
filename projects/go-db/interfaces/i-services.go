@@ -13,6 +13,7 @@ type IGameService interface {
 	CreateGame(game bo.GameBO) (string, error)
 	GetGame(gameID string) (bo.GameBO, error)
 	GetGames(extSystemID string) ([]bo.GameBO, error)
+	GameExist(gameID string) (bool, error)
 }
 
 type IAttachSourceToGameService interface {

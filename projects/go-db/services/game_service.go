@@ -44,3 +44,7 @@ func (service *GameService) GetGames(extSystemID string) ([]bo.GameBO, error) {
 
 	return list, nil
 }
+
+func (service *GameService) GameExist(gameID string) (bool, error) {
+	return service.GameRepo.GameExist(gameID)
+}

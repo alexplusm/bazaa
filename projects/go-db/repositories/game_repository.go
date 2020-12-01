@@ -36,6 +36,11 @@ SELECT "game_id", "ext_system_id", "name", "start_date", "end_date", "answer_typ
 FROM games
 WHERE "ext_system_id" = ($1);
 `
+	existGameStatement = `
+SELECT COUNT(1)
+FROM games
+WHERE "game_id" = ($1);
+`
 )
 
 func (repo *GameRepository) InsertGame(game dao.GameDAO) (string, error) {
@@ -130,4 +135,22 @@ func (repo *GameRepository) SelectGames(extSystemID string) ([]dao.GameDAO, erro
 	}
 
 	return list, nil
+}
+
+func (repo *GameRepository) GameExist(gameID string) (bool, error) {
+	p := repo.DBConn.GetPool()
+	conn, err := p.Acquire(context.Background())
+	if err != nil {
+		return false, fmt.Errorf("game exist: acquire connection: %v", err)
+	}
+	defer conn.Release()
+
+	var count int64
+
+	row := conn.QueryRow(context.Background(), existGameStatement, gameID)
+	if row.Scan(&count) != nil {
+		return false, fmt.Errorf("game exist: %v", err)
+	}
+
+	return count != 0, nil
 }
