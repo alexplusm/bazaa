@@ -23,14 +23,12 @@ type StatisticsUserController struct {
 
 func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error {
 	userID := ctx.Param(consts.UserIDUrlParam)
-
 	qp := StatisticsUserQueryParams{}
 	qp.fromCtx(ctx)
 
 	fmt.Println(userID)
 	fmt.Printf("Query Params: %+v\n", qp)
 
-	// TODO: обобщенная функция по обработке ошибок или не существования сущности
 	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID.Value)
 	if err != nil {
 		log.Error("get user statistics controller: ", err)
@@ -43,12 +41,12 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 		)
 	}
 
-	userExist, err := controller.UserService.UserExist(userID)
+	exist, err = controller.UserService.UserExist(userID)
 	if err != nil {
 		log.Error("get user statistics controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
 	}
-	if !userExist {
+	if !exist {
 		return ctx.JSON(
 			http.StatusOK,
 			httputils.BuildNotFoundRequestErrorResponse("user not found"),
@@ -56,16 +54,12 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 	}
 
 	games, err := controller.GameService.GetGames(qp.ExtSystemID.Value)
-	if len(games) == 0 {
-		// TODO:discuss: что делать в этом случае
-		// * empty statistics
-		// * error: game not found
+	if err != nil {
+		log.Error("get user statistics controller: ", err)
+		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
 	}
 
 	games = controller.GameService.FilterGames(qp.GameIDs.Value, games)
-
-	expectedGames := games
-
 	if len(games) == 0 {
 		return ctx.JSON(
 			http.StatusOK,
@@ -76,13 +70,13 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 	earliestGame := controller.GameService.GetEarliestGame(games)
 
 	// TODO:discuss: если ошибка в парсинге даты?
-	// * оповещать пользователя
-	// * использовать дефолтные значения
+	// 1) оповещать пользователя
+	// 2) использовать дефолтные значения
 	from, to := controller.DurationService.GetDurationByGame(
 		qp.Duration.From, qp.Duration.To, earliestGame,
 	)
 
-	stats, err := controller.AnswerService.GetUserStatistics(userID, qp.TotalOnly.Value, expectedGames, from, to)
+	stats, err := controller.AnswerService.GetUserStatistics(userID, games, from, to)
 	if err != nil {
 		log.Error("get user statistics controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())

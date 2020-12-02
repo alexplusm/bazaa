@@ -52,9 +52,8 @@ func (service *AnswerService) GetScreenshotResults(
 	return list, nil
 }
 
-// TODO: total only !!! remove
 func (service *AnswerService) GetUserStatistics(
-	userID string, totalOnly bool, games []bo.GameBO, from, to time.Time,
+	userID string, games []bo.GameBO, from, to time.Time,
 ) ([]bo.StatisticsUserBO, error) {
 	gameIds := make([]string, 0, len(games))
 
