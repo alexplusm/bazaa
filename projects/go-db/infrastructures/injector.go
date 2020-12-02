@@ -205,7 +205,16 @@ func (k *kernel) InjectStatisticsLeaderboardController() controllers.StatisticsL
 	extSystemRepo := &repositories.ExtSystemRepository{DBConn: handler}
 	extSystemService := &services.ExtSystemService{ExtSystemRepo: extSystemRepo}
 
-	controller := controllers.StatisticsLeaderboardController{ExtSystemService: extSystemService}
+	answerRepo := &repositories.AnswerRepository{DBConn: handler}
+	answerService := &services.AnswerService{AnswerRepo: answerRepo}
+
+	gameRepo := &repositories.GameRepository{DBConn: handler}
+	gameService := &services.GameService{GameRepo: gameRepo}
+
+	controller := controllers.StatisticsLeaderboardController{
+		ExtSystemService: extSystemService, GameService: gameService,
+		AnswerService: answerService,
+	}
 
 	return controller
 }

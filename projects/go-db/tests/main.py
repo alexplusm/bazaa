@@ -64,10 +64,10 @@ def complete_test_without_ext_sys(ext_system_id):
     if game_id is None:
         print("error while game creation")
 
-    run_high_load(ext_system_id, game_id)
-
     update_game(game_id)
     prepare_game(game_id)
+
+    run_high_load(ext_system_id, game_id)
 
 
 def test_user_statistics():
@@ -98,7 +98,7 @@ def main():
     # test_user_statistics()
     # screenshot_results()
 
-    # complete_test_without_ext_sys("ee6fd809-8740-4490-8c6e-e9435168b399")
+    complete_test_without_ext_sys("0af61dfe-302e-4e00-a3cf-90be4619c9a2")
 
     # ext_system_id = "ext-id-3"
     # get_games(ext_system_id)

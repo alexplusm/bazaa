@@ -46,6 +46,15 @@ WHERE answers.game_id = ($1)
 SELECT DISTINCT user_id FROM answers
 WHERE answers.game_id = ($1)
 `
+	selectAnswersByGame = `
+SELECT ans.user_id, ans.value, s.expert_answer, s.users_answer
+FROM answers ans
+INNER JOIN screenshots s
+ON s.screenshot_id = ans.screenshot_id
+WHERE
+ans.game_id = ($1) AND
+(ans.answer_date BETWEEN ($2) AND ($3))
+`
 )
 
 func (repo *AnswerRepository) InsertAnswers(answers []dao.AnswerDAO) {
@@ -215,4 +224,45 @@ func (repo *AnswerRepository) SelectAnsweredScreenshotsByGame(
 	fmt.Printf("reees: %+v\n", res)
 
 	return res, nil
+}
+
+func (repo *AnswerRepository) SelectAnswersTODO(gameID string, from, to time.Time) ([]dao.AnswerStatLeadDAO, error) {
+	p := repo.DBConn.GetPool()
+	conn, err := p.Acquire(context.Background())
+	if err != nil {
+		return nil, fmt.Errorf("select answers by user: acquire connection: %v", err)
+	}
+	defer conn.Release()
+
+	rows, err := conn.Query(
+		context.Background(), selectAnswersByGame,
+		gameID, from.Unix(), to.Unix(),
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("todooo: %v", err)
+	}
+	defer rows.Close()
+
+	list := make([]dao.AnswerStatLeadDAO, 0, 1024)
+
+	for rows.Next() {
+		a := dao.AnswerStatLeadDAO{}
+		var usersAnswer []byte
+
+		err = rows.Scan(
+			&a.UserID, &a.Value, &a.ExpertAnswer, &usersAnswer,
+		)
+		a.UsersAnswer = string(usersAnswer)
+		if err != nil {
+			log.Error("seletoodoo user: retrieve answer: ", err)
+			continue
+		}
+		list = append(list, a)
+	}
+	if rows.Err() != nil {
+		log.Error("toodoooooo: ", rows.Err())
+	}
+
+	return list, nil
 }
