@@ -24,6 +24,7 @@ type IInjector interface {
 	InjectGameInfoController() controllers.GameInfoController
 
 	InjectExtSystemCreateController() controllers.ExtSystemCreateController
+	InjectExtSystemListController() controllers.ExtSystemListController
 
 	InjectScreenshotGetController() controllers.ScreenshotGetController
 	InjectScreenshotSetAnswerController() controllers.ScreenshotSetAnswerController
@@ -110,6 +111,17 @@ func (k *kernel) InjectExtSystemCreateController() controllers.ExtSystemCreateCo
 	repo := &repositories.ExtSystemRepository{DBConn: handler}
 	service := &services.ExtSystemService{ExtSystemRepo: repo}
 	controller := controllers.ExtSystemCreateController{ExtSystemService: service}
+
+	return controller
+}
+
+func (k *kernel) InjectExtSystemListController() controllers.ExtSystemListController {
+	handler := &PSQLHandler{k.pool}
+
+	repo := &repositories.ExtSystemRepository{DBConn: handler}
+	service := &services.ExtSystemService{ExtSystemRepo: repo}
+
+	controller := controllers.ExtSystemListController{ExtSystemService: service}
 
 	return controller
 }
