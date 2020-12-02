@@ -3,14 +3,12 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/labstack/echo"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
-	"github.com/Alexplusm/bazaa/projects/go-db/utils"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
 )
 
@@ -25,12 +23,11 @@ type StatisticsUserController struct {
 func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error {
 	// TODO: params in urls -> consts
 	userID := ctx.Param("user-id")
-	// получить самую раннюю игру
-	fmt.Println(userID)
 
 	qp := StatisticsUserQueryParams{}
 	qp.FromCTX(ctx)
 
+	fmt.Println(userID)
 	fmt.Printf("Query Params: %+v\n", qp)
 
 	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID.Value)
@@ -59,18 +56,16 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 
 	games, err := controller.GameService.GetGames(qp.ExtSystemID.Value)
 	if len(games) == 0 {
-		// return empty statistics?
-		// error?
+		// TODO:discuss: что делать в этом случае
+		// * empty statistics
+		// * error: game not found
 	}
 
 	games = controller.GameService.FilterGames(qp.GameIDs.Value, games)
 
 	expectedGames := games
 
-	//controller.DurationService.GetDurationByGame()
-
 	if len(games) == 0 {
-		// TODO: log
 		return ctx.JSON(
 			http.StatusOK,
 			httputils.BuildNotFoundRequestErrorResponse("game not found"),
@@ -79,39 +74,26 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 
 	earliestGame := controller.GameService.GetEarliestGame(games)
 
-	// Validation -> in service
-	year, month, day := time.Now().Date()
-	fromTime := earliestGame.StartDate
-	toTime := time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
+	// TODO:discuss: если ошибка в парсинге даты?
+	// * оповещать пользователя
+	// * использовать дефолтные значения
+	from, to := controller.DurationService.GetDurationByGame(
+		qp.Duration.From, qp.Duration.To, earliestGame,
+	)
 
-	if qp.Duration.From != "" {
-		fromm, err := utils.FromTimestampToTime(qp.Duration.From)
-		if err != nil {
-			// TODO: log
-		} else {
-			fromTime = fromm
-		}
-	}
-	if qp.Duration.To != "" {
-		to_o, err := utils.FromTimestampToTime(qp.Duration.To)
-		if err != nil {
-			// TODO: log
-		} else {
-			toTime = to_o
-		}
-	}
-
-	stats, err := controller.AnswerService.GetUserStatistics(userID, qp.TotalOnly.Value, expectedGames, fromTime, toTime)
+	stats, err := controller.AnswerService.GetUserStatistics(userID, qp.TotalOnly.Value, expectedGames, from, to)
 	if err != nil {
-		// TODO: LOG ERROR
+		log.Error("get user statistics controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
 	}
 
+	var resp interface{}
+
 	if qp.TotalOnly.Value {
-		resp := bo.StatsToTotalOnlyDTO(stats)
-		return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(resp))
+		resp = bo.StatsToTotalOnlyDTO(stats)
 	} else {
-		resp := bo.StatsToDTO(stats)
-		return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(resp))
+		resp = bo.StatsToDTO(stats)
 	}
+
+	return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(resp))
 }
