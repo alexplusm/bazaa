@@ -7,6 +7,7 @@ import (
 	"github.com/labstack/echo"
 	log "github.com/sirupsen/logrus"
 
+	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
@@ -21,15 +22,15 @@ type StatisticsUserController struct {
 }
 
 func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error {
-	// TODO: params in urls -> consts
-	userID := ctx.Param("user-id")
+	userID := ctx.Param(consts.UserIDUrlParam)
 
 	qp := StatisticsUserQueryParams{}
-	qp.FromCTX(ctx)
+	qp.fromCtx(ctx)
 
 	fmt.Println(userID)
 	fmt.Printf("Query Params: %+v\n", qp)
 
+	// TODO: обобщенная функция по обработке ошибок или не существования сущности
 	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID.Value)
 	if err != nil {
 		log.Error("get user statistics controller: ", err)

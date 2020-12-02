@@ -88,28 +88,28 @@ func registerRoutes(e *echo.Echo) error {
 	e.POST("api/v1/game", gameCreateController.CreateGame)
 
 	e.GET("api/v1/game", gameListController.GetGames)
-	e.GET("api/v1/game/:game-id", gameInfoController.GetGameInfo)
+	e.GET("api/v1/game/:"+consts.GameIDUrlParam, gameInfoController.GetGameInfo)
 
 	// TODO: ["application/json"]
 	e.POST("api/v1/game/prepare", gamePrepareController.PrepareGame)
 
 	// TODO: ["application/json", "multipart/form-data"]
-	e.PUT("api/v1/game/:game-id", gameUpdateController.UpdateGame)
+	e.PUT("api/v1/game/:"+consts.GameIDUrlParam, gameUpdateController.UpdateGame)
 
 	// TODO: ["application/json"]
 	e.POST("api/v1/ext_system", extSystemController.Create)
 	e.GET("api/v1/ext_system", extSystemController.List)
 
-	e.GET("api/v1/game/:game-id/screenshot", screenshotGetController.GetScreenshot)
+	e.GET("api/v1/game/:"+consts.GameIDUrlParam+"/screenshot", screenshotGetController.GetScreenshot)
 
 	// TODO: ["application/json"]
 	e.POST(
-		"api/v1/game/:game-id/screenshot/:screenshot-id/answer",
+		"api/v1/game/:"+consts.GameIDUrlParam+"/screenshot/:"+consts.ScreenshotIDUrlParam+"/answer",
 		screenshotSetAnswerController.SetAnswer,
 	)
-	e.GET("/api/v1/game/:game-id/screenshot/:screenshot-id/result", screenshotResultsController.GetResult)
+	e.GET("/api/v1/game/:"+consts.GameIDUrlParam+"/screenshot/:"+consts.ScreenshotIDUrlParam+"/result", screenshotResultsController.GetResult)
 
-	e.GET("api/v1/statistics/user/:user-id", statisticsUserController.GetStatistics)
+	e.GET("api/v1/statistics/user/:"+consts.UserIDUrlParam, statisticsUserController.GetStatistics)
 	e.GET("api/v1/statistics/users/leaderboard", statisticsLeaderboardController.GetStatistics)
 	e.GET("api/v1/statistics/games", statisticsGameController.GetStatistics)
 

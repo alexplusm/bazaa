@@ -26,12 +26,13 @@ type StatisticsLeaderboardController struct {
 }
 
 func (controller *StatisticsLeaderboardController) GetStatistics(ctx echo.Context) error {
+	// TODO: remove
 	limit := ctx.QueryParam(consts.LimitQueryParamName)
 
-	qp := dto.StatisticsUserQueryParams{}
-	qp.FromCTX(ctx)
+	qp := StatisticsLeaderBoardQueryParams{}
+	qp.fromCtx(ctx)
 
-	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID)
+	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID.Value)
 	if err != nil {
 		log.Error("get games controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
@@ -44,13 +45,13 @@ func (controller *StatisticsLeaderboardController) GetStatistics(ctx echo.Contex
 		)
 	}
 
-	games, err := controller.GameService.GetGames(qp.ExtSystemID)
+	games, err := controller.GameService.GetGames(qp.ExtSystemID.Value)
 	expectedGames := make([]bo.GameBO, 0, len(games))
 
 	// filter games
-	if len(qp.GameIDs) != 0 {
+	if len(qp.GameIDs.Value) != 0 {
 		for _, game := range games {
-			for _, gameQP := range qp.GameIDs {
+			for _, gameQP := range qp.GameIDs.Value {
 				if game.GameID == gameQP {
 					expectedGames = append(expectedGames, game)
 				}
