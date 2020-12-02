@@ -29,3 +29,11 @@ func (extSystem *ExtSystemBO) FromDTO(src dto.CreateExtSystemRequestBody, valida
 func (extSystem *ExtSystemBO) HasID() bool {
 	return extSystem.ID != ""
 }
+
+func (extSystem *ExtSystemBO) ToDTO() dto.ExtSystemListItem {
+	return dto.ExtSystemListItem{
+		ID:             extSystem.ID,
+		Description:    extSystem.Description,
+		PostResultsURL: extSystem.PostResultsURL,
+	}
+}

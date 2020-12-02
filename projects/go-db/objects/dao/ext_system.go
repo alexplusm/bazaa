@@ -1,6 +1,8 @@
 package dao
 
-import "github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
+import (
+	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
+)
 
 type ExtSystemDAO struct {
 	ID             string
@@ -12,6 +14,14 @@ func (extSystem *ExtSystemDAO) FromBO(bo bo.ExtSystemBO) {
 	extSystem.ID = bo.ID
 	extSystem.Description = bo.Description
 	extSystem.PostResultsURL = bo.PostResultsURL
+}
+
+func (extSystem *ExtSystemDAO) ToBO() bo.ExtSystemBO {
+	return bo.ExtSystemBO{
+		ID:             extSystem.ID,
+		Description:    extSystem.Description,
+		PostResultsURL: extSystem.PostResultsURL,
+	}
 }
 
 func (extSystem *ExtSystemDAO) HasID() bool {
