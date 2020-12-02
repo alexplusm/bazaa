@@ -76,7 +76,12 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 		qp.Duration.From, qp.Duration.To, earliestGame,
 	)
 
-	stats, err := controller.AnswerService.GetUserStatistics(userID, games, from, to)
+	gameIDs := make([]string, 0, len(games))
+	for _, game := range games {
+		gameIDs = append(gameIDs, game.GameID)
+	}
+
+	statistics, err := controller.AnswerService.GetUserStatistics(userID, gameIDs, from, to)
 	if err != nil {
 		log.Error("get user statistics controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
@@ -85,9 +90,9 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 	var resp interface{}
 
 	if qp.TotalOnly.Value {
-		resp = bo.StatsToTotalOnlyDTO(stats)
+		resp = bo.StatsToTotalOnlyDTO(statistics)
 	} else {
-		resp = bo.StatsToDTO(stats)
+		resp = bo.StatsToDTO(statistics)
 	}
 
 	return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(resp))
