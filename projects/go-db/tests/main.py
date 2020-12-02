@@ -93,12 +93,16 @@ def screenshot_results():
 
 
 def main():
-    complete_test()
+    # complete_test()
 
     # test_user_statistics()
     # screenshot_results()
 
-    complete_test_without_ext_sys("0af61dfe-302e-4e00-a3cf-90be4619c9a2")
+    # complete_test_without_ext_sys("0af61dfe-302e-4e00-a3cf-90be4619c9a2")
+
+    game_id = "c13e1016-4a83-4e4a-8ccc-da4ae6ad2728"
+    ext_sys_id = "clean-city-1"
+    run_high_load(ext_sys_id, game_id)
 
     # ext_system_id = "ext-id-3"
     # get_games(ext_system_id)

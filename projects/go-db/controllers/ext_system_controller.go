@@ -12,11 +12,11 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
 )
 
-type ExtSystemCreateController struct {
+type ExtSystemController struct {
 	ExtSystemService interfaces.IExtSystemService
 }
 
-func (controller *ExtSystemCreateController) CreateExtSystem(ctx echo.Context) error {
+func (controller *ExtSystemController) Create(ctx echo.Context) error {
 	extSystemRaw := new(dto.CreateExtSystemRequestBody)
 
 	if err := ctx.Bind(extSystemRaw); err != nil {
@@ -40,4 +40,20 @@ func (controller *ExtSystemCreateController) CreateExtSystem(ctx echo.Context) e
 		http.StatusOK,
 		httputils.BuildSuccessResponse(dto.CreateExtSystemResponseBody{ID: extSystemID}),
 	)
+}
+
+func (controller *ExtSystemController) List(ctx echo.Context) error {
+	listBO, err := controller.ExtSystemService.ExtSystemList()
+	if err != nil {
+		log.Error("extSystem list controller: ", err)
+		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
+	}
+
+	listDTO := make([]dto.ExtSystemListItem, 0, len(listBO))
+	for _, item := range listBO {
+		listDTO = append(listDTO, item.ToDTO())
+	}
+
+	resp := dto.ExtSystemListResponseBody{ExtSystems: listDTO}
+	return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(resp))
 }
