@@ -57,23 +57,16 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 	}
 
 	games, err := controller.GameService.GetGames(qp.ExtSystemID.Value)
-
-	expectedGames := make([]bo.GameBO, 0, len(games))
-
-	// filter games
-	if len(qp.GameIDs.Value) != 0 {
-		for _, game := range games {
-			for _, gameQP := range qp.GameIDs.Value {
-				if game.GameID == gameQP {
-					expectedGames = append(expectedGames, game)
-				}
-			}
-		}
-	} else {
-		expectedGames = games
+	if len(games) == 0 {
+		// return empty statistics?
+		// error?
 	}
 
-	if len(expectedGames) == 0 {
+	games = controller.GameService.FilterGames(qp.GameIDs.Value, games)
+
+	expectedGames := games
+
+	if len(games) == 0 {
 		// TODO: log
 		return ctx.JSON(
 			http.StatusOK,
@@ -81,17 +74,12 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 		)
 	}
 
-	firstGame := expectedGames[0]
-	for _, game := range expectedGames {
-		if firstGame.StartDate.Before(game.StartDate) {
-			firstGame = game
-		}
-	}
+	earliestGame := controller.GameService.GetEarliestGame(games)
 
-	// Validation
+	// Validation -> in service
 	year, month, day := time.Now().Date()
-	var fromTime = firstGame.StartDate
-	var toTime = time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
+	fromTime := earliestGame.StartDate
+	toTime := time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
 
 	if qp.Duration.From != "" {
 		fromm, err := utils.FromTimestampToTime(qp.Duration.From)

@@ -14,6 +14,8 @@ type IGameService interface {
 	GetGame(gameID string) (bo.GameBO, error)
 	GetGames(extSystemID string) ([]bo.GameBO, error)
 	GameExist(gameID string) (bool, error)
+	FilterGames(gamesID []string, games []bo.GameBO) []bo.GameBO
+	GetEarliestGame(games []bo.GameBO) bo.GameBO
 }
 
 type IAttachSourceToGameService interface {
