@@ -19,6 +19,7 @@ type StatisticsUserController struct {
 	ExtSystemService interfaces.IExtSystemService
 	AnswerService    interfaces.IAnswerService
 	UserService      interfaces.IUserService
+	DurationService  interfaces.IDurationService
 }
 
 func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error {
@@ -65,6 +66,8 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 	games = controller.GameService.FilterGames(qp.GameIDs.Value, games)
 
 	expectedGames := games
+
+	//controller.DurationService.GetDurationByGame()
 
 	if len(games) == 0 {
 		// TODO: log

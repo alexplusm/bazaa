@@ -221,9 +221,12 @@ func (k *kernel) InjectStatisticsUserController() controllers.StatisticsUserCont
 	gameService := &services.GameService{GameRepo: gameRepo}
 	userService := &services.UserService{UserRepo: userRepo}
 
+	durationService := k.InjectDurationService()
+
 	controller := controllers.StatisticsUserController{
 		GameService: gameService, ExtSystemService: extSystemService,
 		AnswerService: answerService, UserService: userService,
+		DurationService: &durationService,
 	}
 
 	return controller
@@ -297,4 +300,8 @@ func (k *kernel) InjectExtSystemService() services.ExtSystemService {
 	service := services.ExtSystemService{ExtSystemRepo: repo}
 
 	return service
+}
+
+func (k *kernel) InjectDurationService() services.DurationService {
+	return services.DurationService{}
 }

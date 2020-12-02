@@ -79,3 +79,7 @@ type IActiveUsersService interface {
 	SetUserActivity(gameID, userID string)
 	CountOfActiveUsers(gameID string) (int, error)
 }
+
+type IDurationService interface {
+	GetDurationByGame(from, to string, game bo.GameBO) (time.Time, time.Time)
+}
