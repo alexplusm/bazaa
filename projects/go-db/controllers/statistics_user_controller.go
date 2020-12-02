@@ -10,7 +10,6 @@ import (
 
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
-	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
 )
@@ -28,10 +27,12 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 	// получить самую раннюю игру
 	fmt.Println(userID)
 
-	qp := dto.StatisticsUserQueryParams{}
+	qp := StatisticsUserQueryParams{}
 	qp.FromCTX(ctx)
 
-	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID)
+	fmt.Printf("Query Params: %+v\n", qp)
+
+	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID.Value)
 	if err != nil {
 		log.Error("get user statistics controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
@@ -55,14 +56,14 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 		)
 	}
 
-	games, err := controller.GameService.GetGames(qp.ExtSystemID)
+	games, err := controller.GameService.GetGames(qp.ExtSystemID.Value)
 
 	expectedGames := make([]bo.GameBO, 0, len(games))
 
 	// filter games
-	if len(qp.GameIDs) != 0 {
+	if len(qp.GameIDs.Value) != 0 {
 		for _, game := range games {
-			for _, gameQP := range qp.GameIDs {
+			for _, gameQP := range qp.GameIDs.Value {
 				if game.GameID == gameQP {
 					expectedGames = append(expectedGames, game)
 				}
@@ -109,13 +110,13 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 		}
 	}
 
-	stats, err := controller.AnswerService.GetUserStatistics(userID, qp.TotalOnly, expectedGames, fromTime, toTime)
+	stats, err := controller.AnswerService.GetUserStatistics(userID, qp.TotalOnly.Value, expectedGames, fromTime, toTime)
 	if err != nil {
 		// TODO: LOG ERROR
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
 	}
 
-	if qp.TotalOnly {
+	if qp.TotalOnly.Value {
 		resp := bo.StatsToTotalOnlyDTO(stats)
 		return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(resp))
 	} else {
