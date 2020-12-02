@@ -44,3 +44,12 @@ type GameStatsDTO struct {
 	UsersUnique         int `json:"usersUnique"`
 	UsersActive         int `json:"usersActive"`
 }
+
+type LeadersDTO struct {
+	UserID     string                  `json:"userId"`
+	Statistics StatisticsUsersInnerDTO `json:"statistics"`
+}
+
+type LeadersResponseDTO struct {
+	Leaders []LeadersDTO `json:"leaders"`
+}

@@ -33,3 +33,10 @@ type ScreenshotResultDAO struct {
 	UsersAnswer string
 	UserID      string
 }
+
+type AnswerStatLeadDAO struct {
+	UserID       string
+	Value        string
+	ExpertAnswer string
+	UsersAnswer  string
+}
