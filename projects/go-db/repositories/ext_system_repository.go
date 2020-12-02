@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 )
@@ -27,6 +29,10 @@ RETURNING "ext_system_id";
 SELECT COUNT(1)
 FROM ext_systems
 WHERE "ext_system_id" = ($1);
+`
+	selectExtSystems = `
+SELECT "ext_system_id", "description", "post_results_url"
+FROM ext_systems;
 `
 )
 
@@ -63,8 +69,36 @@ func (repo *ExtSystemRepository) InsertExtSystem(
 }
 
 func (repo *ExtSystemRepository) SelectExtSystems() ([]dao.ExtSystemDAO, error) {
-	// TODO: for web client need list of extSystems [{id, description}, ...]
-	return nil, nil
+	p := repo.DBConn.GetPool()
+	conn, err := p.Acquire(context.Background())
+	if err != nil {
+		return nil, fmt.Errorf("extSystem list: acquire connection: %v", err)
+	}
+	defer conn.Release()
+
+	rows, err := conn.Query(context.Background(), selectExtSystems)
+
+	if err != nil {
+		return nil, fmt.Errorf("extSystem list: %v", err)
+	}
+	defer rows.Close()
+
+	list := make([]dao.ExtSystemDAO, 0, 1024)
+
+	for rows.Next() {
+		es := dao.ExtSystemDAO{}
+		err = rows.Scan(&es.ID, &es.Description, &es.PostResultsURL)
+		if err != nil {
+			log.Error("extSystem list: ", err)
+			continue
+		}
+		list = append(list, es)
+	}
+	if rows.Err() != nil {
+		log.Error("extSystem list: ", rows.Err())
+	}
+
+	return list, nil
 }
 
 func (repo *ExtSystemRepository) ExtSystemExist(extSystemID string) (bool, error) {

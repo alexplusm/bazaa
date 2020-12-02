@@ -20,3 +20,16 @@ func (service *ExtSystemService) CreateExtSystem(extSystem bo.ExtSystemBO) (stri
 func (service *ExtSystemService) ExtSystemExist(extSystemID string) (bool, error) {
 	return service.ExtSystemRepo.ExtSystemExist(extSystemID)
 }
+
+func (service *ExtSystemService) ExtSystemList() ([]bo.ExtSystemBO, error) {
+	list, err := service.ExtSystemRepo.SelectExtSystems()
+	if err != nil {
+		return nil, err
+	}
+
+	listBO := make([]bo.ExtSystemBO, 0, len(list))
+	for _, item := range list {
+		listBO = append(listBO, item.ToBO())
+	}
+	return listBO, nil
+}
