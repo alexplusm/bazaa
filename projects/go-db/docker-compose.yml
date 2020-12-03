@@ -17,8 +17,13 @@ services:
 
   nginx:
     image: nginx:1.19-alpine
+    ports:
+      - '5000:80' # TODO: '${SERVER_PORT_OUTER}:80'
     volumes:
-      - media_root:/usr/share/nginx/mediaa:ro
+      - media_root:/usr/share/nginx/media:ro
+      - ./nginx/:/etc/nginx/conf.d
+    depends_on:
+      - server
 
 #  web-client:
 #    build: web-client
