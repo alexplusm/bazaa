@@ -17,7 +17,8 @@ type IInjector interface {
 	CloseStoragesConnections()
 
 	// INFO: controllers
-	InjectGameCreateController() controllers.GameCreateController
+	InjectGameController() controllers.GameController
+
 	InjectGameUpdateController() controllers.GameUpdateController
 	InjectGameListController() controllers.GameListController
 	InjectGamePrepareController() controllers.GamePrepareController
@@ -72,14 +73,12 @@ func (k *kernel) CloseStoragesConnections() {
 
 // INFO: Controllers
 
-func (k *kernel) InjectGameCreateController() controllers.GameCreateController {
-	handler := &PSQLHandler{k.pool}
-
-	repo := &repositories.GameRepository{DBConn: handler}
-	service := &services.GameService{GameRepo: repo}
-	controller := controllers.GameCreateController{GameService: service}
-
-	return controller
+func (k *kernel) InjectGameController() controllers.GameController {
+	gameService := k.InjectGameService()
+	sourceService := k.InjectSourceService()
+	return controllers.GameController{
+		GameService: &gameService, SourceService: &sourceService,
+	}
 }
 
 func (k *kernel) InjectGameUpdateController() controllers.GameUpdateController {
@@ -304,4 +303,16 @@ func (k *kernel) InjectExtSystemService() services.ExtSystemService {
 
 func (k *kernel) InjectDurationService() services.DurationService {
 	return services.DurationService{}
+}
+
+func (k *kernel) InjectGameService() services.GameService {
+	handler := &PSQLHandler{k.pool}
+	repo := &repositories.GameRepository{DBConn: handler}
+	return services.GameService{GameRepo: repo}
+}
+
+func (k *kernel) InjectSourceService() services.SourceService {
+	handler := &PSQLHandler{k.pool}
+	repo := &repositories.SourceRepository{DBConn: handler}
+	return services.SourceService{SourceRepo: repo}
 }
