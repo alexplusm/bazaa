@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -25,9 +24,6 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 	userID := ctx.Param(consts.UserIDUrlParam)
 	qp := StatisticsUserQueryParams{}
 	qp.fromCtx(ctx)
-
-	fmt.Println(userID)
-	fmt.Printf("Query Params: %+v\n", qp)
 
 	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID.Value)
 	if err != nil {

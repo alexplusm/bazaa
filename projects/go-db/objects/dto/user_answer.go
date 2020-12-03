@@ -8,7 +8,7 @@ type UserAnswerRequestBody struct {
 
 type UserAnswerResponseData struct {
 	Finished   bool            `json:"finished"`
-	UserResult string          `json:"userResult"`
+	UserResult string          `json:"userResult"` // TODO: rename: usersAnswer
 	Answers    []UserAnswerDTO `json:"answers"`
 }
 

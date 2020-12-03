@@ -5,6 +5,8 @@ import (
 	"sort"
 	"time"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
@@ -57,57 +59,28 @@ func (service *AnswerService) GetScreenshotResults(
 func (service *AnswerService) GetUserStatistics(
 	userID string, gameIDs []string, from, to time.Time,
 ) ([]bo.StatisticsUserBO, error) {
-	res, err := service.AnswerRepo.SelectAnswersByUser(userID, gameIDs, from, to)
-	if err != nil {
-		fmt.Println("error: ", err)
-		return nil, fmt.Errorf("get user statistics: %v", err)
+	userAnswers := make([]dao.UserAnswerDAO, 0, 1024)
+
+	for _, gameID := range gameIDs {
+		oneRes, err := service.AnswerRepo.SelectAnswersByUserAndGame(userID, gameID, from, to)
+		if err != nil {
+			log.Error("user statistics service: ", err)
+			continue
+		}
+		userAnswers = append(userAnswers, oneRes...)
+		fmt.Printf("oneRes: %+v\n", oneRes)
 	}
 
-	sort.SliceStable(res, func(i, j int) bool {
-		return res[i].AnswerDate < res[j].AnswerDate
+	sort.SliceStable(userAnswers, func(i, j int) bool {
+		return userAnswers[i].AnswerDate < userAnswers[j].AnswerDate
 	})
 
-	start := utils.TrimTime(time.Unix(res[0].AnswerDate, 0))
-	end := time.Unix(res[len(res)-1].AnswerDate, 0)
+	start := utils.TrimTime(time.Unix(userAnswers[0].AnswerDate, 0))
+	end := time.Unix(userAnswers[len(userAnswers)-1].AnswerDate, 0)
+	end = end.AddDate(0, 0, 1)
+	end = utils.TrimTime(end)
 
-	results := make([]bo.StatisticsUserBO, 0, len(res))
-
-	currentDay := start
-	for currentDay.Before(end) {
-		for _, r := range res {
-
-			date := time.Unix(r.AnswerDate, 0)
-			next := currentDay.AddDate(0, 0, 1)
-
-			if currentDay.Before(date) && date.Before(next) {
-				i := sort.Search(len(results), func(i int) bool {
-					return results[i].Date.Equal(currentDay)
-				})
-
-				if i < len(results) {
-					results[i].Statistics.TotalScreenshots++
-					if r.Value == r.ExpertAnswer {
-						if results[i].Statistics.MatchWithExpert == -1 {
-							results[i].Statistics.MatchWithExpert = 1
-						} else {
-							results[i].Statistics.MatchWithExpert++
-						}
-					}
-					if r.Value == r.UsersAnswer {
-						results[i].Statistics.RightAnswers++
-					}
-				} else {
-					s := bo.StatisticsUsersInner{MatchWithExpert: -1}
-					newR := bo.StatisticsUserBO{
-						Date:       currentDay,
-						Statistics: s,
-					}
-					results = append(results, newR)
-				}
-			}
-		}
-		currentDay = currentDay.AddDate(0, 0, 1)
-	}
+	results := countRes(userAnswers, start, end)
 
 	return results, nil
 }
@@ -120,4 +93,71 @@ func (service *AnswerService) GetUsersAndScreenshotCountByGame(
 
 func (service *AnswerService) ABC(gameID string, from, to time.Time) ([]dao.AnswerStatLeadDAO, error) {
 	return service.AnswerRepo.SelectAnswersTODO(gameID, from, to)
+}
+
+func countRes(userAnswers []dao.UserAnswerDAO, start, end time.Time) []bo.StatisticsUserBO {
+	results := make([]bo.StatisticsUserBO, 0, len(userAnswers))
+
+	fmt.Println("Start: ", start.UTC())
+	fmt.Println("End: ", end.UTC())
+
+	currentDay := start
+	for currentDay.Before(end) {
+		for _, userAnswer := range userAnswers {
+			date := time.Unix(userAnswer.AnswerDate, 0)
+			fmt.Println("DATE: ", date.UTC())
+			nextDay := currentDay.AddDate(0, 0, 1)
+
+			if currentDay.Before(date) && date.Before(nextDay) {
+				curIdx := -1
+				for i := range results {
+					if results[i].Date.Equal(currentDay) {
+						curIdx = i
+						break
+					}
+				}
+
+				if curIdx == -1 {
+					s := &bo.StatisticsUsersInner{MatchWithExpert: -1}
+
+					// TODO: method
+					s.TotalScreenshots++
+					if userAnswer.Value == userAnswer.ExpertAnswer {
+						s.MatchWithExpert = 1
+					}
+					if userAnswer.Value == userAnswer.UsersAnswer {
+						s.RightAnswers++
+					}
+					// TODO: method
+
+					newR := bo.StatisticsUserBO{
+						Date:       currentDay,
+						Statistics: *s,
+					}
+
+					results = append(results, newR)
+				} else {
+					// TODO: method
+					results[curIdx].Statistics.TotalScreenshots++
+					if userAnswer.Value == userAnswer.ExpertAnswer {
+						if results[curIdx].Statistics.MatchWithExpert == -1 {
+							results[curIdx].Statistics.MatchWithExpert = 1
+						} else {
+							results[curIdx].Statistics.MatchWithExpert++
+						}
+					}
+					if userAnswer.Value == userAnswer.UsersAnswer {
+						results[curIdx].Statistics.RightAnswers++
+					}
+					// TODO: method
+				}
+			}
+		}
+		currentDay = currentDay.AddDate(0, 0, 1)
+	}
+
+	fmt.Printf("RESULTS: %+v\n", results)
+
+	return results
+
 }
