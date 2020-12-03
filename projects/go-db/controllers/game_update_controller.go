@@ -17,7 +17,7 @@ type GameUpdateController struct {
 }
 
 func (controller *GameUpdateController) UpdateGame(ctx echo.Context) error {
-	gameID := ctx.Param("game-id")
+	gameID := ctx.Param(consts.GameIDUrlParam)
 
 	switch httputils.ParseContentType(ctx) {
 	case consts.FormDataContentType:

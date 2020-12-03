@@ -53,7 +53,7 @@ func (service *AnswerService) GetScreenshotResults(
 	return list, nil
 }
 
-// TODO: refactor
+// TODO: refactor | screenshotResult (добавить поле usersResult)
 func (service *AnswerService) GetUserStatistics(
 	userID string, gameIDs []string, from, to time.Time,
 ) ([]bo.StatisticsUserBO, error) {

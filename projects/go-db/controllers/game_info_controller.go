@@ -7,7 +7,9 @@ import (
 	"strings"
 
 	"github.com/labstack/echo"
+	log "github.com/sirupsen/logrus"
 
+	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
@@ -19,11 +21,11 @@ type GameInfoController struct {
 }
 
 func (controller *GameInfoController) GetGameInfo(ctx echo.Context) error {
-	gameID := ctx.Param("game-id")
+	gameID := ctx.Param(consts.GameIDUrlParam)
 
 	game, err := controller.GameService.GetGame(gameID)
 	if err != nil {
-		// TODO: log
+		log.Error("game details: ", err)
 		return ctx.JSON(
 			http.StatusOK,
 			httputils.BuildNotFoundRequestErrorResponse("game not found"),

@@ -6,6 +6,7 @@ import (
 
 	"github.com/labstack/echo"
 
+	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
@@ -19,8 +20,8 @@ type ScreenshotSetAnswerController struct {
 }
 
 func (controller *ScreenshotSetAnswerController) SetAnswer(ctx echo.Context) error {
-	gameID := ctx.Param("game-id")
-	screenshotID := ctx.Param("screenshot-id")
+	gameID := ctx.Param(consts.GameIDUrlParam)
+	screenshotID := ctx.Param(consts.ScreenshotIDUrlParam)
 
 	userAnswerRaw := new(dto.UserAnswerRequestBody)
 	if err := ctx.Bind(userAnswerRaw); err != nil {

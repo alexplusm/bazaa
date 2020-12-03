@@ -81,6 +81,7 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 		gameIDs = append(gameIDs, game.GameID)
 	}
 
+	// TODO: statistics service
 	statistics, err := controller.AnswerService.GetUserStatistics(userID, gameIDs, from, to)
 	if err != nil {
 		log.Error("get user statistics controller: ", err)

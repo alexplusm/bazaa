@@ -7,6 +7,7 @@ import (
 	"github.com/labstack/echo"
 	log "github.com/sirupsen/logrus"
 
+	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
 )
@@ -18,7 +19,9 @@ type ScreenshotGetController struct {
 }
 
 func (controller *ScreenshotGetController) GetScreenshot(ctx echo.Context) error {
-	gameID := ctx.Param("game-id")
+	gameID := ctx.Param(consts.GameIDUrlParam)
+
+	// TODO: queryParams
 	externalSystemID := ctx.QueryParam("extSystemId")
 	userID := ctx.QueryParam("userId")
 

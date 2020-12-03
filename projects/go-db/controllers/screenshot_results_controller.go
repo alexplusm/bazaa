@@ -20,8 +20,8 @@ type ScreenshotResultsController struct {
 }
 
 func (controller *ScreenshotResultsController) GetResult(ctx echo.Context) error {
-	gameID := ctx.Param("game-id")
-	screenshotID := ctx.Param("screenshot-id")
+	gameID := ctx.Param(consts.GameIDUrlParam)
+	screenshotID := ctx.Param(consts.ScreenshotIDUrlParam)
 
 	fmt.Println(gameID, screenshotID)
 
