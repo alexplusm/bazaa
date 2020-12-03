@@ -5,11 +5,14 @@ import (
 	"sort"
 	"time"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils"
 )
 
 type AnswerService struct {
@@ -52,76 +55,34 @@ func (service *AnswerService) GetScreenshotResults(
 	return list, nil
 }
 
-// TODO: total only !!! remove
+// TODO: refactor | screenshotResult (добавить поле usersResult)
 func (service *AnswerService) GetUserStatistics(
-	userID string, totalOnly bool, games []bo.GameBO, from, to time.Time,
-) ([]bo.StatisticsUserBO, error) {
-	gameIds := make([]string, 0, len(games))
+	userID string, gameIDs []string, from, to time.Time,
+) ([]bo.StatisticAnswersDateSlicedBO, error) {
+	userAnswers := make([]dao.UserAnswerDAO, 0, 1024)
 
-	for _, game := range games {
-		gameIds = append(gameIds, game.GameID)
+	for _, gameID := range gameIDs {
+		oneRes, err := service.AnswerRepo.SelectAnswersByUserAndGame(userID, gameID, from, to)
+		if err != nil {
+			log.Error("user statistics service: ", err)
+			continue
+		}
+		userAnswers = append(userAnswers, oneRes...)
+		fmt.Printf("oneRes: %+v\n", oneRes)
 	}
 
-	res, err := service.AnswerRepo.SelectAnswersByUser(userID, gameIds, from, to)
-	if err != nil {
-		fmt.Println("error: ", err)
-		return nil, fmt.Errorf("get user statistics: %v", err)
-	}
-
-	sort.SliceStable(res, func(i, j int) bool {
-		return res[i].AnswerDate < res[j].AnswerDate
+	sort.SliceStable(userAnswers, func(i, j int) bool {
+		return userAnswers[i].AnswerDate < userAnswers[j].AnswerDate
 	})
 
-	//fmt.Printf("Res: %+v | %v\n", res, len(res))
+	start := utils.TrimTime(time.Unix(userAnswers[0].AnswerDate, 0))
+	end := time.Unix(userAnswers[len(userAnswers)-1].AnswerDate, 0)
+	end = end.AddDate(0, 0, 1)
+	end = utils.TrimTime(end)
 
-	year, month, day := time.Unix(res[0].AnswerDate, 0).Date()
-	start := time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
-	end := time.Unix(res[len(res)-1].AnswerDate, 0)
+	results := countRes(userAnswers, start, end)
 
-	resuults := make([]bo.StatisticsUserBO, 0, len(res))
-
-	currentDay := start
-	for currentDay.Before(end) {
-		for _, r := range res {
-
-			date := time.Unix(r.AnswerDate, 0)
-			next := currentDay.AddDate(0, 0, 1)
-			//fmt.Println("Date: ", date.UTC())
-			if currentDay.Before(date) && date.Before(next) {
-				i := sort.Search(len(resuults), func(i int) bool {
-					return resuults[i].Date.Equal(currentDay)
-				})
-
-				if i < len(resuults) {
-
-					//fmt.Println("total screenshots: ", resuults[i].Statistics.TotalScreenshots)
-
-					resuults[i].Statistics.TotalScreenshots++
-					if r.Value == r.ExpertAnswer {
-						if resuults[i].Statistics.MatchWithExpert == -1 {
-							resuults[i].Statistics.MatchWithExpert = 1
-						} else {
-							resuults[i].Statistics.MatchWithExpert++
-						}
-					}
-					if r.Value == r.UsersAnswer {
-						resuults[i].Statistics.RightAnswers++
-					}
-				} else {
-					s := bo.StatisticsUsersInner{MatchWithExpert: -1}
-					newR := bo.StatisticsUserBO{
-						Date:       currentDay,
-						Statistics: s,
-					}
-
-					resuults = append(resuults, newR)
-				}
-			}
-		}
-		currentDay = currentDay.AddDate(0, 0, 1)
-	}
-
-	return resuults, nil
+	return results, nil
 }
 
 func (service *AnswerService) GetUsersAndScreenshotCountByGame(
@@ -132,4 +93,44 @@ func (service *AnswerService) GetUsersAndScreenshotCountByGame(
 
 func (service *AnswerService) ABC(gameID string, from, to time.Time) ([]dao.AnswerStatLeadDAO, error) {
 	return service.AnswerRepo.SelectAnswersTODO(gameID, from, to)
+}
+
+func countRes(userAnswers []dao.UserAnswerDAO, start, end time.Time) []bo.StatisticAnswersDateSlicedBO {
+	results := make([]bo.StatisticAnswersDateSlicedBO, 0, len(userAnswers))
+
+	currentDay := start
+	for currentDay.Before(end) {
+		for _, userAnswer := range userAnswers {
+			date := time.Unix(userAnswer.AnswerDate, 0)
+			nextDay := currentDay.AddDate(0, 0, 1)
+
+			if currentDay.Before(date) && date.Before(nextDay) {
+				curIdx := -1
+				for i := range results {
+					if results[i].Date.Equal(currentDay) {
+						curIdx = i
+						break
+					}
+				}
+				if curIdx == -1 {
+					stat := bo.StatisticAnswersBO{MatchWithExpert: -1}
+					stat.Increase(userAnswer.Value, userAnswer.ExpertAnswer, userAnswer.UsersAnswer)
+					results = append(results, bo.StatisticAnswersDateSlicedBO{
+						Date:       currentDay,
+						Statistics: stat,
+					})
+				} else {
+					results[curIdx].Statistics.Increase(
+						userAnswer.Value, userAnswer.ExpertAnswer, userAnswer.UsersAnswer,
+					)
+				}
+			}
+		}
+		currentDay = currentDay.AddDate(0, 0, 1)
+	}
+
+	fmt.Printf("RESULTS: %+v\n", results)
+
+	return results
+
 }

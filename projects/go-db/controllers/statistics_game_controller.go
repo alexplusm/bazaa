@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -25,8 +24,6 @@ func (controller *StatisticsGameController) GetStatistics(ctx echo.Context) erro
 	qp := dto.StatisticsUserQueryParams{}
 	qp.FromCTX(ctx)
 
-	fmt.Println("ExtSystemID: ", qp.ExtSystemID)
-
 	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID)
 	if err != nil {
 		log.Error("get games controller: ", err)
@@ -40,6 +37,7 @@ func (controller *StatisticsGameController) GetStatistics(ctx echo.Context) erro
 	}
 
 	games, err := controller.GameService.GetGames(qp.ExtSystemID)
+
 	expectedGames := make([]bo.GameBO, 0, len(games))
 
 	// filter games
@@ -75,7 +73,7 @@ func (controller *StatisticsGameController) GetStatistics(ctx echo.Context) erro
 		usersMap[userID] = true
 	}
 
-	resp := dto.GameStatsDTO{
+	resp := dto.StatisticGameDTO{
 		ScreenshotsResolved: answeredCount,
 		ScreenshotsLeft:     totalCount - answeredCount,
 		UsersUnique:         len(usersMap),

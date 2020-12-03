@@ -17,14 +17,10 @@ type IInjector interface {
 	CloseStoragesConnections()
 
 	// INFO: controllers
-	InjectGameCreateController() controllers.GameCreateController
-	InjectGameUpdateController() controllers.GameUpdateController
-	InjectGameListController() controllers.GameListController
+	InjectGameController() controllers.GameController
 	InjectGamePrepareController() controllers.GamePrepareController
-	InjectGameInfoController() controllers.GameInfoController
 
-	InjectExtSystemCreateController() controllers.ExtSystemCreateController
-	InjectExtSystemListController() controllers.ExtSystemListController
+	InjectExtSystemController() controllers.ExtSystemController
 
 	InjectScreenshotGetController() controllers.ScreenshotGetController
 	InjectScreenshotSetAnswerController() controllers.ScreenshotSetAnswerController
@@ -38,49 +34,50 @@ type IInjector interface {
 	InjectGameCacheService() services.GameCacheService
 }
 
-func (k *kernel) InjectGameCreateController() controllers.GameCreateController {
-	handler := &PSQLHandler{k.pool}
-
-	repo := &repositories.GameRepository{DBConn: handler}
-	service := &services.GameService{GameRepo: repo}
-	controller := controllers.GameCreateController{GameService: service}
-
-	return controller
+type kernel struct {
+	pool        *pgxpool.Pool
+	redisClient *redis.Client
 }
 
-func (k *kernel) InjectGameUpdateController() controllers.GameUpdateController {
-	handler := &PSQLHandler{k.pool}
+var (
+	k         *kernel
+	singleton sync.Once
+)
 
-	gameRepo := &repositories.GameRepository{DBConn: handler}
-	sourceRepo := &repositories.SourceRepository{DBConn: handler}
-	screenshotRepo := &repositories.ScreenshotRepository{DBConn: handler}
-
-	gameService := &services.GameService{GameRepo: gameRepo}
-	attachSourceToGameService := &services.AttachSourceToGameService{
-		GameRepo: gameRepo, SourceRepo: sourceRepo, ScreenshotRepo: screenshotRepo,
+func Injector() (IInjector, error) {
+	var err error = nil
+	if k == nil {
+		singleton.Do(func() {
+			pool, pqslErr := initPostgresql()
+			if pqslErr != nil {
+				// TODO: try to reconnect?
+				err = fmt.Errorf("injector: database connection: %v", pqslErr)
+			}
+			redisClient := initRedis()
+			k = &kernel{pool, redisClient}
+		})
 	}
-
-	controller := controllers.GameUpdateController{
-		GameService: gameService, AttachSourceToGameService: attachSourceToGameService,
-	}
-
-	return controller
+	return k, err
 }
 
-func (k *kernel) InjectGameListController() controllers.GameListController {
-	handler := &PSQLHandler{k.pool}
-
-	gameRepo := &repositories.GameRepository{DBConn: handler}
-	extSystemRepo := &repositories.ExtSystemRepository{DBConn: handler}
-
-	gameService := &services.GameService{GameRepo: gameRepo}
-	extSystemService := &services.ExtSystemService{ExtSystemRepo: extSystemRepo}
-
-	controller := controllers.GameListController{
-		GameService: gameService, ExtSystemService: extSystemService,
+func (k *kernel) CloseStoragesConnections() {
+	k.pool.Close()
+	if err := k.redisClient.Close(); err != nil {
+		log.Error("redis: error while close connection: ", err)
 	}
+}
 
-	return controller
+// INFO: Controllers
+
+func (k *kernel) InjectGameController() controllers.GameController {
+	gameService := k.InjectGameService()
+	extSystemService := k.InjectExtSystemService()
+	sourceService := k.InjectSourceService()
+	attachSourceToGameService := k.InjectAttachSourceToGameService()
+	return controllers.GameController{
+		GameService: &gameService, ExtSystemService: &extSystemService,
+		SourceService: &sourceService, AttachSourceToGameService: &attachSourceToGameService,
+	}
 }
 
 func (k *kernel) InjectGamePrepareController() controllers.GamePrepareController {
@@ -90,40 +87,9 @@ func (k *kernel) InjectGamePrepareController() controllers.GamePrepareController
 	return controller
 }
 
-func (k *kernel) InjectGameInfoController() controllers.GameInfoController {
-	handler := &PSQLHandler{k.pool}
-
-	sourceRepo := &repositories.SourceRepository{DBConn: handler}
-	gameRepo := &repositories.GameRepository{DBConn: handler}
-	gameService := &services.GameService{GameRepo: gameRepo}
-	sourceService := &services.SourceService{SourceRepo: sourceRepo}
-
-	controller := controllers.GameInfoController{
-		GameService: gameService, SourceService: sourceService,
-	}
-
-	return controller
-}
-
-func (k *kernel) InjectExtSystemCreateController() controllers.ExtSystemCreateController {
-	handler := &PSQLHandler{k.pool}
-
-	repo := &repositories.ExtSystemRepository{DBConn: handler}
-	service := &services.ExtSystemService{ExtSystemRepo: repo}
-	controller := controllers.ExtSystemCreateController{ExtSystemService: service}
-
-	return controller
-}
-
-func (k *kernel) InjectExtSystemListController() controllers.ExtSystemListController {
-	handler := &PSQLHandler{k.pool}
-
-	repo := &repositories.ExtSystemRepository{DBConn: handler}
-	service := &services.ExtSystemService{ExtSystemRepo: repo}
-
-	controller := controllers.ExtSystemListController{ExtSystemService: service}
-
-	return controller
+func (k *kernel) InjectExtSystemController() controllers.ExtSystemController {
+	service := k.InjectExtSystemService()
+	return controllers.ExtSystemController{ExtSystemService: &service}
 }
 
 func (k *kernel) InjectScreenshotGetController() controllers.ScreenshotGetController {
@@ -203,32 +169,27 @@ func (k *kernel) InjectStatisticsUserController() controllers.StatisticsUserCont
 	gameService := &services.GameService{GameRepo: gameRepo}
 	userService := &services.UserService{UserRepo: userRepo}
 
+	durationService := k.InjectDurationService()
+
 	controller := controllers.StatisticsUserController{
 		GameService: gameService, ExtSystemService: extSystemService,
 		AnswerService: answerService, UserService: userService,
+		DurationService: &durationService,
 	}
 
 	return controller
 }
 
 func (k *kernel) InjectStatisticsLeaderboardController() controllers.StatisticsLeaderboardController {
-	handler := &PSQLHandler{k.pool}
+	extSystemService := k.InjectExtSystemService()
+	gameService := k.InjectGameService()
+	durationService := k.InjectDurationService()
+	leaderboardService := k.InjectLeaderboardService()
 
-	extSystemRepo := &repositories.ExtSystemRepository{DBConn: handler}
-	extSystemService := &services.ExtSystemService{ExtSystemRepo: extSystemRepo}
-
-	answerRepo := &repositories.AnswerRepository{DBConn: handler}
-	answerService := &services.AnswerService{AnswerRepo: answerRepo}
-
-	gameRepo := &repositories.GameRepository{DBConn: handler}
-	gameService := &services.GameService{GameRepo: gameRepo}
-
-	controller := controllers.StatisticsLeaderboardController{
-		ExtSystemService: extSystemService, GameService: gameService,
-		AnswerService: answerService,
+	return controllers.StatisticsLeaderboardController{
+		ExtSystemService: &extSystemService, GameService: &gameService,
+		DurationService: &durationService, LeaderboardService: &leaderboardService,
 	}
-
-	return controller
 }
 
 func (k *kernel) InjectStatisticsGameController() controllers.StatisticsGameController {
@@ -258,6 +219,8 @@ func (k *kernel) InjectStatisticsGameController() controllers.StatisticsGameCont
 	return controller
 }
 
+// INFO: services
+
 func (k *kernel) InjectGameCacheService() services.GameCacheService {
 	redisHandler := &RedisHandler{k.redisClient}
 	dbHandler := &PSQLHandler{k.pool}
@@ -271,35 +234,45 @@ func (k *kernel) InjectGameCacheService() services.GameCacheService {
 	return service
 }
 
-func (k *kernel) CloseStoragesConnections() {
-	k.pool.Close()
-	if err := k.redisClient.Close(); err != nil {
-		log.Error("redis: error while close connection: ", err)
+func (k *kernel) InjectExtSystemService() services.ExtSystemService {
+	handler := &PSQLHandler{k.pool}
+	repo := &repositories.ExtSystemRepository{DBConn: handler}
+	return services.ExtSystemService{ExtSystemRepo: repo}
+}
+
+func (k *kernel) InjectDurationService() services.DurationService {
+	return services.DurationService{}
+}
+
+func (k *kernel) InjectGameService() services.GameService {
+	handler := &PSQLHandler{k.pool}
+	repo := &repositories.GameRepository{DBConn: handler}
+	return services.GameService{GameRepo: repo}
+}
+
+func (k *kernel) InjectSourceService() services.SourceService {
+	handler := &PSQLHandler{k.pool}
+	repo := &repositories.SourceRepository{DBConn: handler}
+	return services.SourceService{SourceRepo: repo}
+}
+
+func (k *kernel) InjectAnswerService() services.AnswerService {
+	handler := &PSQLHandler{k.pool}
+	repo := &repositories.AnswerRepository{DBConn: handler}
+	return services.AnswerService{AnswerRepo: repo}
+}
+
+func (k *kernel) InjectAttachSourceToGameService() services.AttachSourceToGameService {
+	handler := &PSQLHandler{k.pool}
+	gameRepo := &repositories.GameRepository{DBConn: handler}
+	sourceRepo := &repositories.SourceRepository{DBConn: handler}
+	screenshotRepo := &repositories.ScreenshotRepository{DBConn: handler}
+	return services.AttachSourceToGameService{
+		GameRepo: gameRepo, SourceRepo: sourceRepo, ScreenshotRepo: screenshotRepo,
 	}
 }
 
-type kernel struct {
-	pool        *pgxpool.Pool
-	redisClient *redis.Client
-}
-
-var (
-	k         *kernel
-	singleton sync.Once
-)
-
-func Injector() (IInjector, error) {
-	var err error = nil
-	if k == nil {
-		singleton.Do(func() {
-			pool, pqslErr := initPostgresql()
-			if pqslErr != nil {
-				// TODO: try to reconnect?
-				err = fmt.Errorf("injector: database connection: %v", pqslErr)
-			}
-			redisClient := initRedis()
-			k = &kernel{pool, redisClient}
-		})
-	}
-	return k, err
+func (k *kernel) InjectLeaderboardService() services.LeaderboardService {
+	answerService := k.InjectAnswerService()
+	return services.LeaderboardService{AnswerService: &answerService}
 }

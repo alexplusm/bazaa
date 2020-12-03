@@ -48,3 +48,33 @@ func (service *GameService) GetGames(extSystemID string) ([]bo.GameBO, error) {
 func (service *GameService) GameExist(gameID string) (bool, error) {
 	return service.GameRepo.GameExist(gameID)
 }
+
+func (service *GameService) FilterGames(gamesID []string, games []bo.GameBO) []bo.GameBO {
+	if len(gamesID) == 0 {
+		return games
+	}
+
+	filteredGames := make([]bo.GameBO, 0, len(gamesID))
+
+	for _, game := range games {
+		for _, gameID := range gamesID {
+			if game.GameID == gameID {
+				filteredGames = append(filteredGames, game)
+			}
+		}
+	}
+
+	return filteredGames
+}
+
+func (service *GameService) GetEarliestGame(games []bo.GameBO) bo.GameBO {
+	result := games[0]
+
+	for _, game := range games {
+		if result.StartDate.Before(game.StartDate) {
+			result = game
+		}
+	}
+
+	return result
+}

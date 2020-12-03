@@ -14,6 +14,8 @@ type IGameService interface {
 	GetGame(gameID string) (bo.GameBO, error)
 	GetGames(extSystemID string) ([]bo.GameBO, error)
 	GameExist(gameID string) (bool, error)
+	FilterGames(gamesID []string, games []bo.GameBO) []bo.GameBO
+	GetEarliestGame(games []bo.GameBO) bo.GameBO
 }
 
 type IAttachSourceToGameService interface {
@@ -57,8 +59,8 @@ type IUserService interface {
 
 type IAnswerService interface {
 	GetUserStatistics(
-		userID string, totalOnly bool, games []bo.GameBO, from, to time.Time,
-	) ([]bo.StatisticsUserBO, error)
+		userID string, gameIDs []string, from, to time.Time,
+	) ([]bo.StatisticAnswersDateSlicedBO, error)
 	GetScreenshotResults(gameID, screenshotID string) ([]dto.UserAnswerForScreenshotResultDTO, error)
 	GetUsersAndScreenshotCountByGame(gameID string) (dao.AnsweredScreenshotsDAO, error)
 	ABC(gameID string, from, to time.Time) ([]dao.AnswerStatLeadDAO, error)
@@ -76,4 +78,12 @@ type ISourceService interface {
 type IActiveUsersService interface {
 	SetUserActivity(gameID, userID string)
 	CountOfActiveUsers(gameID string) (int, error)
+}
+
+type IDurationService interface {
+	GetDurationByGame(from, to string, game bo.GameBO) (time.Time, time.Time)
+}
+
+type ILeaderboardService interface {
+	GetLeaderboard(gameIDs []string, from, to time.Time, limit int) dto.LeadersResponseDTO
 }

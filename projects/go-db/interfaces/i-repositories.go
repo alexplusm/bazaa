@@ -35,12 +35,10 @@ type IScreenshotRepository interface {
 type IAnswerRepository interface {
 	InsertAnswer(answer dao.AnswerDAO) error
 	InsertAnswers(answers []dao.AnswerDAO)
-	SelectAnswersByUser(
-		userID string, gameIDs []string, from, to time.Time,
-	) ([]dao.AnswerStatDAO, error)
 	SelectScreenshotResult(gameID, screenshotID string) ([]dao.ScreenshotResultDAO, error)
 	SelectAnsweredScreenshotsByGame(gameID string) (dao.AnsweredScreenshotsDAO, error)
 	SelectAnswersTODO(gameID string, from, to time.Time) ([]dao.AnswerStatLeadDAO, error)
+	SelectAnswersByUserAndGame(userID string, gameID string, from, to time.Time) ([]dao.UserAnswerDAO, error)
 }
 
 type IUserRepository interface {

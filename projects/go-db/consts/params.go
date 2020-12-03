@@ -9,3 +9,9 @@ const (
 	ToQueryParamName          = "to"
 	LimitQueryParamName       = "limit"
 )
+
+const (
+	UserIDUrlParam       = "userID"
+	GameIDUrlParam       = "gameID"
+	ScreenshotIDUrlParam = "screenshotID"
+)

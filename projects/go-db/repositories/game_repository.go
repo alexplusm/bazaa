@@ -29,7 +29,7 @@ RETURNING "game_id";
 	selectGameWithSameIDStatement = `
 SELECT "ext_system_id", "name", "start_date", "end_date", "answer_type", "question", "options_csv"
 FROM games
-WHERE "game_id" = $1;
+WHERE "game_id" = ($1);
 `
 	selectGames = `
 SELECT "game_id", "ext_system_id", "name", "start_date", "end_date", "answer_type", "question", "options_csv"

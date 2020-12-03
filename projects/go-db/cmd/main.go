@@ -64,14 +64,11 @@ func registerRoutes(e *echo.Echo) error {
 		return fmt.Errorf("register routes: %v", err)
 	}
 
-	gameCreateController := injector.InjectGameCreateController()
-	gameUpdateController := injector.InjectGameUpdateController()
-	gamePrepareController := injector.InjectGamePrepareController()
-	gameListController := injector.InjectGameListController()
-	gameInfoController := injector.InjectGameInfoController()
+	gameController := injector.InjectGameController()
 
-	extSystemCreateController := injector.InjectExtSystemCreateController()
-	extSystemListController := injector.InjectExtSystemListController()
+	gamePrepareController := injector.InjectGamePrepareController()
+
+	extSystemController := injector.InjectExtSystemController()
 
 	screenshotGetController := injector.InjectScreenshotGetController()
 	screenshotSetAnswerController := injector.InjectScreenshotSetAnswerController()
@@ -86,31 +83,31 @@ func registerRoutes(e *echo.Echo) error {
 	// ["application/json", "multipart/form-data"] | ["application/json"]
 
 	// TODO: ["application/json"]
-	e.POST("api/v1/game", gameCreateController.CreateGame)
+	e.POST("api/v1/game", gameController.Create)
 
-	e.GET("api/v1/game", gameListController.GetGames)
-	e.GET("api/v1/game/:game-id", gameInfoController.GetGameInfo)
+	e.GET("api/v1/game", gameController.List)
+	e.GET("api/v1/game/:"+consts.GameIDUrlParam, gameController.Details)
+
+	// TODO: ["application/json", "multipart/form-data"]
+	e.PUT("api/v1/game/:"+consts.GameIDUrlParam, gameController.Update)
 
 	// TODO: ["application/json"]
 	e.POST("api/v1/game/prepare", gamePrepareController.PrepareGame)
 
-	// TODO: ["application/json", "multipart/form-data"]
-	e.PUT("api/v1/game/:game-id", gameUpdateController.UpdateGame)
-
 	// TODO: ["application/json"]
-	e.POST("api/v1/ext_system", extSystemCreateController.CreateExtSystem)
-	e.GET("api/v1/ext_system", extSystemListController.List)
+	e.POST("api/v1/ext_system", extSystemController.Create)
+	e.GET("api/v1/ext_system", extSystemController.List)
 
-	e.GET("api/v1/game/:game-id/screenshot", screenshotGetController.GetScreenshot)
+	e.GET("api/v1/game/:"+consts.GameIDUrlParam+"/screenshot", screenshotGetController.GetScreenshot)
 
 	// TODO: ["application/json"]
 	e.POST(
-		"api/v1/game/:game-id/screenshot/:screenshot-id/answer",
+		"api/v1/game/:"+consts.GameIDUrlParam+"/screenshot/:"+consts.ScreenshotIDUrlParam+"/answer",
 		screenshotSetAnswerController.SetAnswer,
 	)
-	e.GET("/api/v1/game/:game-id/screenshot/:screenshot-id/result", screenshotResultsController.GetResult)
+	e.GET("/api/v1/game/:"+consts.GameIDUrlParam+"/screenshot/:"+consts.ScreenshotIDUrlParam+"/result", screenshotResultsController.GetResult)
 
-	e.GET("api/v1/statistics/user/:user-id", statisticsUserController.GetStatistics)
+	e.GET("api/v1/statistics/user/:"+consts.UserIDUrlParam, statisticsUserController.GetStatistics)
 	e.GET("api/v1/statistics/users/leaderboard", statisticsLeaderboardController.GetStatistics)
 	e.GET("api/v1/statistics/games", statisticsGameController.GetStatistics)
 

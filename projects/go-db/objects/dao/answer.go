@@ -19,7 +19,7 @@ func (dest *AnswerDAO) FromCacheBO(src bo.UserAnswerCacheBO, gameID, screenshotI
 	dest.Value = src.Answer
 }
 
-type AnswerStatDAO struct {
+type UserAnswerDAO struct {
 	GameID       string
 	ScreenshotID string
 	AnswerDate   int64
