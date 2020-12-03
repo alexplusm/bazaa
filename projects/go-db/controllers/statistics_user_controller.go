@@ -66,8 +66,7 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 	earliestGame := controller.GameService.GetEarliestGame(games)
 
 	// TODO:discuss: если ошибка в парсинге даты?
-	// 1) оповещать пользователя
-	// 2) использовать дефолтные значения
+	// => кидать badRequest | как и в случае ошибки парсинга всех других QueryParams
 	from, to := controller.DurationService.GetDurationByGame(
 		qp.Duration.From, qp.Duration.To, earliestGame,
 	)
