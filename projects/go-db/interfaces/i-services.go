@@ -60,7 +60,7 @@ type IUserService interface {
 type IAnswerService interface {
 	GetUserStatistics(
 		userID string, gameIDs []string, from, to time.Time,
-	) ([]bo.StatisticsUserBO, error)
+	) ([]bo.StatisticAnswersDateSlicedBO, error)
 	GetScreenshotResults(gameID, screenshotID string) ([]dto.UserAnswerForScreenshotResultDTO, error)
 	GetUsersAndScreenshotCountByGame(gameID string) (dao.AnsweredScreenshotsDAO, error)
 	ABC(gameID string, from, to time.Time) ([]dao.AnswerStatLeadDAO, error)

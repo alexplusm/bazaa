@@ -87,9 +87,9 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 	var resp interface{}
 
 	if qp.TotalOnly.Value {
-		resp = bo.StatsToTotalOnlyDTO(statistics)
+		resp = bo.StatisticAnswersDateSlicedBOToDTOTotalOnly(statistics) // TODO
 	} else {
-		resp = bo.StatsToDTO(statistics)
+		resp = bo.StatisticAnswersDateSlicedBOToDTO(statistics) // TODO
 	}
 
 	return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(resp))

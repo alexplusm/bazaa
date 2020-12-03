@@ -19,7 +19,57 @@ type StatisticsUsersInner struct {
 	AverageAccuracy  float64
 }
 
-func StatsToDTO(stats []StatisticsUserBO) dto.StatsUserDTO {
+// ---
+
+type StatisticAnswersDateSlicedBO struct {
+	Date       time.Time
+	Statistics StatisticAnswersBO
+}
+
+type StatisticAnswersBO struct {
+	TotalScreenshots int
+	RightAnswers     int
+	MatchWithExpert  int
+	AverageAccuracy  float64
+}
+
+// todo
+func (s *StatisticAnswersBO) Increase(answer, expertAnswer, usersAnswer string) {
+	s.TotalScreenshots++
+
+	if usersAnswer == answer {
+		s.RightAnswers++
+	}
+
+	// TODO: write doc
+	if expertAnswer != "" {
+		if s.MatchWithExpert != -1 {
+			if answer == expertAnswer {
+				s.MatchWithExpert++
+			}
+		} else {
+			if answer == expertAnswer {
+				s.MatchWithExpert = 1
+			}
+		}
+	}
+}
+
+func StatisticAnswersDateSlicedBOToDTOTotalOnly(stats []StatisticAnswersDateSlicedBO) dto.StatsUserTotalOnlyDTO {
+	total := dto.StatisticsUsersInnerDTO{}
+
+	for _, s := range stats {
+		total.TotalScreenshots += s.Statistics.TotalScreenshots
+		total.RightAnswers += s.Statistics.RightAnswers
+		total.MatchWithExpert += s.Statistics.MatchWithExpert
+	}
+	// TODO: zero
+	total.AverageAccuracy = float64(total.RightAnswers) / float64(total.TotalScreenshots)
+
+	return dto.StatsUserTotalOnlyDTO{Total: total}
+}
+
+func StatisticAnswersDateSlicedBOToDTO(stats []StatisticAnswersDateSlicedBO) dto.StatsUserDTO {
 	total := dto.StatisticsUsersInnerDTO{}
 	history := make([]dto.StatisticsUserDTO, 0, len(stats))
 
@@ -53,17 +103,4 @@ func StatsToDTO(stats []StatisticsUserBO) dto.StatsUserDTO {
 	val := dto.StatsUserDTO{Total: total, History: history}
 
 	return val
-}
-
-func StatsToTotalOnlyDTO(stats []StatisticsUserBO) dto.StatsUserTotalOnlyDTO {
-	total := dto.StatisticsUsersInnerDTO{}
-
-	for _, s := range stats {
-		total.TotalScreenshots += s.Statistics.TotalScreenshots
-		total.RightAnswers += s.Statistics.RightAnswers
-		total.MatchWithExpert += s.Statistics.MatchWithExpert
-	}
-	total.AverageAccuracy = float64(total.RightAnswers) / float64(total.TotalScreenshots)
-
-	return dto.StatsUserTotalOnlyDTO{Total: total}
 }

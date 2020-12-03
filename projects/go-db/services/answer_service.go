@@ -58,7 +58,7 @@ func (service *AnswerService) GetScreenshotResults(
 // TODO: refactor | screenshotResult (добавить поле usersResult)
 func (service *AnswerService) GetUserStatistics(
 	userID string, gameIDs []string, from, to time.Time,
-) ([]bo.StatisticsUserBO, error) {
+) ([]bo.StatisticAnswersDateSlicedBO, error) {
 	userAnswers := make([]dao.UserAnswerDAO, 0, 1024)
 
 	for _, gameID := range gameIDs {
@@ -95,17 +95,13 @@ func (service *AnswerService) ABC(gameID string, from, to time.Time) ([]dao.Answ
 	return service.AnswerRepo.SelectAnswersTODO(gameID, from, to)
 }
 
-func countRes(userAnswers []dao.UserAnswerDAO, start, end time.Time) []bo.StatisticsUserBO {
-	results := make([]bo.StatisticsUserBO, 0, len(userAnswers))
-
-	fmt.Println("Start: ", start.UTC())
-	fmt.Println("End: ", end.UTC())
+func countRes(userAnswers []dao.UserAnswerDAO, start, end time.Time) []bo.StatisticAnswersDateSlicedBO {
+	results := make([]bo.StatisticAnswersDateSlicedBO, 0, len(userAnswers))
 
 	currentDay := start
 	for currentDay.Before(end) {
 		for _, userAnswer := range userAnswers {
 			date := time.Unix(userAnswer.AnswerDate, 0)
-			fmt.Println("DATE: ", date.UTC())
 			nextDay := currentDay.AddDate(0, 0, 1)
 
 			if currentDay.Before(date) && date.Before(nextDay) {
@@ -118,38 +114,19 @@ func countRes(userAnswers []dao.UserAnswerDAO, start, end time.Time) []bo.Statis
 				}
 
 				if curIdx == -1 {
-					s := &bo.StatisticsUsersInner{MatchWithExpert: -1}
+					s := bo.StatisticAnswersBO{MatchWithExpert: -1}
+					s.Increase(userAnswer.Value, userAnswer.ExpertAnswer, userAnswer.UsersAnswer)
 
-					// TODO: method
-					s.TotalScreenshots++
-					if userAnswer.Value == userAnswer.ExpertAnswer {
-						s.MatchWithExpert = 1
-					}
-					if userAnswer.Value == userAnswer.UsersAnswer {
-						s.RightAnswers++
-					}
-					// TODO: method
-
-					newR := bo.StatisticsUserBO{
+					newR := bo.StatisticAnswersDateSlicedBO{
 						Date:       currentDay,
-						Statistics: *s,
+						Statistics: s,
 					}
 
 					results = append(results, newR)
 				} else {
-					// TODO: method
-					results[curIdx].Statistics.TotalScreenshots++
-					if userAnswer.Value == userAnswer.ExpertAnswer {
-						if results[curIdx].Statistics.MatchWithExpert == -1 {
-							results[curIdx].Statistics.MatchWithExpert = 1
-						} else {
-							results[curIdx].Statistics.MatchWithExpert++
-						}
-					}
-					if userAnswer.Value == userAnswer.UsersAnswer {
-						results[curIdx].Statistics.RightAnswers++
-					}
-					// TODO: method
+					results[curIdx].Statistics.Increase(
+						userAnswer.Value, userAnswer.ExpertAnswer, userAnswer.UsersAnswer,
+					)
 				}
 			}
 		}
