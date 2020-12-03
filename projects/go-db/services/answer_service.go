@@ -75,6 +75,10 @@ func (service *AnswerService) GetUserStatistics(
 		return userAnswers[i].AnswerDate < userAnswers[j].AnswerDate
 	})
 
+	if len(userAnswers) == 0 {
+		return make([]bo.StatisticAnswersDateSlicedBO, 0, 0), nil
+	}
+
 	start := utils.TrimTime(time.Unix(userAnswers[0].AnswerDate, 0))
 	end := time.Unix(userAnswers[len(userAnswers)-1].AnswerDate, 0)
 	end = end.AddDate(0, 0, 1)
