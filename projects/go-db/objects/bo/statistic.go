@@ -55,7 +55,7 @@ func (s *StatisticAnswersBO) Increase(answer, expertAnswer, usersAnswer string) 
 	}
 }
 
-func StatisticAnswersDateSlicedBOToDTOTotalOnly(stats []StatisticAnswersDateSlicedBO) dto.StatsUserTotalOnlyDTO {
+func StatisticAnswersDateSlicedBOToDTOTotalOnly(stats []StatisticAnswersDateSlicedBO) dto.StatisticUserAnswersTotalDTO {
 	total := dto.StatisticsUsersInnerDTO{}
 
 	for _, s := range stats {
@@ -66,10 +66,10 @@ func StatisticAnswersDateSlicedBOToDTOTotalOnly(stats []StatisticAnswersDateSlic
 	// TODO: zero
 	total.AverageAccuracy = float64(total.RightAnswers) / float64(total.TotalScreenshots)
 
-	return dto.StatsUserTotalOnlyDTO{Total: total}
+	return dto.StatisticUserAnswersTotalDTO{Total: total}
 }
 
-func StatisticAnswersDateSlicedBOToDTO(stats []StatisticAnswersDateSlicedBO) dto.StatsUserDTO {
+func StatisticAnswersDateSlicedBOToDTO(stats []StatisticAnswersDateSlicedBO) dto.StatisticUserAnswersDTO {
 	total := dto.StatisticsUsersInnerDTO{}
 	history := make([]dto.StatisticsUserDTO, 0, len(stats))
 
@@ -100,7 +100,7 @@ func StatisticAnswersDateSlicedBOToDTO(stats []StatisticAnswersDateSlicedBO) dto
 		total.AverageAccuracy = 0
 	}
 
-	val := dto.StatsUserDTO{Total: total, History: history}
+	val := dto.StatisticUserAnswersDTO{Total: total, History: history}
 
 	return val
 }

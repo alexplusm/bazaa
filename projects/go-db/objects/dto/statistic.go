@@ -12,12 +12,12 @@ type StatisticsUserDTO struct {
 	Statistics StatisticsUsersInnerDTO `json:"statistics"`
 }
 
-type StatsUserDTO struct {
+type StatisticUserAnswersDTO struct {
 	Total   StatisticsUsersInnerDTO `json:"total"`
 	History []StatisticsUserDTO     `json:"history"`
 }
 
-type StatsUserTotalOnlyDTO struct {
+type StatisticUserAnswersTotalDTO struct {
 	Total StatisticsUsersInnerDTO `json:"total"`
 }
 
@@ -32,12 +32,6 @@ type ScreenshotResultsDTO struct {
 	Answers  []UserAnswerForScreenshotResultDTO `json:"answers"`
 }
 
-//{
-//"screenshotsResolved": 653,
-//"screenshotsLeft": 10265,
-//"usersUnique": 210,
-//"usersActive": 154
-//}
 type GameStatsDTO struct {
 	ScreenshotsResolved int `json:"screenshotsResolved"`
 	ScreenshotsLeft     int `json:"screenshotsLeft"`

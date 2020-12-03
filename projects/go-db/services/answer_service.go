@@ -112,17 +112,13 @@ func countRes(userAnswers []dao.UserAnswerDAO, start, end time.Time) []bo.Statis
 						break
 					}
 				}
-
 				if curIdx == -1 {
-					s := bo.StatisticAnswersBO{MatchWithExpert: -1}
-					s.Increase(userAnswer.Value, userAnswer.ExpertAnswer, userAnswer.UsersAnswer)
-
-					newR := bo.StatisticAnswersDateSlicedBO{
+					stat := bo.StatisticAnswersBO{MatchWithExpert: -1}
+					stat.Increase(userAnswer.Value, userAnswer.ExpertAnswer, userAnswer.UsersAnswer)
+					results = append(results, bo.StatisticAnswersDateSlicedBO{
 						Date:       currentDay,
-						Statistics: s,
-					}
-
-					results = append(results, newR)
+						Statistics: stat,
+					})
 				} else {
 					results[curIdx].Statistics.Increase(
 						userAnswer.Value, userAnswer.ExpertAnswer, userAnswer.UsersAnswer,
