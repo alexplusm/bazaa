@@ -83,3 +83,7 @@ type IActiveUsersService interface {
 type IDurationService interface {
 	GetDurationByGame(from, to string, game bo.GameBO) (time.Time, time.Time)
 }
+
+type ILeaderboardService interface {
+	GetLeaderboard(gameIDs []string, from, to time.Time, limit int) dto.LeadersResponseDTO
+}

@@ -27,7 +27,7 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 
 	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID.Value)
 	if err != nil {
-		log.Error("get user statistics controller: ", err)
+		log.Error("user statistic controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
 	}
 	if !exist {
@@ -39,7 +39,7 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 
 	exist, err = controller.UserService.UserExist(userID)
 	if err != nil {
-		log.Error("get user statistics controller: ", err)
+		log.Error("user statistic controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
 	}
 	if !exist {
@@ -51,7 +51,7 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 
 	games, err := controller.GameService.GetGames(qp.ExtSystemID.Value)
 	if err != nil {
-		log.Error("get user statistics controller: ", err)
+		log.Error("user statistic controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
 	}
 
@@ -80,7 +80,7 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 	// TODO: statistics service
 	statistics, err := controller.AnswerService.GetUserStatistics(userID, gameIDs, from, to)
 	if err != nil {
-		log.Error("get user statistics controller: ", err)
+		log.Error("user statistic controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
 	}
 

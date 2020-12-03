@@ -181,23 +181,15 @@ func (k *kernel) InjectStatisticsUserController() controllers.StatisticsUserCont
 }
 
 func (k *kernel) InjectStatisticsLeaderboardController() controllers.StatisticsLeaderboardController {
-	handler := &PSQLHandler{k.pool}
+	extSystemService := k.InjectExtSystemService()
+	gameService := k.InjectGameService()
+	durationService := k.InjectDurationService()
+	leaderboardService := k.InjectLeaderboardService()
 
-	extSystemRepo := &repositories.ExtSystemRepository{DBConn: handler}
-	extSystemService := &services.ExtSystemService{ExtSystemRepo: extSystemRepo}
-
-	answerRepo := &repositories.AnswerRepository{DBConn: handler}
-	answerService := &services.AnswerService{AnswerRepo: answerRepo}
-
-	gameRepo := &repositories.GameRepository{DBConn: handler}
-	gameService := &services.GameService{GameRepo: gameRepo}
-
-	controller := controllers.StatisticsLeaderboardController{
-		ExtSystemService: extSystemService, GameService: gameService,
-		AnswerService: answerService,
+	return controllers.StatisticsLeaderboardController{
+		ExtSystemService: &extSystemService, GameService: &gameService,
+		DurationService: &durationService, LeaderboardService: &leaderboardService,
 	}
-
-	return controller
 }
 
 func (k *kernel) InjectStatisticsGameController() controllers.StatisticsGameController {
@@ -264,6 +256,12 @@ func (k *kernel) InjectSourceService() services.SourceService {
 	return services.SourceService{SourceRepo: repo}
 }
 
+func (k *kernel) InjectAnswerService() services.AnswerService {
+	handler := &PSQLHandler{k.pool}
+	repo := &repositories.AnswerRepository{DBConn: handler}
+	return services.AnswerService{AnswerRepo: repo}
+}
+
 func (k *kernel) InjectAttachSourceToGameService() services.AttachSourceToGameService {
 	handler := &PSQLHandler{k.pool}
 	gameRepo := &repositories.GameRepository{DBConn: handler}
@@ -272,4 +270,9 @@ func (k *kernel) InjectAttachSourceToGameService() services.AttachSourceToGameSe
 	return services.AttachSourceToGameService{
 		GameRepo: gameRepo, SourceRepo: sourceRepo, ScreenshotRepo: screenshotRepo,
 	}
+}
+
+func (k *kernel) InjectLeaderboardService() services.LeaderboardService {
+	answerService := k.InjectAnswerService()
+	return services.LeaderboardService{AnswerService: &answerService}
 }

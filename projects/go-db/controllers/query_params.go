@@ -20,14 +20,14 @@ func (qp *StatisticsUserQueryParams) fromCtx(ctx echo.Context) {
 
 // ---
 
-type StatisticsLeaderBoardQueryParams struct {
+type StatisticsLeaderboardQueryParams struct {
 	ExtSystemID ExtSystemIDQueryParam
 	Limit       LimitQueryParam
 	GameIDs     GameIDsQueryParam
 	Duration    DurationQueryParams
 }
 
-func (qp *StatisticsLeaderBoardQueryParams) fromCtx(ctx echo.Context) {
+func (qp *StatisticsLeaderboardQueryParams) fromCtx(ctx echo.Context) {
 	qp.ExtSystemID = buildExtSystemIDQueryParam(ctx)
 	qp.Limit = buildLimitQueryParam(ctx)
 	qp.GameIDs = buildGameIDsQueryParam(ctx)

@@ -56,21 +56,24 @@ func (s *StatisticAnswersBO) Increase(answer, expertAnswer, usersAnswer string) 
 }
 
 func StatisticAnswersDateSlicedBOToDTOTotalOnly(stats []StatisticAnswersDateSlicedBO) dto.StatisticUserAnswersTotalDTO {
-	total := dto.StatisticsUsersInnerDTO{}
+	total := dto.StatisticUsersInnerDTO{}
+	total.AverageAccuracy = 0
 
 	for _, s := range stats {
 		total.TotalScreenshots += s.Statistics.TotalScreenshots
 		total.RightAnswers += s.Statistics.RightAnswers
 		total.MatchWithExpert += s.Statistics.MatchWithExpert
 	}
-	// TODO: zero
-	total.AverageAccuracy = float64(total.RightAnswers) / float64(total.TotalScreenshots)
+
+	if total.TotalScreenshots != 0 {
+		total.AverageAccuracy = float64(total.RightAnswers) / float64(total.TotalScreenshots)
+	}
 
 	return dto.StatisticUserAnswersTotalDTO{Total: total}
 }
 
 func StatisticAnswersDateSlicedBOToDTO(stats []StatisticAnswersDateSlicedBO) dto.StatisticUserAnswersDTO {
-	total := dto.StatisticsUsersInnerDTO{}
+	total := dto.StatisticUsersInnerDTO{}
 	history := make([]dto.StatisticsUserDTO, 0, len(stats))
 
 	for _, s := range stats {
@@ -92,7 +95,9 @@ func StatisticAnswersDateSlicedBOToDTO(stats []StatisticAnswersDateSlicedBO) dto
 
 		total.TotalScreenshots += s.Statistics.TotalScreenshots
 		total.RightAnswers += s.Statistics.RightAnswers
-		total.MatchWithExpert += s.Statistics.MatchWithExpert
+		if s.Statistics.MatchWithExpert != -1 {
+			total.MatchWithExpert += s.Statistics.MatchWithExpert
+		}
 	}
 	if total.TotalScreenshots != 0 {
 		total.AverageAccuracy = float64(total.RightAnswers) / float64(total.TotalScreenshots)

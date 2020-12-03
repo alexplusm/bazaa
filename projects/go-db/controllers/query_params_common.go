@@ -74,8 +74,10 @@ func buildLimitQueryParam(ctx echo.Context) LimitQueryParam {
 	limit := 6 // TODO: consts
 
 	if limitRaw != "" {
-		intLimit64, _ := strconv.ParseInt(limitRaw, 10, 64)
-		limit = int(intLimit64)
+		intLimit64, err := strconv.ParseInt(limitRaw, 10, 64)
+		if err == nil {
+			limit = int(intLimit64)
+		}
 	}
 
 	return LimitQueryParam{Value: limit}
