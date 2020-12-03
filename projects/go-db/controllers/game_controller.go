@@ -17,8 +17,10 @@ import (
 )
 
 type GameController struct {
-	GameService   interfaces.IGameService
-	SourceService interfaces.ISourceService
+	GameService               interfaces.IGameService
+	ExtSystemService          interfaces.IExtSystemService
+	SourceService             interfaces.ISourceService
+	AttachSourceToGameService interfaces.IAttachSourceToGameService
 }
 
 func (controller *GameController) Create(ctx echo.Context) error {
@@ -92,4 +94,89 @@ func (controller *GameController) Details(ctx echo.Context) error {
 	resp.Sources = sourcesDTO
 
 	return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(resp))
+}
+
+func (controller *GameController) List(ctx echo.Context) error {
+	extSystemID := ctx.QueryParam(consts.ExtSystemIDQueryParamName)
+
+	exist, err := controller.ExtSystemService.ExtSystemExist(extSystemID)
+	if err != nil {
+		log.Error("game list controller: ", err)
+		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
+	}
+	if !exist {
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildBadRequestErrorResponseWithMgs("extSystem not found"),
+		)
+	}
+
+	gamesBO, err := controller.GameService.GetGames(extSystemID)
+	if err != nil {
+		log.Error("game list controller: ", err)
+		return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
+	}
+
+	gamesDTO := make([]dto.GameItemResponseBody, 0, len(gamesBO))
+	for _, game := range gamesBO {
+		gamesDTO = append(gamesDTO, game.ToListItemDTO())
+	}
+
+	resp := dto.GameListResponseBody{Games: gamesDTO}
+	return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(resp))
+}
+
+func (controller *GameController) Update(ctx echo.Context) error {
+	gameID := ctx.Param(consts.GameIDUrlParam)
+
+	switch httputils.ParseContentType(ctx) {
+	case consts.FormDataContentType:
+		form, err := ctx.MultipartForm()
+		if err != nil {
+			log.Error("game update controller: ", err)
+			return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
+		}
+
+		game, err := controller.GameService.GetGame(gameID)
+		if err != nil {
+			log.Error("game update controller: ", err)
+			return ctx.JSON(
+				http.StatusOK,
+				httputils.BuildErrorResponse(http.StatusOK, "game not found"),
+			)
+		}
+
+		if !game.NotStarted() {
+			log.Info("game update controller: ", "game started: ", gameID)
+			return ctx.JSON(
+				http.StatusOK,
+				httputils.BuildErrorResponse(http.StatusOK, "game started"),
+			)
+		}
+
+		archives := form.File["archives"]
+
+		err = controller.AttachSourceToGameService.AttachZipArchiveToGame(gameID, archives)
+		if err != nil {
+			log.Error("game update controller: ", err)
+			return ctx.JSON(
+				http.StatusOK,
+				httputils.BuildBadRequestErrorResponse(),
+			)
+		}
+
+		// TODO: return gameID?
+		return ctx.JSON(http.StatusOK, httputils.BuildSuccessWithoutBodyResponse())
+	case consts.ApplicationContentJSON:
+		err := controller.AttachSourceToGameService.AttachSchedulesToGame(gameID)
+		if err != nil {
+			log.Error("game update controller: ", err)
+			return ctx.JSON(
+				http.StatusOK,
+				httputils.BuildBadRequestErrorResponse(),
+			)
+		}
+	}
+
+	return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
 }

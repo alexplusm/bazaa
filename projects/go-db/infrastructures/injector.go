@@ -18,11 +18,7 @@ type IInjector interface {
 
 	// INFO: controllers
 	InjectGameController() controllers.GameController
-
-	InjectGameUpdateController() controllers.GameUpdateController
-	InjectGameListController() controllers.GameListController
 	InjectGamePrepareController() controllers.GamePrepareController
-	InjectGameInfoController() controllers.GameInfoController
 
 	InjectExtSystemController() controllers.ExtSystemController
 
@@ -75,65 +71,18 @@ func (k *kernel) CloseStoragesConnections() {
 
 func (k *kernel) InjectGameController() controllers.GameController {
 	gameService := k.InjectGameService()
+	extSystemService := k.InjectExtSystemService()
 	sourceService := k.InjectSourceService()
+	attachSourceToGameService := k.InjectAttachSourceToGameService()
 	return controllers.GameController{
-		GameService: &gameService, SourceService: &sourceService,
+		GameService: &gameService, ExtSystemService: &extSystemService,
+		SourceService: &sourceService, AttachSourceToGameService: &attachSourceToGameService,
 	}
-}
-
-func (k *kernel) InjectGameUpdateController() controllers.GameUpdateController {
-	handler := &PSQLHandler{k.pool}
-
-	gameRepo := &repositories.GameRepository{DBConn: handler}
-	sourceRepo := &repositories.SourceRepository{DBConn: handler}
-	screenshotRepo := &repositories.ScreenshotRepository{DBConn: handler}
-
-	gameService := &services.GameService{GameRepo: gameRepo}
-	attachSourceToGameService := &services.AttachSourceToGameService{
-		GameRepo: gameRepo, SourceRepo: sourceRepo, ScreenshotRepo: screenshotRepo,
-	}
-
-	controller := controllers.GameUpdateController{
-		GameService: gameService, AttachSourceToGameService: attachSourceToGameService,
-	}
-
-	return controller
-}
-
-func (k *kernel) InjectGameListController() controllers.GameListController {
-	handler := &PSQLHandler{k.pool}
-
-	gameRepo := &repositories.GameRepository{DBConn: handler}
-	extSystemRepo := &repositories.ExtSystemRepository{DBConn: handler}
-
-	gameService := &services.GameService{GameRepo: gameRepo}
-	extSystemService := &services.ExtSystemService{ExtSystemRepo: extSystemRepo}
-
-	controller := controllers.GameListController{
-		GameService: gameService, ExtSystemService: extSystemService,
-	}
-
-	return controller
 }
 
 func (k *kernel) InjectGamePrepareController() controllers.GamePrepareController {
 	gameCacheService := k.InjectGameCacheService()
 	controller := controllers.GamePrepareController{GameCacheService: &gameCacheService}
-
-	return controller
-}
-
-func (k *kernel) InjectGameInfoController() controllers.GameInfoController {
-	handler := &PSQLHandler{k.pool}
-
-	sourceRepo := &repositories.SourceRepository{DBConn: handler}
-	gameRepo := &repositories.GameRepository{DBConn: handler}
-	gameService := &services.GameService{GameRepo: gameRepo}
-	sourceService := &services.SourceService{SourceRepo: sourceRepo}
-
-	controller := controllers.GameInfoController{
-		GameService: gameService, SourceService: sourceService,
-	}
 
 	return controller
 }
@@ -296,9 +245,7 @@ func (k *kernel) InjectGameCacheService() services.GameCacheService {
 func (k *kernel) InjectExtSystemService() services.ExtSystemService {
 	handler := &PSQLHandler{k.pool}
 	repo := &repositories.ExtSystemRepository{DBConn: handler}
-	service := services.ExtSystemService{ExtSystemRepo: repo}
-
-	return service
+	return services.ExtSystemService{ExtSystemRepo: repo}
 }
 
 func (k *kernel) InjectDurationService() services.DurationService {
@@ -315,4 +262,14 @@ func (k *kernel) InjectSourceService() services.SourceService {
 	handler := &PSQLHandler{k.pool}
 	repo := &repositories.SourceRepository{DBConn: handler}
 	return services.SourceService{SourceRepo: repo}
+}
+
+func (k *kernel) InjectAttachSourceToGameService() services.AttachSourceToGameService {
+	handler := &PSQLHandler{k.pool}
+	gameRepo := &repositories.GameRepository{DBConn: handler}
+	sourceRepo := &repositories.SourceRepository{DBConn: handler}
+	screenshotRepo := &repositories.ScreenshotRepository{DBConn: handler}
+	return services.AttachSourceToGameService{
+		GameRepo: gameRepo, SourceRepo: sourceRepo, ScreenshotRepo: screenshotRepo,
+	}
 }

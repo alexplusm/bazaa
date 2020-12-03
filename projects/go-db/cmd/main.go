@@ -66,10 +66,7 @@ func registerRoutes(e *echo.Echo) error {
 
 	gameController := injector.InjectGameController()
 
-	gameUpdateController := injector.InjectGameUpdateController()
 	gamePrepareController := injector.InjectGamePrepareController()
-	gameListController := injector.InjectGameListController()
-	//gameInfoController := injector.InjectGameInfoController()
 
 	extSystemController := injector.InjectExtSystemController()
 
@@ -88,14 +85,14 @@ func registerRoutes(e *echo.Echo) error {
 	// TODO: ["application/json"]
 	e.POST("api/v1/game", gameController.Create)
 
-	e.GET("api/v1/game", gameListController.GetGames)
+	e.GET("api/v1/game", gameController.List)
 	e.GET("api/v1/game/:"+consts.GameIDUrlParam, gameController.Details)
+
+	// TODO: ["application/json", "multipart/form-data"]
+	e.PUT("api/v1/game/:"+consts.GameIDUrlParam, gameController.Update)
 
 	// TODO: ["application/json"]
 	e.POST("api/v1/game/prepare", gamePrepareController.PrepareGame)
-
-	// TODO: ["application/json", "multipart/form-data"]
-	e.PUT("api/v1/game/:"+consts.GameIDUrlParam, gameUpdateController.UpdateGame)
 
 	// TODO: ["application/json"]
 	e.POST("api/v1/ext_system", extSystemController.Create)
