@@ -49,14 +49,23 @@ func (controller *ScreenshotResultsController) GetResult(ctx echo.Context) error
 		)
 	}
 
+	// TODO: In service
 	res, err := controller.AnswerService.GetScreenshotResults(gameID, screenshotID)
 	if err != nil {
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
 	}
 
+	usersAnswer := "undefined"
+	for _, r := range res {
+		if r.Result == "right" {
+			usersAnswer = r.Answer
+		}
+	}
+
 	resp := dto.ScreenshotResultsDTO{
-		Finished: len(res) == consts.RequiredAnswerCountToFinishScreenshot,
-		Answers:  res,
+		Finished:    len(res) == consts.RequiredAnswerCountToFinishScreenshot,
+		Answers:     res,
+		UsersAnswer: usersAnswer,
 	}
 
 	return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(resp))
