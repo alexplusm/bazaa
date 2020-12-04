@@ -98,18 +98,20 @@ func (k *kernel) InjectScreenshotGetController() controllers.ScreenshotGetContro
 
 	screenshotRepo := &repositories.ScreenshotRepository{DBConn: dbHandler}
 	gameRepo := &repositories.GameRepository{DBConn: dbHandler}
-	userRepo := &repositories.UserRepository{DBConn: dbHandler}
 
 	screenshotCacheService := &services.ScreenshotCacheService{RedisClient: redisHandler}
 	gameCacheService := &services.GameCacheService{
 		RedisClient: redisHandler, ScreenshotRepo: screenshotRepo, GameRepo: gameRepo,
 	}
-	userService := &services.UserService{UserRepo: userRepo}
+
+	userService := k.InjectUserService()
+	imageService := k.InjectImageService()
 
 	controller := controllers.ScreenshotGetController{
 		ScreenshotCacheService: screenshotCacheService,
 		GameCacheService:       gameCacheService,
-		UserService:            userService,
+		UserService:            &userService,
+		ImageService:           &imageService,
 	}
 
 	return controller
@@ -244,6 +246,12 @@ func (k *kernel) InjectDurationService() services.DurationService {
 	return services.DurationService{}
 }
 
+func (k *kernel) InjectUserService() services.UserService {
+	handler := &PSQLHandler{k.pool}
+	repo := &repositories.UserRepository{DBConn: handler}
+	return services.UserService{UserRepo: repo}
+}
+
 func (k *kernel) InjectGameService() services.GameService {
 	handler := &PSQLHandler{k.pool}
 	repo := &repositories.GameRepository{DBConn: handler}
@@ -275,4 +283,8 @@ func (k *kernel) InjectAttachSourceToGameService() services.AttachSourceToGameSe
 func (k *kernel) InjectLeaderboardService() services.LeaderboardService {
 	answerService := k.InjectAnswerService()
 	return services.LeaderboardService{AnswerService: &answerService}
+}
+
+func (k *kernel) InjectImageService() services.ImageService {
+	return services.ImageService{}
 }

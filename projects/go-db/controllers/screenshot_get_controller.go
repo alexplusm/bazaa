@@ -16,6 +16,7 @@ type ScreenshotGetController struct {
 	ScreenshotCacheService interfaces.IScreenshotCacheService
 	GameCacheService       interfaces.IGameCacheService
 	UserService            interfaces.IUserService
+	ImageService           interfaces.IImageService
 }
 
 func (controller *ScreenshotGetController) GetScreenshot(ctx echo.Context) error {
@@ -58,12 +59,21 @@ func (controller *ScreenshotGetController) GetScreenshot(ctx echo.Context) error
 	}
 
 	// TODO:!!!!!!
+
+	// TODO: screenshot.ImageURL -> ImageName
+	// TODO: into service ScreenshotCacheService.GetScreenshot
+	imageURL, err := controller.ImageService.BuildImageURL(screenshot.ImageURL)
+	if err != nil {
+		log.Error("get screenshot controller: ", err)
+		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
+	}
+
 	res := struct {
 		ScreenshotID string `json:"screenshot_id"`
 		ImageURL     string `json:"image_url"`
 	}{
 		ScreenshotID: screenshot.ScreenshotID,
-		ImageURL:     screenshot.ImageURL,
+		ImageURL:     imageURL,
 	}
 
 	fmt.Println("Get screenshot: ", userID, " | ", screenshot.ScreenshotID)

@@ -87,3 +87,7 @@ type IDurationService interface {
 type ILeaderboardService interface {
 	GetLeaderboard(gameIDs []string, from, to time.Time, limit int) dto.LeadersResponseDTO
 }
+
+type IImageService interface {
+	BuildImageURL(imageName string) (string, error)
+}
