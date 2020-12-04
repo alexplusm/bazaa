@@ -11,8 +11,8 @@ import (
 
 type GameCacheService struct {
 	RedisClient    interfaces.IRedisHandler
-	ScreenshotRepo interfaces.IScreenshotRepository
-	GameRepo       interfaces.IGameRepository
+	ScreenshotRepo interfaces.IScreenshotRepo
+	GameRepo       interfaces.IGameRepo
 }
 
 // TODO: достаем последнюю игру (за один час до начала игры, например)

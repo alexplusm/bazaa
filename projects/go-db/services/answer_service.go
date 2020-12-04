@@ -16,7 +16,7 @@ import (
 )
 
 type AnswerService struct {
-	AnswerRepo interfaces.IAnswerRepository
+	AnswerRepo interfaces.IAnswerRepo
 }
 
 func (service *AnswerService) GetScreenshotResults(

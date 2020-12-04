@@ -9,7 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/controllers"
-	"github.com/Alexplusm/bazaa/projects/go-db/repositories"
+	"github.com/Alexplusm/bazaa/projects/go-db/repos"
 	"github.com/Alexplusm/bazaa/projects/go-db/services"
 )
 
@@ -176,8 +176,8 @@ func (k *kernel) InjectStatisticGameController() controllers.StatisticGameContro
 func (k *kernel) InjectGameCacheService() services.GameCacheService {
 	redisHandler := &RedisHandler{k.redisClient}
 	dbHandler := &PSQLHandler{k.pool}
-	screenshotRepo := &repositories.ScreenshotRepository{DBConn: dbHandler}
-	gameRepo := &repositories.GameRepository{DBConn: dbHandler}
+	screenshotRepo := &repos.ScreenshotRepo{DBConn: dbHandler}
+	gameRepo := &repos.GameRepo{DBConn: dbHandler}
 
 	return services.GameCacheService{
 		RedisClient: redisHandler, ScreenshotRepo: screenshotRepo, GameRepo: gameRepo,
@@ -186,7 +186,7 @@ func (k *kernel) InjectGameCacheService() services.GameCacheService {
 
 func (k *kernel) InjectExtSystemService() services.ExtSystemService {
 	handler := &PSQLHandler{k.pool}
-	repo := &repositories.ExtSystemRepository{DBConn: handler}
+	repo := &repos.ExtSystemRepo{DBConn: handler}
 
 	return services.ExtSystemService{ExtSystemRepo: repo}
 }
@@ -197,37 +197,37 @@ func (k *kernel) InjectDurationService() services.DurationService {
 
 func (k *kernel) InjectUserService() services.UserService {
 	handler := &PSQLHandler{k.pool}
-	repo := &repositories.UserRepository{DBConn: handler}
+	repo := &repos.UserRepo{DBConn: handler}
 
 	return services.UserService{UserRepo: repo}
 }
 
 func (k *kernel) InjectGameService() services.GameService {
 	handler := &PSQLHandler{k.pool}
-	repo := &repositories.GameRepository{DBConn: handler}
+	repo := &repos.GameRepo{DBConn: handler}
 
 	return services.GameService{GameRepo: repo}
 }
 
 func (k *kernel) InjectSourceService() services.SourceService {
 	handler := &PSQLHandler{k.pool}
-	repo := &repositories.SourceRepository{DBConn: handler}
+	repo := &repos.SourceRepo{DBConn: handler}
 
 	return services.SourceService{SourceRepo: repo}
 }
 
 func (k *kernel) InjectAnswerService() services.AnswerService {
 	handler := &PSQLHandler{k.pool}
-	repo := &repositories.AnswerRepository{DBConn: handler}
+	repo := &repos.AnswerRepo{DBConn: handler}
 
 	return services.AnswerService{AnswerRepo: repo}
 }
 
 func (k *kernel) InjectAttachSourceToGameService() services.AttachSourceToGameService {
 	handler := &PSQLHandler{k.pool}
-	gameRepo := &repositories.GameRepository{DBConn: handler}
-	sourceRepo := &repositories.SourceRepository{DBConn: handler}
-	screenshotRepo := &repositories.ScreenshotRepository{DBConn: handler}
+	gameRepo := &repos.GameRepo{DBConn: handler}
+	sourceRepo := &repos.SourceRepo{DBConn: handler}
+	screenshotRepo := &repos.ScreenshotRepo{DBConn: handler}
 	fileService := k.InjectFileService()
 
 	return services.AttachSourceToGameService{
@@ -254,7 +254,7 @@ func (k *kernel) InjectFileService() services.FileService {
 
 func (k *kernel) InjectScreenshotService() services.ScreenshotService {
 	handler := &PSQLHandler{k.pool}
-	screenshotRepo := &repositories.ScreenshotRepository{DBConn: handler}
+	screenshotRepo := &repos.ScreenshotRepo{DBConn: handler}
 
 	return services.ScreenshotService{ScreenshotRepo: screenshotRepo}
 }
@@ -285,8 +285,8 @@ func (k *kernel) InjectScreenshotCacheService() services.ScreenshotCacheService 
 
 func (k *kernel) InjectScreenshotUserAnswerService() services.ScreenshotUserAnswerService {
 	dbHandler := &PSQLHandler{k.pool}
-	answerRepo := &repositories.AnswerRepository{DBConn: dbHandler}
-	screenshotRepo := &repositories.ScreenshotRepository{DBConn: dbHandler}
+	answerRepo := &repos.AnswerRepo{DBConn: dbHandler}
+	screenshotRepo := &repos.ScreenshotRepo{DBConn: dbHandler}
 
 	return services.ScreenshotUserAnswerService{
 		AnswerRepo:     answerRepo,

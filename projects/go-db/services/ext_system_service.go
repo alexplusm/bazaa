@@ -7,7 +7,7 @@ import (
 )
 
 type ExtSystemService struct {
-	ExtSystemRepo interfaces.IExtSystemRepository
+	ExtSystemRepo interfaces.IExtSystemRepo
 }
 
 func (service *ExtSystemService) Create(extSystem bo.ExtSystemBO) (string, error) {

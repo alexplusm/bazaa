@@ -6,7 +6,7 @@ import (
 )
 
 type SourceService struct {
-	SourceRepo interfaces.ISourceRepository
+	SourceRepo interfaces.ISourceRepo
 }
 
 func (repo *SourceService) ListByGame(gameID string) ([]dao.Source2DAO, error) {

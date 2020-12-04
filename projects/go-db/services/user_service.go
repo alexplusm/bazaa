@@ -6,7 +6,7 @@ import (
 )
 
 type UserService struct {
-	UserRepo interfaces.IUserRepository
+	UserRepo interfaces.IUserRepo
 }
 
 func (service *UserService) CreateUser(userID string) error {

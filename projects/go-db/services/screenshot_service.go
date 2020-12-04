@@ -3,7 +3,7 @@ package services
 import "github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 
 type ScreenshotService struct {
-	ScreenshotRepo interfaces.IScreenshotRepository
+	ScreenshotRepo interfaces.IScreenshotRepo
 }
 
 func (repo *ScreenshotService) Exist(screenshotID string) (bool, error) {

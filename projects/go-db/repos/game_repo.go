@@ -1,4 +1,4 @@
-package repositories
+package repos
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 )
 
-type GameRepository struct {
+type GameRepo struct {
 	DBConn interfaces.IDBHandler
 }
 
@@ -43,7 +43,7 @@ WHERE "game_id" = ($1);
 `
 )
 
-func (repo *GameRepository) InsertOne(game dao.GameDAO) (string, error) {
+func (repo *GameRepo) InsertOne(game dao.GameDAO) (string, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -80,7 +80,7 @@ func (repo *GameRepository) InsertOne(game dao.GameDAO) (string, error) {
 	return gameID, nil // TODO:log: saving game into DB
 }
 
-func (repo *GameRepository) SelectOne(gameID string) (dao.GameDAO, error) {
+func (repo *GameRepo) SelectOne(gameID string) (dao.GameDAO, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -102,7 +102,7 @@ func (repo *GameRepository) SelectOne(gameID string) (dao.GameDAO, error) {
 	return *g, nil
 }
 
-func (repo *GameRepository) SelectList(extSystemID string) ([]dao.GameDAO, error) {
+func (repo *GameRepo) SelectList(extSystemID string) ([]dao.GameDAO, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -137,7 +137,7 @@ func (repo *GameRepository) SelectList(extSystemID string) ([]dao.GameDAO, error
 	return list, nil
 }
 
-func (repo *GameRepository) Exist(gameID string) (bool, error) {
+func (repo *GameRepo) Exist(gameID string) (bool, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {

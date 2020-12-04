@@ -9,7 +9,7 @@ import (
 )
 
 type GameService struct {
-	GameRepo interfaces.IGameRepository
+	GameRepo interfaces.IGameRepo
 }
 
 func (service *GameService) Create(game bo.GameBO) (string, error) {

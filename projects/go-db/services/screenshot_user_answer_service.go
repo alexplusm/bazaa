@@ -11,8 +11,8 @@ import (
 )
 
 type ScreenshotUserAnswerService struct {
-	AnswerRepo     interfaces.IAnswerRepository
-	ScreenshotRepo interfaces.IScreenshotRepository
+	AnswerRepo     interfaces.IAnswerRepo
+	ScreenshotRepo interfaces.IScreenshotRepo
 }
 
 func (service *ScreenshotUserAnswerService) BuildUserAnswerResponse(

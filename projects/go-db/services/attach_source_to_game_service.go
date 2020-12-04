@@ -15,9 +15,9 @@ import (
 )
 
 type AttachSourceToGameService struct {
-	GameRepo       interfaces.IGameRepository
-	SourceRepo     interfaces.ISourceRepository
-	ScreenshotRepo interfaces.IScreenshotRepository
+	GameRepo       interfaces.IGameRepo
+	SourceRepo     interfaces.ISourceRepo
+	ScreenshotRepo interfaces.IScreenshotRepo
 	FileService    interfaces.IFileService
 }
 
