@@ -1,7 +1,7 @@
 FROM golang:1.15-alpine
 
 # TODO: for deployment
-#ENV http_proxy http://10.200.81.56:3128/
+ENV http_proxy http://10.200.81.56:3128/
 
 # The latest alpine images don't have some tools like (`git` and `bash`).
 # Adding git, bash and openssh to the image
