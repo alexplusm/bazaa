@@ -1,13 +1,13 @@
 package consts
 
 const (
-	ExtSystemIDQueryParamName = "extSystemId"
-	UserIDQueryParamName      = "userId"
-	TotalOnlyQueryParamName   = "totalOnly"
-	GameIDsQueryParamName     = "gameIds"
-	FromQueryParamName        = "from"
-	ToQueryParamName          = "to"
-	LimitQueryParamName       = "limit"
+	ExtSystemIDQPName = "extSystemId"
+	UserIDQPName      = "userId"
+	TotalOnlyQPName   = "totalOnly"
+	GameIDsQPName     = "gameIds"
+	FromQPName        = "from"
+	ToQPName          = "to"
+	LimitQPName       = "limit"
 )
 
 const (

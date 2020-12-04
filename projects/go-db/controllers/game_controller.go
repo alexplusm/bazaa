@@ -97,7 +97,7 @@ func (controller *GameController) Details(ctx echo.Context) error {
 }
 
 func (controller *GameController) List(ctx echo.Context) error {
-	extSystemID := ctx.QueryParam(consts.ExtSystemIDQueryParamName)
+	extSystemID := ctx.QueryParam(consts.ExtSystemIDQPName)
 
 	exist, err := controller.ExtSystemService.ExtSystemExist(extSystemID)
 	if err != nil {

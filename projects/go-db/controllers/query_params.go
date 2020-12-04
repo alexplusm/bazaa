@@ -5,43 +5,43 @@ import (
 )
 
 type StatisticsUserQP struct {
-	ExtSystemID ExtSystemIDQueryParam
-	TotalOnly   TotalOnlyQueryParam
-	GameIDs     GameIDsQueryParam
-	Duration    DurationQueryParams
+	ExtSystemID ExtSystemIDQP
+	TotalOnly   TotalOnlyQP
+	GameIDs     GameIDsQP
+	Duration    DurationQP
 }
 
 func (qp *StatisticsUserQP) fromCtx(ctx echo.Context) {
-	qp.ExtSystemID = buildExtSystemIDQueryParam(ctx)
-	qp.TotalOnly = buildTotalOnlyQueryParam(ctx)
-	qp.GameIDs = buildGameIDsQueryParam(ctx)
-	qp.Duration = buildDurationQueryParams(ctx)
+	qp.ExtSystemID = buildExtSystemIDQP(ctx)
+	qp.TotalOnly = buildTotalOnlyQP(ctx)
+	qp.GameIDs = buildGameIDsQP(ctx)
+	qp.Duration = buildDurationQP(ctx)
 }
 
 // ---
 
 type StatisticsLeaderboardQP struct {
-	ExtSystemID ExtSystemIDQueryParam
-	Limit       LimitQueryParam
-	GameIDs     GameIDsQueryParam
-	Duration    DurationQueryParams
+	ExtSystemID ExtSystemIDQP
+	Limit       LimitQP
+	GameIDs     GameIDsQP
+	Duration    DurationQP
 }
 
 func (qp *StatisticsLeaderboardQP) fromCtx(ctx echo.Context) {
-	qp.ExtSystemID = buildExtSystemIDQueryParam(ctx)
-	qp.Limit = buildLimitQueryParam(ctx)
-	qp.GameIDs = buildGameIDsQueryParam(ctx)
-	qp.Duration = buildDurationQueryParams(ctx)
+	qp.ExtSystemID = buildExtSystemIDQP(ctx)
+	qp.Limit = buildLimitQP(ctx)
+	qp.GameIDs = buildGameIDsQP(ctx)
+	qp.Duration = buildDurationQP(ctx)
 }
 
 // ---
 
 type ScreenshotRetrieveQP struct {
-	ExtSystemID ExtSystemIDQueryParam
+	ExtSystemID ExtSystemIDQP
 	UserID      UserIDQP
 }
 
 func (qp *ScreenshotRetrieveQP) fromCtx(ctx echo.Context) {
-	qp.ExtSystemID = buildExtSystemIDQueryParam(ctx)
+	qp.ExtSystemID = buildExtSystemIDQP(ctx)
 	qp.UserID = buildUserIDQP(ctx)
 }

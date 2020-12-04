@@ -21,17 +21,17 @@ type StatisticsUserQueryParams struct {
 }
 
 func (qp *DurationQueryParams) FromCTX(ctx echo.Context) {
-	qp.From = ctx.QueryParam(consts.FromQueryParamName)
-	qp.To = ctx.QueryParam(consts.ToQueryParamName)
+	qp.From = ctx.QueryParam(consts.FromQPName)
+	qp.To = ctx.QueryParam(consts.ToQPName)
 }
 
 func (qp *StatisticsUserQueryParams) FromCTX(ctx echo.Context) {
-	gameIDs := ctx.QueryParam(consts.GameIDsQueryParamName)
-	totalOnly := ctx.QueryParam(consts.TotalOnlyQueryParamName)
+	gameIDs := ctx.QueryParam(consts.GameIDsQPName)
+	totalOnly := ctx.QueryParam(consts.TotalOnlyQPName)
 	duration := DurationQueryParams{}
 	duration.FromCTX(ctx)
 
-	qp.ExtSystemID = ctx.QueryParam(consts.ExtSystemIDQueryParamName)
+	qp.ExtSystemID = ctx.QueryParam(consts.ExtSystemIDQPName)
 	qp.TotalOnly = strings.ToLower(totalOnly) == "true"
 	qp.Duration = duration
 

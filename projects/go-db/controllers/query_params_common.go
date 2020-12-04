@@ -11,26 +11,26 @@ import (
 
 // ---
 
-type DurationQueryParams struct {
+type DurationQP struct {
 	From string
 	To   string
 }
 
-func buildDurationQueryParams(ctx echo.Context) DurationQueryParams {
-	return DurationQueryParams{
-		From: ctx.QueryParam(consts.FromQueryParamName),
-		To:   ctx.QueryParam(consts.ToQueryParamName),
+func buildDurationQP(ctx echo.Context) DurationQP {
+	return DurationQP{
+		From: ctx.QueryParam(consts.FromQPName),
+		To:   ctx.QueryParam(consts.ToQPName),
 	}
 }
 
 // ---
 
-type GameIDsQueryParam struct {
+type GameIDsQP struct {
 	Value []string
 }
 
-func buildGameIDsQueryParam(ctx echo.Context) GameIDsQueryParam {
-	gameIDsQP := ctx.QueryParam(consts.GameIDsQueryParamName)
+func buildGameIDsQP(ctx echo.Context) GameIDsQP {
+	gameIDsQP := ctx.QueryParam(consts.GameIDsQPName)
 	gameIDs := make([]string, 0, 16)
 	if gameIDsQP != "" {
 		rowGameIDs := strings.Split(gameIDsQP, ",")
@@ -38,39 +38,39 @@ func buildGameIDsQueryParam(ctx echo.Context) GameIDsQueryParam {
 			gameIDs = append(gameIDs, strings.Trim(rowGameID, " "))
 		}
 	}
-	return GameIDsQueryParam{Value: gameIDs}
+	return GameIDsQP{Value: gameIDs}
 }
 
 // ---
 
-type TotalOnlyQueryParam struct {
+type TotalOnlyQP struct {
 	Value bool
 }
 
-func buildTotalOnlyQueryParam(ctx echo.Context) TotalOnlyQueryParam {
-	totalOnly := ctx.QueryParam(consts.TotalOnlyQueryParamName)
-	return TotalOnlyQueryParam{Value: strings.ToLower(totalOnly) == "true"}
+func buildTotalOnlyQP(ctx echo.Context) TotalOnlyQP {
+	totalOnly := ctx.QueryParam(consts.TotalOnlyQPName)
+	return TotalOnlyQP{Value: strings.ToLower(totalOnly) == "true"}
 }
 
 // ---
 
-type ExtSystemIDQueryParam struct {
+type ExtSystemIDQP struct {
 	Value string
 }
 
-func buildExtSystemIDQueryParam(ctx echo.Context) ExtSystemIDQueryParam {
-	qp := ctx.QueryParam(consts.ExtSystemIDQueryParamName)
-	return ExtSystemIDQueryParam{Value: qp}
+func buildExtSystemIDQP(ctx echo.Context) ExtSystemIDQP {
+	qp := ctx.QueryParam(consts.ExtSystemIDQPName)
+	return ExtSystemIDQP{Value: qp}
 }
 
 // ---
 
-type LimitQueryParam struct {
+type LimitQP struct {
 	Value int
 }
 
-func buildLimitQueryParam(ctx echo.Context) LimitQueryParam {
-	limitRaw := ctx.QueryParam(consts.LimitQueryParamName)
+func buildLimitQP(ctx echo.Context) LimitQP {
+	limitRaw := ctx.QueryParam(consts.LimitQPName)
 	limit := 6 // TODO: consts
 
 	if limitRaw != "" {
@@ -80,7 +80,7 @@ func buildLimitQueryParam(ctx echo.Context) LimitQueryParam {
 		}
 	}
 
-	return LimitQueryParam{Value: limit}
+	return LimitQP{Value: limit}
 }
 
 // ---
@@ -90,6 +90,6 @@ type UserIDQP struct {
 }
 
 func buildUserIDQP(ctx echo.Context) UserIDQP {
-	qp := ctx.QueryParam(consts.UserIDQueryParamName)
+	qp := ctx.QueryParam(consts.UserIDQPName)
 	return UserIDQP{Value: qp}
 }
