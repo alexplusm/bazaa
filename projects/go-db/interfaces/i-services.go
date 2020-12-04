@@ -71,6 +71,10 @@ type IScreenshotService interface {
 	ScreenshotCountByGame(gameID string) (int, error)
 }
 
+type IStatisticGameService interface {
+	GetStatistics(games []bo.GameBO) (dto.StatisticGameDTO, error)
+}
+
 type ISourceService interface {
 	GetSourcesByGame(gameID string) ([]dao.Source2DAO, error)
 }
