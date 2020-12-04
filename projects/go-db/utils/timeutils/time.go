@@ -1,11 +1,9 @@
-package utils
+package timeutils
 
 import (
 	"strconv"
 	"time"
 )
-
-// TODO: timeutils package
 
 func FromTimestampToTime(timestamp string) (time.Time, error) {
 	ts, err := strconv.ParseInt(timestamp, 10, 64)

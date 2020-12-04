@@ -1,15 +1,63 @@
-package fileutils
+package services
 
 import (
 	"archive/zip"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
+	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/fileutils"
 )
+
+type FileService struct{}
+
+func (service *FileService) CopyFiles(files []*multipart.FileHeader, copyPath string) ([]string, error) {
+	filenames := make([]string, 0)
+
+	for _, file := range files {
+		fmt.Println("file:", file.Filename, file.Size)
+
+		// Source
+		src, err := file.Open()
+		if err != nil {
+			return filenames, err
+		}
+
+		filename := filepath.Base(file.Filename)
+		fp := filepath.Join(copyPath, filename)
+
+		// Destination
+		dst, err := os.Create(fp)
+		if err != nil {
+			return filenames, err
+		}
+
+		// Copy
+		if _, err := io.Copy(dst, src); err != nil {
+			return filenames, err
+		}
+		filenames = append(filenames, filename)
+
+		if err = src.Close(); err != nil {
+			return filenames, err
+		}
+		if err = dst.Close(); err != nil {
+			return filenames, err
+		}
+
+	}
+
+	return filenames, nil
+}
+
+func (service *FileService) UnzipImages(filenames []string) ([]bo.ImageParsingResult, error) {
+	return unzipFiles(consts.MediaTempDir, consts.MediaRoot, filenames)
+}
 
 // INFO: service files with this prefix appear after unpacking
 const serviceUnzipFilePrefix = "._"
@@ -26,7 +74,7 @@ func hasAllowableImageExtension(name string) bool {
 	var availableExtention = false
 
 	for _, extension := range extentionsWhiteList {
-		if getExtension(name) == extension {
+		if fileutils.GetExtension(name) == extension {
 			availableExtention = true
 		}
 	}
@@ -38,8 +86,6 @@ const (
 	noViolationDir   = "noViolation"
 )
 
-type categoryType int8
-
 // TODO: Должны совпадать с опциями игры: придется синхронизиться руками
 // question: "Есть ли нарушение?"
 // [{option: 0, value: "Есть нарушение"}, {option: 1, value: "Нет нарушения"}]
@@ -50,18 +96,7 @@ const (
 	UndefinedCategory     = "undefined"
 )
 
-// ImageParsingResult TODO: -> into bo package
-type ImageParsingResult struct {
-	Filename string
-	Category string
-}
-
-// UnzipImages unzip images
-func UnzipImages(filenames []string) ([]ImageParsingResult, error) {
-	return unzipFiles(consts.MediaTempDir, consts.MediaRoot, filenames)
-}
-
-func unzipFiles(srcPath string, destPath string, filenames []string) ([]ImageParsingResult, error) {
+func unzipFiles(srcPath string, destPath string, filenames []string) ([]bo.ImageParsingResult, error) {
 	dir, err := os.Open(srcPath)
 	if err != nil {
 		return nil, err // todo: nil?
@@ -71,7 +106,7 @@ func unzipFiles(srcPath string, destPath string, filenames []string) ([]ImagePar
 		return nil, err // todo: nil?
 	}
 
-	result := make([]ImageParsingResult, 0, 500)
+	result := make([]bo.ImageParsingResult, 0, 500)
 
 	for _, fileInfo := range filesInfo {
 		fmt.Println("zip archive", fileInfo.Name(), fileInfo.Size())
@@ -90,7 +125,7 @@ func unzipFiles(srcPath string, destPath string, filenames []string) ([]ImagePar
 	return result, nil
 }
 
-func unzip(src string, destination string) ([]ImageParsingResult, error) {
+func unzip(src string, destination string) ([]bo.ImageParsingResult, error) {
 	/*
 		INFO:
 		source: https://www.geeksforgeeks.org/how-to-uncompress-a-file-in-golang/
@@ -100,7 +135,7 @@ func unzip(src string, destination string) ([]ImageParsingResult, error) {
 		+ есть бизнесс логика
 	*/
 
-	var parsingResults []ImageParsingResult
+	var parsingResults []bo.ImageParsingResult
 
 	reader, err := zip.OpenReader(src)
 	if err != nil {
@@ -124,14 +159,14 @@ func unzip(src string, destination string) ([]ImageParsingResult, error) {
 		withViolation := strings.HasSuffix(f.Name, filepath.Join(withViolationDir, fname))
 		noViolation := strings.HasSuffix(f.Name, filepath.Join(noViolationDir, fname))
 
-		var result ImageParsingResult
+		var result bo.ImageParsingResult
 
 		if withViolation {
-			result = ImageParsingResult{fname, WithViolationCategory}
+			result = bo.ImageParsingResult{fname, WithViolationCategory}
 		} else if noViolation {
-			result = ImageParsingResult{fname, NoViolationCategory}
+			result = bo.ImageParsingResult{fname, NoViolationCategory}
 		} else {
-			result = ImageParsingResult{fname, UndefinedCategory}
+			result = bo.ImageParsingResult{fname, UndefinedCategory}
 		}
 
 		fmt.Println(result)

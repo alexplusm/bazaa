@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
-	"github.com/Alexplusm/bazaa/projects/go-db/utils"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/timeutils"
 )
 
 type DurationService struct{}
@@ -15,7 +15,7 @@ func (service *DurationService) GetDurationByGame(from, to string, game bo.GameB
 	toRes := time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
 
 	if from != "" {
-		parsedFrom, err := utils.FromTimestampToTime(from)
+		parsedFrom, err := timeutils.FromTimestampToTime(from)
 		if err != nil {
 			// TODO: log?
 		} else {
@@ -23,7 +23,7 @@ func (service *DurationService) GetDurationByGame(from, to string, game bo.GameB
 		}
 	}
 	if to != "" {
-		parsedTo, err := utils.FromTimestampToTime(to)
+		parsedTo, err := timeutils.FromTimestampToTime(to)
 		if err != nil {
 			// TODO: log?
 		} else {

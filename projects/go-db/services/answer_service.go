@@ -12,7 +12,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
-	"github.com/Alexplusm/bazaa/projects/go-db/utils"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/timeutils"
 )
 
 type AnswerService struct {
@@ -79,10 +79,10 @@ func (service *AnswerService) GetUserStatistics(
 		return make([]bo.StatisticAnswersDateSlicedBO, 0, 0), nil
 	}
 
-	start := utils.TrimTime(time.Unix(userAnswers[0].AnswerDate, 0))
+	start := timeutils.TrimTime(time.Unix(userAnswers[0].AnswerDate, 0))
 	end := time.Unix(userAnswers[len(userAnswers)-1].AnswerDate, 0)
 	end = end.AddDate(0, 0, 1)
-	end = utils.TrimTime(end)
+	end = timeutils.TrimTime(end)
 
 	results := countRes(userAnswers, start, end)
 
