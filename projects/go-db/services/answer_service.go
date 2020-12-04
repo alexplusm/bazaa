@@ -62,7 +62,7 @@ func (service *AnswerService) GetUserStatistics(
 	userAnswers := make([]dao.UserAnswerDAO, 0, 1024)
 
 	for _, gameID := range gameIDs {
-		oneRes, err := service.AnswerRepo.SelectAnswersByUserAndGame(userID, gameID, from, to)
+		oneRes, err := service.AnswerRepo.SelectListByUserAndGame(userID, gameID, from, to)
 		if err != nil {
 			log.Error("user statistics service: ", err)
 			continue
@@ -96,7 +96,7 @@ func (service *AnswerService) GetUsersAndScreenshotCountByGame(
 }
 
 func (service *AnswerService) ABC(gameID string, from, to time.Time) ([]dao.AnswerStatLeadDAO, error) {
-	return service.AnswerRepo.SelectAnswersTODO(gameID, from, to)
+	return service.AnswerRepo.SelectListTODO(gameID, from, to)
 }
 
 func countRes(userAnswers []dao.UserAnswerDAO, start, end time.Time) []bo.StatisticAnswersDateSlicedBO {

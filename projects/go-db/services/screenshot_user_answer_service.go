@@ -112,7 +112,7 @@ func (service *ScreenshotUserAnswerService) SaveUsersAnswers(
 	if err != nil {
 		log.Error("save users answer: ", err)
 	}
-	service.AnswerRepo.InsertAnswers(answersDAO)
+	service.AnswerRepo.InsertList(answersDAO)
 }
 
 func getRightAnswerCategoryType(answers []bo.UserAnswerCacheBO) (string, bool) {

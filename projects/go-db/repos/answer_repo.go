@@ -57,16 +57,16 @@ ans.game_id = ($2) AND
 `
 )
 
-func (repo *AnswerRepo) InsertAnswers(answers []dao.AnswerDAO) {
+func (repo *AnswerRepo) InsertList(answers []dao.AnswerDAO) {
 	for _, answer := range answers {
-		err := repo.InsertAnswer(answer)
+		err := repo.InsertOne(answer)
 		if err != nil {
 			fmt.Println("err: insert answers: ", err) // TODO: log error | return error
 		}
 	}
 }
 
-func (repo *AnswerRepo) InsertAnswer(answer dao.AnswerDAO) error {
+func (repo *AnswerRepo) InsertOne(answer dao.AnswerDAO) error {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -175,7 +175,7 @@ func (repo *AnswerRepo) SelectAnsweredScreenshotsByGame(
 	return res, nil
 }
 
-func (repo *AnswerRepo) SelectAnswersTODO(gameID string, from, to time.Time) ([]dao.AnswerStatLeadDAO, error) {
+func (repo *AnswerRepo) SelectListTODO(gameID string, from, to time.Time) ([]dao.AnswerStatLeadDAO, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -216,7 +216,7 @@ func (repo *AnswerRepo) SelectAnswersTODO(gameID string, from, to time.Time) ([]
 	return list, nil
 }
 
-func (repo *AnswerRepo) SelectAnswersByUserAndGame(
+func (repo *AnswerRepo) SelectListByUserAndGame(
 	userID string, gameID string, from, to time.Time,
 ) ([]dao.UserAnswerDAO, error) {
 	p := repo.DBConn.GetPool()

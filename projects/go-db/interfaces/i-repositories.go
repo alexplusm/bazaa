@@ -33,12 +33,12 @@ type IScreenshotRepo interface {
 }
 
 type IAnswerRepo interface {
-	InsertAnswer(answer dao.AnswerDAO) error
-	InsertAnswers(answers []dao.AnswerDAO)
+	InsertOne(answer dao.AnswerDAO) error
+	InsertList(answers []dao.AnswerDAO)
 	SelectScreenshotResult(gameID, screenshotID string) ([]dao.ScreenshotResultDAO, error)
 	SelectAnsweredScreenshotsByGame(gameID string) (dao.AnsweredScreenshotsDAO, error)
-	SelectAnswersTODO(gameID string, from, to time.Time) ([]dao.AnswerStatLeadDAO, error)
-	SelectAnswersByUserAndGame(userID string, gameID string, from, to time.Time) ([]dao.UserAnswerDAO, error)
+	SelectListTODO(gameID string, from, to time.Time) ([]dao.AnswerStatLeadDAO, error)
+	SelectListByUserAndGame(userID string, gameID string, from, to time.Time) ([]dao.UserAnswerDAO, error)
 }
 
 type IUserRepo interface {
