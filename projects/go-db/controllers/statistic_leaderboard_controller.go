@@ -21,7 +21,7 @@ func (controller *StatisticLeaderboardController) GetStatistics(ctx echo.Context
 	qp := StatisticLeaderboardQP{}
 	qp.fromCtx(ctx)
 
-	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID.Value)
+	exist, err := controller.ExtSystemService.Exist(qp.ExtSystemID.Value)
 	if err != nil {
 		log.Error("leaderboard statistic controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
@@ -33,7 +33,7 @@ func (controller *StatisticLeaderboardController) GetStatistics(ctx echo.Context
 		)
 	}
 
-	games, err := controller.GameService.GetGames(qp.ExtSystemID.Value)
+	games, err := controller.GameService.List(qp.ExtSystemID.Value)
 	if err != nil {
 		log.Error("leaderboard statistic controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())

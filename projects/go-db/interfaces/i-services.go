@@ -10,10 +10,10 @@ import (
 )
 
 type IGameService interface {
-	CreateGame(game bo.GameBO) (string, error)
-	GetGame(gameID string) (bo.GameBO, error)
-	GetGames(extSystemID string) ([]bo.GameBO, error)
-	GameExist(gameID string) (bool, error)
+	Create(game bo.GameBO) (string, error)
+	Retrieve(gameID string) (bo.GameBO, error)
+	List(extSystemID string) ([]bo.GameBO, error)
+	Exist(gameID string) (bool, error)
 	FilterGames(gamesID []string, games []bo.GameBO) []bo.GameBO
 	GetEarliestGame(games []bo.GameBO) bo.GameBO
 }
@@ -24,9 +24,9 @@ type IAttachSourceToGameService interface {
 }
 
 type IExtSystemService interface {
-	CreateExtSystem(extSystem bo.ExtSystemBO) (string, error)
-	ExtSystemExist(extSystemID string) (bool, error)
-	ExtSystemList() ([]bo.ExtSystemBO, error)
+	Create(extSystem bo.ExtSystemBO) (string, error)
+	Exist(extSystemID string) (bool, error)
+	List() ([]bo.ExtSystemBO, error)
 }
 
 type IGameCacheService interface {
@@ -67,7 +67,7 @@ type IAnswerService interface {
 }
 
 type IScreenshotService interface {
-	ScreenshotExist(screenshotID string) (bool, error)
+	Exist(screenshotID string) (bool, error)
 	ScreenshotCountByGame(gameID string) (int, error)
 }
 

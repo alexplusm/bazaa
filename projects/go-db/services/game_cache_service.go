@@ -17,7 +17,7 @@ type GameCacheService struct {
 
 // TODO: достаем последнюю игру (за один час до начала игры, например)
 func (service *GameCacheService) PrepareGame(gameID string) error {
-	game, err := service.GameRepo.SelectGame(gameID)
+	game, err := service.GameRepo.SelectOne(gameID)
 	if err != nil {
 		return fmt.Errorf("prepare game: %v", err)
 	}
@@ -63,7 +63,7 @@ func (service *GameCacheService) insertScreenshots(gameID string) error {
 
 	lengthInCache, err := conn.LLen(ctx, key).Result()
 	cachedIDs, err := conn.LRange(ctx, key, 0, lengthInCache).Result()
-	screenshots, err := service.ScreenshotRepo.SelectScreenshotsByGameID(gameID)
+	screenshots, err := service.ScreenshotRepo.SelectListByGameID(gameID)
 	mergedScreenshots := mergeScreenshotsWithCache(cachedIDs, screenshots)
 
 	if len(mergedScreenshots) > 0 {

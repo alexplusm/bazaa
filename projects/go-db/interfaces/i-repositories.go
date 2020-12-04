@@ -6,29 +6,29 @@ import (
 )
 
 type IGameRepository interface {
-	InsertGame(game dao.GameDAO) (string, error)
-	SelectGame(gameID string) (dao.GameDAO, error)
-	SelectGames(extSystemID string) ([]dao.GameDAO, error)
-	GameExist(gameID string) (bool, error)
+	InsertOne(game dao.GameDAO) (string, error)
+	SelectOne(gameID string) (dao.GameDAO, error)
+	SelectList(extSystemID string) ([]dao.GameDAO, error)
+	Exist(gameID string) (bool, error)
 }
 
 type IExtSystemRepository interface {
-	InsertExtSystem(extSystemDAO dao.ExtSystemDAO) (string, error)
-	SelectExtSystems() ([]dao.ExtSystemDAO, error)
-	ExtSystemExist(extSystemID string) (bool, error)
+	InsertOne(extSystemDAO dao.ExtSystemDAO) (string, error)
+	SelectList() ([]dao.ExtSystemDAO, error)
+	Exist(extSystemID string) (bool, error)
 }
 
 type ISourceRepository interface {
-	InsertSource(source dao.SourceDAO) (string, error)
-	SelectSourcesByGame(gameID string) ([]dao.Source2DAO, error)
+	InsertOne(source dao.SourceDAO) (string, error)
+	SelectListByGame(gameID string) ([]dao.Source2DAO, error)
 }
 
 type IScreenshotRepository interface {
-	SelectScreenshotsByGameID(gameID string) ([]dao.ScreenshotDAOFull, error)
-	InsertScreenshots(screenshots []dao.ScreenshotDAO) error
-	InsertScreenshotsWithExpertAnswer(screenshots []dao.ScreenshotWithExpertAnswerDAO) error
+	SelectListByGameID(gameID string) ([]dao.ScreenshotDAOFull, error)
+	InsertList(screenshots []dao.ScreenshotDAO) error
+	InsertListWithExpertAnswer(screenshots []dao.ScreenshotWithExpertAnswerDAO) error
 	UpdateScreenshotUsersAnswer(screenshotID, usersAnswer string) error
-	ScreenshotExist(screenshotID string) (bool, error)
+	Exist(screenshotID string) (bool, error)
 	ScreenshotCountByGame(gameID string) (int, error)
 }
 

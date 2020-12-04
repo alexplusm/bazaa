@@ -36,7 +36,7 @@ FROM ext_systems;
 `
 )
 
-func (repo *ExtSystemRepository) InsertExtSystem(
+func (repo *ExtSystemRepository) InsertOne(
 	extSystemDAO dao.ExtSystemDAO,
 ) (string, error) {
 	p := repo.DBConn.GetPool()
@@ -68,7 +68,7 @@ func (repo *ExtSystemRepository) InsertExtSystem(
 	return extSystemID, nil
 }
 
-func (repo *ExtSystemRepository) SelectExtSystems() ([]dao.ExtSystemDAO, error) {
+func (repo *ExtSystemRepository) SelectList() ([]dao.ExtSystemDAO, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -101,7 +101,7 @@ func (repo *ExtSystemRepository) SelectExtSystems() ([]dao.ExtSystemDAO, error) 
 	return list, nil
 }
 
-func (repo *ExtSystemRepository) ExtSystemExist(extSystemID string) (bool, error) {
+func (repo *ExtSystemRepository) Exist(extSystemID string) (bool, error) {
 	p := repo.DBConn.GetPool()
 	ctx := context.Background()
 	conn, err := p.Acquire(ctx)

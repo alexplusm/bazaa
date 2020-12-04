@@ -30,7 +30,7 @@ WHERE sources.game_id = ($1);
 `
 )
 
-func (repo *SourceRepository) InsertSource(source dao.SourceDAO) (string, error) {
+func (repo *SourceRepository) InsertOne(source dao.SourceDAO) (string, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -54,7 +54,7 @@ func (repo *SourceRepository) InsertSource(source dao.SourceDAO) (string, error)
 	return sourceID, nil
 }
 
-func (repo *SourceRepository) SelectSourcesByGame(gameID string) ([]dao.Source2DAO, error) {
+func (repo *SourceRepository) SelectListByGame(gameID string) ([]dao.Source2DAO, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {

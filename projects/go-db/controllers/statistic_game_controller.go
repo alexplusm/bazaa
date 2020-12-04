@@ -27,7 +27,7 @@ func (controller *StatisticGameController) GetStatistics(ctx echo.Context) error
 		)
 	}
 
-	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID.Value)
+	exist, err := controller.ExtSystemService.Exist(qp.ExtSystemID.Value)
 	if err != nil {
 		log.Error("statistic game controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
@@ -39,7 +39,7 @@ func (controller *StatisticGameController) GetStatistics(ctx echo.Context) error
 		)
 	}
 
-	games, err := controller.GameService.GetGames(qp.ExtSystemID.Value)
+	games, err := controller.GameService.List(qp.ExtSystemID.Value)
 	if err != nil {
 		log.Error("statistic game controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())

@@ -45,7 +45,7 @@ WHERE screenshots.game_id = ($1)
 `
 )
 
-func (repo *ScreenshotRepository) SelectScreenshotsByGameID(gameID string) ([]dao.ScreenshotDAOFull, error) {
+func (repo *ScreenshotRepository) SelectListByGameID(gameID string) ([]dao.ScreenshotDAOFull, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -82,7 +82,7 @@ func (repo *ScreenshotRepository) SelectScreenshotsByGameID(gameID string) ([]da
 	return results, nil
 }
 
-func (repo *ScreenshotRepository) InsertScreenshots(screenshots []dao.ScreenshotDAO) error {
+func (repo *ScreenshotRepository) InsertList(screenshots []dao.ScreenshotDAO) error {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -102,7 +102,7 @@ func (repo *ScreenshotRepository) InsertScreenshots(screenshots []dao.Screenshot
 	return nil
 }
 
-func (repo *ScreenshotRepository) InsertScreenshotsWithExpertAnswer(screenshots []dao.ScreenshotWithExpertAnswerDAO) error {
+func (repo *ScreenshotRepository) InsertListWithExpertAnswer(screenshots []dao.ScreenshotWithExpertAnswerDAO) error {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -171,7 +171,7 @@ func (repo *ScreenshotRepository) UpdateScreenshotUsersAnswer(screenshotID, user
 	return nil
 }
 
-func (repo *ScreenshotRepository) ScreenshotExist(screenshotID string) (bool, error) {
+func (repo *ScreenshotRepository) Exist(screenshotID string) (bool, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {

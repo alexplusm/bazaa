@@ -10,5 +10,5 @@ type SourceService struct {
 }
 
 func (repo *SourceService) GetSourcesByGame(gameID string) ([]dao.Source2DAO, error) {
-	return repo.SourceRepo.SelectSourcesByGame(gameID)
+	return repo.SourceRepo.SelectListByGame(gameID)
 }

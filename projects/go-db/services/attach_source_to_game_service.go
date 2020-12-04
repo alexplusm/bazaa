@@ -35,18 +35,18 @@ func (service *AttachSourceToGameService) AttachZipArchiveToGame(
 	}
 
 	source := dao.SourceDAO{Type: dao.ArchiveSourceType, CreatedAt: time.Now().Unix(), GameID: gameID}
-	sourceID, err := service.SourceRepo.InsertSource(source)
+	sourceID, err := service.SourceRepo.InsertOne(source)
 	if err != nil {
 		return fmt.Errorf("attach zip archive: %v", err)
 	}
 
 	a, b := split(images, gameID, sourceID)
-	err = service.ScreenshotRepo.InsertScreenshots(a)
+	err = service.ScreenshotRepo.InsertList(a)
 	if err != nil {
 		return fmt.Errorf("attach zip archive: %v", err)
 	}
 
-	err = service.ScreenshotRepo.InsertScreenshotsWithExpertAnswer(b)
+	err = service.ScreenshotRepo.InsertListWithExpertAnswer(b)
 	if err != nil {
 		return fmt.Errorf("attach zip archive: %v", err)
 	}
