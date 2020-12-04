@@ -1,5 +1,3 @@
-# https://levelup.gitconnected.com/dockerized-crud-restful-api-with-go-gorm-jwt-postgresql-mysql-and-testing-61d731430bd8
-
 version: "3.8"
 
 services:
@@ -9,19 +7,28 @@ services:
       - .env
     ports:
       - '${SERVER_PORT_OUTER}:${SERVER_PORT_INNER}'
+    volumes:
+      - media_root:/app/media_root/
     depends_on:
       - database
       - redis
 
   nginx:
     image: nginx:1.19-alpine
-    volumes:
-      - media_root:/usr/share/nginx/mediaa:ro
-
-  web-client:
-    build: web-client
+    env_file:
+      - .env
     ports:
-      - '1239:80'
+      - '${APP_PORT_OUTER}:80'
+    volumes:
+      - media_root:/usr/share/nginx/media:ro
+      - ./nginx/:/etc/nginx/conf.d
+    depends_on:
+      - server
+
+#  web-client:
+#    build: web-client
+#    ports:
+#      - '1239:80'
 
   database:
     image: postgres:13-alpine
@@ -47,3 +54,5 @@ volumes:
 networks:
   net:
     driver: bridge
+
+# https://levelup.gitconnected.com/dockerized-crud-restful-api-with-go-gorm-jwt-postgresql-mysql-and-testing-61d731430bd8
