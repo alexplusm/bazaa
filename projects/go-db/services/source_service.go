@@ -9,6 +9,6 @@ type SourceService struct {
 	SourceRepo interfaces.ISourceRepository
 }
 
-func (repo *SourceService) GetSourcesByGame(gameID string) ([]dao.Source2DAO, error) {
+func (repo *SourceService) ListByGame(gameID string) ([]dao.Source2DAO, error) {
 	return repo.SourceRepo.SelectListByGame(gameID)
 }

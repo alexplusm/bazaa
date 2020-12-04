@@ -42,6 +42,6 @@ type IAnswerRepository interface {
 }
 
 type IUserRepository interface {
-	InsertUser(user dao.UserDAO) error
-	UserExist(userID string) (bool, error)
+	InsertOne(user dao.UserDAO) error
+	Exist(userID string) (bool, error)
 }

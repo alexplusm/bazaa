@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -65,9 +64,9 @@ func (controller *GameController) Details(ctx echo.Context) error {
 			httputils.BuildNotFoundRequestErrorResponse("game not found"),
 		)
 	}
-	sources, err := controller.SourceService.GetSourcesByGame(gameID)
+	sources, err := controller.SourceService.ListByGame(gameID)
 
-	fmt.Println("Game: ", game)
+	// TODO: service!!!
 
 	resp := dto.GameInfoResponseBody{}
 	resp.StartDate = strconv.FormatInt(game.StartDate.Unix(), 10)
