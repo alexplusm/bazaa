@@ -1,12 +1,10 @@
 package services
 
 import (
-	"net"
+	"fmt"
 	"net/url"
 	"os"
 	"path"
-
-	log "github.com/sirupsen/logrus"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 )
@@ -14,17 +12,17 @@ import (
 type ImageService struct {
 }
 
-func (service *ImageService) BuildImageURL(imageName string) string {
+func (service *ImageService) BuildImageURL(imageName string) (string, error) {
 	host := os.Getenv("APP_HOST")
 	port := os.Getenv("APP_PORT_OUTER")
-	hostPort := net.JoinHostPort(host, port)
+	hostPort := host + ":" + port
 
 	u, err := url.Parse(hostPort)
 	if err != nil {
-		log.Error("build image url: ", err)
+		return "", fmt.Errorf("build image url: %v", err)
 	}
 
-	u.Path = path.Join(hostPort, consts.MediaUrlPart, imageName)
+	u.Path = path.Join(consts.MediaUrlPart, imageName)
 
-	return u.String()
+	return u.String(), nil
 }

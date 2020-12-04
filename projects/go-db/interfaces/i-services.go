@@ -89,5 +89,5 @@ type ILeaderboardService interface {
 }
 
 type IImageService interface {
-	BuildImageURL(imageName string) string
+	BuildImageURL(imageName string) (string, error)
 }

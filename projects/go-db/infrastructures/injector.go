@@ -104,8 +104,8 @@ func (k *kernel) InjectScreenshotGetController() controllers.ScreenshotGetContro
 		RedisClient: redisHandler, ScreenshotRepo: screenshotRepo, GameRepo: gameRepo,
 	}
 
-	imageService := k.InjectImageService()
 	userService := k.InjectUserService()
+	imageService := k.InjectImageService()
 
 	controller := controllers.ScreenshotGetController{
 		ScreenshotCacheService: screenshotCacheService,

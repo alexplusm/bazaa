@@ -61,7 +61,12 @@ func (controller *ScreenshotGetController) GetScreenshot(ctx echo.Context) error
 	// TODO:!!!!!!
 
 	// TODO: screenshot.ImageURL -> ImageName
-	imageURL := controller.ImageService.BuildImageURL(screenshot.ImageURL)
+	// TODO: into service ScreenshotCacheService.GetScreenshot
+	imageURL, err := controller.ImageService.BuildImageURL(screenshot.ImageURL)
+	if err != nil {
+		log.Error("get screenshot controller: ", err)
+		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
+	}
 
 	res := struct {
 		ScreenshotID string `json:"screenshot_id"`
