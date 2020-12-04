@@ -71,25 +71,28 @@ func (k *kernel) CloseStoragesConnections() {
 // INFO: Controllers
 
 func (k *kernel) InjectGameController() controllers.GameController {
-	gameService := k.InjectGameService()
-	extSystemService := k.InjectExtSystemService()
-	sourceService := k.InjectSourceService()
 	attachSourceToGameService := k.InjectAttachSourceToGameService()
+	extSystemService := k.InjectExtSystemService()
+	gameService := k.InjectGameService()
+	sourceService := k.InjectSourceService()
+
 	return controllers.GameController{
-		GameService: &gameService, ExtSystemService: &extSystemService,
-		SourceService: &sourceService, AttachSourceToGameService: &attachSourceToGameService,
+		AttachSourceToGameService: &attachSourceToGameService,
+		ExtSystemService:          &extSystemService,
+		GameService:               &gameService,
+		SourceService:             &sourceService,
 	}
 }
 
 func (k *kernel) InjectGamePrepareController() controllers.GamePrepareController {
 	gameCacheService := k.InjectGameCacheService()
-	controller := controllers.GamePrepareController{GameCacheService: &gameCacheService}
 
-	return controller
+	return controllers.GamePrepareController{GameCacheService: &gameCacheService}
 }
 
 func (k *kernel) InjectExtSystemController() controllers.ExtSystemController {
 	service := k.InjectExtSystemService()
+
 	return controllers.ExtSystemController{ExtSystemService: &service}
 }
 
@@ -129,58 +132,43 @@ func (k *kernel) InjectScreenshotSetAnswerController() controllers.ScreenshotSet
 	screenshotUserAnswerService := &services.ScreenshotUserAnswerService{
 		AnswerRepo: answerRepo, ScreenshotRepo: screenshotRepo,
 	}
-	activeUsersService := &services.ActiveUsersService{RedisClient: redisHandler}
+
+	// TODO: remove
+	//activeUsersService := &services.ActiveUsersService{RedisClient: redisHandler}
+	activeUsersService := k.InjectActiveUsersService()
 
 	controller := controllers.ScreenshotSetAnswerController{
+		ActiveUsersService:          &activeUsersService,
 		ScreenshotCacheService:      screenshotCacheService,
 		ScreenshotUserAnswerService: screenshotUserAnswerService,
-		ActiveUsersService:          activeUsersService,
 	}
 
 	return controller
 }
 
 func (k *kernel) InjectScreenshotResultsController() controllers.ScreenshotResultsController {
-	handler := &PSQLHandler{k.pool}
+	answerService := k.InjectAnswerService()
+	gameService := k.InjectGameService()
+	screenshotService := k.InjectScreenshotService()
 
-	answerRepo := &repositories.AnswerRepository{DBConn: handler}
-	gameRepo := &repositories.GameRepository{DBConn: handler}
-	screenshotRepo := &repositories.ScreenshotRepository{DBConn: handler}
-
-	answerService := &services.AnswerService{AnswerRepo: answerRepo}
-	gameService := &services.GameService{GameRepo: gameRepo}
-	screenshotService := &services.ScreenshotService{ScreenshotRepo: screenshotRepo}
-
-	controller := controllers.ScreenshotResultsController{
-		AnswerService: answerService, GameService: gameService,
-		ScreenshotService: screenshotService,
+	return controllers.ScreenshotResultsController{
+		AnswerService: &answerService, GameService: &gameService,
+		ScreenshotService: &screenshotService,
 	}
-
-	return controller
 }
 
 func (k *kernel) InjectStatisticUserController() controllers.StatisticUserController {
-	handler := &PSQLHandler{k.pool}
-
-	answerRepo := &repositories.AnswerRepository{DBConn: handler}
-	extSystemRepo := &repositories.ExtSystemRepository{DBConn: handler}
-	gameRepo := &repositories.GameRepository{DBConn: handler}
-	userRepo := &repositories.UserRepository{DBConn: handler}
-
-	answerService := &services.AnswerService{AnswerRepo: answerRepo}
-	extSystemService := &services.ExtSystemService{ExtSystemRepo: extSystemRepo}
-	gameService := &services.GameService{GameRepo: gameRepo}
-	userService := &services.UserService{UserRepo: userRepo}
-
+	extSystemService := k.InjectExtSystemService()
+	answerService := k.InjectAnswerService()
+	gameService := k.InjectGameService()
+	userService := k.InjectUserService()
 	durationService := k.InjectDurationService()
 
-	controller := controllers.StatisticUserController{
-		GameService: gameService, ExtSystemService: extSystemService,
-		AnswerService: answerService, UserService: userService,
+	return controllers.StatisticUserController{
+		GameService: &gameService, ExtSystemService: &extSystemService,
+		AnswerService: &answerService, UserService: &userService,
 		DurationService: &durationService,
 	}
-
-	return controller
 }
 
 func (k *kernel) InjectStatisticLeaderboardController() controllers.StatisticLeaderboardController {
@@ -196,30 +184,24 @@ func (k *kernel) InjectStatisticLeaderboardController() controllers.StatisticLea
 }
 
 func (k *kernel) InjectStatisticGameController() controllers.StatisticGameController {
-	handler := &PSQLHandler{k.pool}
-	redisHandler := &RedisHandler{k.redisClient}
+	extSystemService := k.InjectExtSystemService()
+	gameService := k.InjectGameService()
+	statisticGameService := k.InjectStatisticGameService()
 
-	extSystemRepo := &repositories.ExtSystemRepository{DBConn: handler}
-	extSystemService := &services.ExtSystemService{ExtSystemRepo: extSystemRepo}
+	// TODO: remove after test
+	//screenshotService := k.InjectScreenshotService()
+	//activeUsersService := k.InjectActiveUsersService()
+	//answerService := k.InjectAnswerService()
 
-	gameRepo := &repositories.GameRepository{DBConn: handler}
-	gameService := &services.GameService{GameRepo: gameRepo}
+	return controllers.StatisticGameController{
+		ExtSystemService:     &extSystemService,
+		GameService:          &gameService,
+		StatisticGameService: &statisticGameService,
 
-	screenshotRepo := &repositories.ScreenshotRepository{DBConn: handler}
-	screenshotService := &services.ScreenshotService{ScreenshotRepo: screenshotRepo}
-
-	answerRepo := &repositories.AnswerRepository{DBConn: handler}
-	answerService := &services.AnswerService{AnswerRepo: answerRepo}
-
-	activeUsersService := &services.ActiveUsersService{RedisClient: redisHandler}
-
-	controller := controllers.StatisticGameController{
-		ExtSystemService: extSystemService, GameService: gameService,
-		ScreenshotService: screenshotService, AnswerService: answerService,
-		ActiveUsersService: activeUsersService,
+		// TODO: remove after test
+		//ScreenshotService: &screenshotService, AnswerService: &answerService,
+		//ActiveUsersService: &activeUsersService,
 	}
-
-	return controller
 }
 
 // INFO: services
@@ -227,19 +209,18 @@ func (k *kernel) InjectStatisticGameController() controllers.StatisticGameContro
 func (k *kernel) InjectGameCacheService() services.GameCacheService {
 	redisHandler := &RedisHandler{k.redisClient}
 	dbHandler := &PSQLHandler{k.pool}
-
 	screenshotRepo := &repositories.ScreenshotRepository{DBConn: dbHandler}
 	gameRepo := &repositories.GameRepository{DBConn: dbHandler}
-	service := services.GameCacheService{
+
+	return services.GameCacheService{
 		RedisClient: redisHandler, ScreenshotRepo: screenshotRepo, GameRepo: gameRepo,
 	}
-
-	return service
 }
 
 func (k *kernel) InjectExtSystemService() services.ExtSystemService {
 	handler := &PSQLHandler{k.pool}
 	repo := &repositories.ExtSystemRepository{DBConn: handler}
+
 	return services.ExtSystemService{ExtSystemRepo: repo}
 }
 
@@ -250,24 +231,28 @@ func (k *kernel) InjectDurationService() services.DurationService {
 func (k *kernel) InjectUserService() services.UserService {
 	handler := &PSQLHandler{k.pool}
 	repo := &repositories.UserRepository{DBConn: handler}
+
 	return services.UserService{UserRepo: repo}
 }
 
 func (k *kernel) InjectGameService() services.GameService {
 	handler := &PSQLHandler{k.pool}
 	repo := &repositories.GameRepository{DBConn: handler}
+
 	return services.GameService{GameRepo: repo}
 }
 
 func (k *kernel) InjectSourceService() services.SourceService {
 	handler := &PSQLHandler{k.pool}
 	repo := &repositories.SourceRepository{DBConn: handler}
+
 	return services.SourceService{SourceRepo: repo}
 }
 
 func (k *kernel) InjectAnswerService() services.AnswerService {
 	handler := &PSQLHandler{k.pool}
 	repo := &repositories.AnswerRepository{DBConn: handler}
+
 	return services.AnswerService{AnswerRepo: repo}
 }
 
@@ -279,13 +264,16 @@ func (k *kernel) InjectAttachSourceToGameService() services.AttachSourceToGameSe
 	fileService := k.InjectFileService()
 
 	return services.AttachSourceToGameService{
-		GameRepo: gameRepo, SourceRepo: sourceRepo, ScreenshotRepo: screenshotRepo,
-		FileService: &fileService,
+		GameRepo:       gameRepo,
+		ScreenshotRepo: screenshotRepo,
+		SourceRepo:     sourceRepo,
+		FileService:    &fileService,
 	}
 }
 
 func (k *kernel) InjectLeaderboardService() services.LeaderboardService {
 	answerService := k.InjectAnswerService()
+
 	return services.LeaderboardService{AnswerService: &answerService}
 }
 
@@ -295,4 +283,29 @@ func (k *kernel) InjectImageService() services.ImageService {
 
 func (k *kernel) InjectFileService() services.FileService {
 	return services.FileService{}
+}
+
+func (k *kernel) InjectScreenshotService() services.ScreenshotService {
+	handler := &PSQLHandler{k.pool}
+	screenshotRepo := &repositories.ScreenshotRepository{DBConn: handler}
+
+	return services.ScreenshotService{ScreenshotRepo: screenshotRepo}
+}
+
+func (k *kernel) InjectActiveUsersService() services.ActiveUsersService {
+	redisHandler := &RedisHandler{k.redisClient}
+
+	return services.ActiveUsersService{RedisClient: redisHandler}
+}
+
+func (k *kernel) InjectStatisticGameService() services.StatisticGameService {
+	screenshotService := k.InjectScreenshotService()
+	answerService := k.InjectAnswerService()
+	activeUsersService := k.InjectActiveUsersService()
+
+	return services.StatisticGameService{
+		ActiveUsersService: &activeUsersService,
+		AnswerService:      &answerService,
+		ScreenshotService:  &screenshotService,
+	}
 }

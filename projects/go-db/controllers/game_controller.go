@@ -17,10 +17,10 @@ import (
 )
 
 type GameController struct {
-	GameService               interfaces.IGameService
-	ExtSystemService          interfaces.IExtSystemService
-	SourceService             interfaces.ISourceService
 	AttachSourceToGameService interfaces.IAttachSourceToGameService
+	ExtSystemService          interfaces.IExtSystemService
+	GameService               interfaces.IGameService
+	SourceService             interfaces.ISourceService
 }
 
 func (controller *GameController) Create(ctx echo.Context) error {
