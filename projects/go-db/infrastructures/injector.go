@@ -275,8 +275,11 @@ func (k *kernel) InjectAttachSourceToGameService() services.AttachSourceToGameSe
 	gameRepo := &repositories.GameRepository{DBConn: handler}
 	sourceRepo := &repositories.SourceRepository{DBConn: handler}
 	screenshotRepo := &repositories.ScreenshotRepository{DBConn: handler}
+	fileService := k.InjectFileService()
+
 	return services.AttachSourceToGameService{
 		GameRepo: gameRepo, SourceRepo: sourceRepo, ScreenshotRepo: screenshotRepo,
+		FileService: &fileService,
 	}
 }
 
@@ -287,4 +290,8 @@ func (k *kernel) InjectLeaderboardService() services.LeaderboardService {
 
 func (k *kernel) InjectImageService() services.ImageService {
 	return services.ImageService{}
+}
+
+func (k *kernel) InjectFileService() services.FileService {
+	return services.FileService{}
 }

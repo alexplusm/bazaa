@@ -9,6 +9,7 @@ import (
 
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
+	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/fileutils"
 )
@@ -17,17 +18,20 @@ type AttachSourceToGameService struct {
 	GameRepo       interfaces.IGameRepository
 	SourceRepo     interfaces.ISourceRepository
 	ScreenshotRepo interfaces.IScreenshotRepository
+	FileService    interfaces.IFileService
 }
 
 func (service *AttachSourceToGameService) AttachZipArchiveToGame(
 	gameID string, archives []*multipart.FileHeader,
 ) error {
-	filenames, err := fileutils.CopyFiles(archives, consts.MediaTempDir)
+	filenames, err := service.FileService.CopyFiles(archives, consts.MediaTempDir)
+	//filenames, err := fileutils.CopyFiles(archives, consts.MediaTempDir)
 	if err != nil {
 		return fmt.Errorf("attach zip archive: %v", err)
 	}
 
-	images, err := fileutils.UnzipImages(filenames)
+	images, err := service.FileService.UnzipImages(filenames)
+	//images, err := fileutils.UnzipImages(filenames)
 	if err != nil {
 		return fmt.Errorf("attach zip archive: %v", err)
 	}
@@ -70,7 +74,7 @@ func removeArchives(filenames []string) {
 }
 
 func split(
-	images []fileutils.ImageParsingResult, gameID, sourceID string,
+	images []bo.ImageParsingResult, gameID, sourceID string,
 ) ([]dao.ScreenshotDAO, []dao.ScreenshotWithExpertAnswerDAO) {
 	mmap := make(map[string]bool)
 	imagesWithoutExpertAnswer := make([]dao.ScreenshotDAO, 0, len(images))
@@ -81,7 +85,7 @@ func split(
 	for _, image := range images {
 		if !mmap[image.Filename] {
 			mmap[image.Filename] = true
-			if image.Category == fileutils.UndefinedCategory {
+			if image.Category == UndefinedCategory {
 				screen := dao.ScreenshotDAO{image.Filename, gameID, sourceID}
 
 				imagesWithoutExpertAnswer = append(imagesWithoutExpertAnswer, screen)

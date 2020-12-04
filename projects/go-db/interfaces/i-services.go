@@ -91,3 +91,8 @@ type ILeaderboardService interface {
 type IImageService interface {
 	BuildImageURL(imageName string) (string, error)
 }
+
+type IFileService interface {
+	CopyFiles(files []*multipart.FileHeader, copyPath string) ([]string, error)
+	UnzipImages(filenames []string) ([]bo.ImageParsingResult, error)
+}
