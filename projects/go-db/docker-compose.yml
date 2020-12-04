@@ -27,6 +27,8 @@ services:
 
   web_client:
     build: web_client
+    env_file:
+      - .env
     ports:
       - '${WEB_CLIENT_PORT_OUTER}:80'
 
