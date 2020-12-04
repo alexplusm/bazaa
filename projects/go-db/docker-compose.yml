@@ -25,10 +25,10 @@ services:
     depends_on:
       - server
 
-#  web-client:
-#    build: web-client
-#    ports:
-#      - '1239:80'
+  web_client:
+    build: web_client
+    ports:
+      - '${WEB_CLIENT_PORT_OUTER}:80'
 
   database:
     image: postgres:13-alpine
