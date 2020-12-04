@@ -22,7 +22,8 @@ type IInjector interface {
 
 	InjectExtSystemController() controllers.ExtSystemController
 
-	InjectScreenshotGetController() controllers.ScreenshotGetController
+	InjectScreenshotController() controllers.ScreenshotController
+
 	InjectScreenshotSetAnswerController() controllers.ScreenshotSetAnswerController
 	InjectScreenshotResultsController() controllers.ScreenshotResultsController
 
@@ -92,7 +93,7 @@ func (k *kernel) InjectExtSystemController() controllers.ExtSystemController {
 	return controllers.ExtSystemController{ExtSystemService: &service}
 }
 
-func (k *kernel) InjectScreenshotGetController() controllers.ScreenshotGetController {
+func (k *kernel) InjectScreenshotController() controllers.ScreenshotController {
 	redisHandler := &RedisHandler{k.redisClient}
 	dbHandler := &PSQLHandler{k.pool}
 
@@ -107,7 +108,7 @@ func (k *kernel) InjectScreenshotGetController() controllers.ScreenshotGetContro
 	userService := k.InjectUserService()
 	imageService := k.InjectImageService()
 
-	controller := controllers.ScreenshotGetController{
+	controller := controllers.ScreenshotController{
 		ScreenshotCacheService: screenshotCacheService,
 		GameCacheService:       gameCacheService,
 		UserService:            &userService,

@@ -25,13 +25,11 @@ func (service *AttachSourceToGameService) AttachZipArchiveToGame(
 	gameID string, archives []*multipart.FileHeader,
 ) error {
 	filenames, err := service.FileService.CopyFiles(archives, consts.MediaTempDir)
-	//filenames, err := fileutils.CopyFiles(archives, consts.MediaTempDir)
 	if err != nil {
 		return fmt.Errorf("attach zip archive: %v", err)
 	}
 
 	images, err := service.FileService.UnzipImages(filenames)
-	//images, err := fileutils.UnzipImages(filenames)
 	if err != nil {
 		return fmt.Errorf("attach zip archive: %v", err)
 	}
@@ -59,7 +57,6 @@ func (service *AttachSourceToGameService) AttachZipArchiveToGame(
 }
 
 func (service *AttachSourceToGameService) AttachSchedulesToGame(gameID string) error {
-	// TODO:later
 	fmt.Println("Schedules attaching coming soon ... : gameID =", gameID)
 	return nil
 }

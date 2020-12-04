@@ -22,7 +22,7 @@ type StatisticsUserController struct {
 
 func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error {
 	userID := ctx.Param(consts.UserIDUrlParam)
-	qp := StatisticsUserQueryParams{}
+	qp := StatisticsUserQP{}
 	qp.fromCtx(ctx)
 
 	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID.Value)

@@ -12,45 +12,46 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
 )
 
-type ScreenshotGetController struct {
+type ScreenshotController struct {
 	ScreenshotCacheService interfaces.IScreenshotCacheService
 	GameCacheService       interfaces.IGameCacheService
 	UserService            interfaces.IUserService
 	ImageService           interfaces.IImageService
 }
 
-func (controller *ScreenshotGetController) GetScreenshot(ctx echo.Context) error {
+func (controller *ScreenshotController) Retrieve(ctx echo.Context) error {
 	gameID := ctx.Param(consts.GameIDUrlParam)
 
-	// TODO: queryParams
-	externalSystemID := ctx.QueryParam("extSystemId")
-	userID := ctx.QueryParam("userId")
+	qp := ScreenshotRetrieveQP{}
+	qp.fromCtx(ctx)
 
-	if externalSystemID == "" {
-		// BadRequest
-		ctx.String(200, "kek")
-		return nil
+	if qp.ExtSystemID.Value == "" {
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildBadRequestErrorResponseWithMgs("extSystem required"),
+		)
 	}
-	if userID == "" {
-		// BadRequest
-		ctx.String(200, "user required")
-		return nil
+	if qp.UserID.Value == "" {
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildBadRequestErrorResponseWithMgs("user required"),
+		)
 	}
 
-	ok := controller.GameCacheService.GameWithSameExtSystemIDExist(gameID, externalSystemID)
+	ok := controller.GameCacheService.GameWithSameExtSystemIDExist(gameID, qp.ExtSystemID.Value)
 	if !ok {
 		//return
 	}
 	// TODO: inject game service
 	// TODO: BAD RESPONSE: game not started | game is finished | game not found
 
-	err := controller.UserService.CreateUser(userID)
+	err := controller.UserService.CreateUser(qp.UserID.Value)
 	if err != nil {
 		log.Error("Error log")
 		fmt.Println("USER SERVICE Error: ", err)
 	}
 
-	screenshot, hasScreenshot := controller.ScreenshotCacheService.GetScreenshot(gameID, userID)
+	screenshot, hasScreenshot := controller.ScreenshotCacheService.GetScreenshot(gameID, qp.UserID.Value)
 	if !hasScreenshot {
 		return ctx.JSON(
 			http.StatusOK,
@@ -58,10 +59,8 @@ func (controller *ScreenshotGetController) GetScreenshot(ctx echo.Context) error
 		)
 	}
 
-	// TODO:!!!!!!
-
 	// TODO: screenshot.ImageURL -> ImageName
-	// TODO: into service ScreenshotCacheService.GetScreenshot
+	// TODO: into service ScreenshotCacheService.Retrieve
 	imageURL, err := controller.ImageService.BuildImageURL(screenshot.ImageURL)
 	if err != nil {
 		log.Error("get screenshot controller: ", err)
@@ -76,7 +75,7 @@ func (controller *ScreenshotGetController) GetScreenshot(ctx echo.Context) error
 		ImageURL:     imageURL,
 	}
 
-	fmt.Println("Get screenshot: ", userID, " | ", screenshot.ScreenshotID)
+	fmt.Println("Get screenshot: ", " | ", screenshot.ScreenshotID)
 
 	return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(res))
 }

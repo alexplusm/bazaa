@@ -18,7 +18,7 @@ type StatisticsLeaderboardController struct {
 }
 
 func (controller *StatisticsLeaderboardController) GetStatistics(ctx echo.Context) error {
-	qp := StatisticsLeaderboardQueryParams{}
+	qp := StatisticsLeaderboardQP{}
 	qp.fromCtx(ctx)
 
 	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID.Value)

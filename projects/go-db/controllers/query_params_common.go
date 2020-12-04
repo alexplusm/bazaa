@@ -82,3 +82,14 @@ func buildLimitQueryParam(ctx echo.Context) LimitQueryParam {
 
 	return LimitQueryParam{Value: limit}
 }
+
+// ---
+
+type UserIDQP struct {
+	Value string
+}
+
+func buildUserIDQP(ctx echo.Context) UserIDQP {
+	qp := ctx.QueryParam(consts.UserIDQueryParamName)
+	return UserIDQP{Value: qp}
+}
