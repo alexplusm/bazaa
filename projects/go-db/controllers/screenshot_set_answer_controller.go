@@ -45,6 +45,7 @@ func (controller *ScreenshotSetAnswerController) SetAnswer(ctx echo.Context) err
 	) {
 		// TODO: Что делать в этому случае? Обсудить с Колей
 		// TODO: doc
+		// ERROR
 		return ctx.String(200, "Can't Set UserAnswerToScreenshot")
 	}
 

@@ -97,53 +97,29 @@ func (k *kernel) InjectExtSystemController() controllers.ExtSystemController {
 }
 
 func (k *kernel) InjectScreenshotController() controllers.ScreenshotController {
-	redisHandler := &RedisHandler{k.redisClient}
-	dbHandler := &PSQLHandler{k.pool}
-
-	screenshotRepo := &repositories.ScreenshotRepository{DBConn: dbHandler}
-	gameRepo := &repositories.GameRepository{DBConn: dbHandler}
-
-	screenshotCacheService := &services.ScreenshotCacheService{RedisClient: redisHandler}
-	gameCacheService := &services.GameCacheService{
-		RedisClient: redisHandler, ScreenshotRepo: screenshotRepo, GameRepo: gameRepo,
-	}
-
-	userService := k.InjectUserService()
+	gameCacheService := k.InjectGameCacheService()
+	screenshotCacheService := k.InjectScreenshotCacheService()
 	imageService := k.InjectImageService()
+	userService := k.InjectUserService()
 
-	controller := controllers.ScreenshotController{
-		ScreenshotCacheService: screenshotCacheService,
-		GameCacheService:       gameCacheService,
-		UserService:            &userService,
+	return controllers.ScreenshotController{
+		GameCacheService:       &gameCacheService,
+		ScreenshotCacheService: &screenshotCacheService,
 		ImageService:           &imageService,
+		UserService:            &userService,
 	}
-
-	return controller
 }
 
 func (k *kernel) InjectScreenshotSetAnswerController() controllers.ScreenshotSetAnswerController {
-	redisHandler := &RedisHandler{k.redisClient}
-	dbHandler := &PSQLHandler{k.pool}
-
-	answerRepo := &repositories.AnswerRepository{DBConn: dbHandler}
-	screenshotRepo := &repositories.ScreenshotRepository{DBConn: dbHandler}
-
-	screenshotCacheService := &services.ScreenshotCacheService{RedisClient: redisHandler}
-	screenshotUserAnswerService := &services.ScreenshotUserAnswerService{
-		AnswerRepo: answerRepo, ScreenshotRepo: screenshotRepo,
-	}
-
-	// TODO: remove
-	//activeUsersService := &services.ActiveUsersService{RedisClient: redisHandler}
 	activeUsersService := k.InjectActiveUsersService()
+	screenshotCacheService := k.InjectScreenshotCacheService()
+	screenshotUserAnswerService := k.InjectScreenshotUserAnswerService()
 
-	controller := controllers.ScreenshotSetAnswerController{
+	return controllers.ScreenshotSetAnswerController{
 		ActiveUsersService:          &activeUsersService,
-		ScreenshotCacheService:      screenshotCacheService,
-		ScreenshotUserAnswerService: screenshotUserAnswerService,
+		ScreenshotCacheService:      &screenshotCacheService,
+		ScreenshotUserAnswerService: &screenshotUserAnswerService,
 	}
-
-	return controller
 }
 
 func (k *kernel) InjectScreenshotResultsController() controllers.ScreenshotResultsController {
@@ -188,19 +164,10 @@ func (k *kernel) InjectStatisticGameController() controllers.StatisticGameContro
 	gameService := k.InjectGameService()
 	statisticGameService := k.InjectStatisticGameService()
 
-	// TODO: remove after test
-	//screenshotService := k.InjectScreenshotService()
-	//activeUsersService := k.InjectActiveUsersService()
-	//answerService := k.InjectAnswerService()
-
 	return controllers.StatisticGameController{
 		ExtSystemService:     &extSystemService,
 		GameService:          &gameService,
 		StatisticGameService: &statisticGameService,
-
-		// TODO: remove after test
-		//ScreenshotService: &screenshotService, AnswerService: &answerService,
-		//ActiveUsersService: &activeUsersService,
 	}
 }
 
@@ -307,5 +274,22 @@ func (k *kernel) InjectStatisticGameService() services.StatisticGameService {
 		ActiveUsersService: &activeUsersService,
 		AnswerService:      &answerService,
 		ScreenshotService:  &screenshotService,
+	}
+}
+
+func (k *kernel) InjectScreenshotCacheService() services.ScreenshotCacheService {
+	redisHandler := &RedisHandler{k.redisClient}
+
+	return services.ScreenshotCacheService{RedisClient: redisHandler}
+}
+
+func (k *kernel) InjectScreenshotUserAnswerService() services.ScreenshotUserAnswerService {
+	dbHandler := &PSQLHandler{k.pool}
+	answerRepo := &repositories.AnswerRepository{DBConn: dbHandler}
+	screenshotRepo := &repositories.ScreenshotRepository{DBConn: dbHandler}
+
+	return services.ScreenshotUserAnswerService{
+		AnswerRepo:     answerRepo,
+		ScreenshotRepo: screenshotRepo,
 	}
 }
