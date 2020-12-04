@@ -11,8 +11,8 @@ export default {
     name: 'App',
     mounted () {
         axios
-            .get('/check/alive')
-            .then(response => console.log("response3333: ", response))
+            .get('/api/check/alive')
+            .then(response => console.log("response: ", response))
     }
 }
 </script>

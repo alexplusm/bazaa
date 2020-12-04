@@ -112,7 +112,7 @@ func registerRoutes(e *echo.Echo) error {
 	e.GET("api/v1/statistics/games", statisticsGameController.GetStatistics)
 
 	// TODO: for test
-	e.GET("check/alive", controllers.ItsAlive)
+	e.GET("api/check/alive", controllers.ItsAlive)
 
 	return nil
 }

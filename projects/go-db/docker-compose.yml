@@ -29,8 +29,8 @@ services:
     build: web_client
     env_file:
       - .env
-    ports:
-      - '${WEB_CLIENT_PORT_OUTER}:80'
+#    ports:
+#      - '${WEB_CLIENT_PORT_OUTER}:80'
 
   database:
     image: postgres:13-alpine
