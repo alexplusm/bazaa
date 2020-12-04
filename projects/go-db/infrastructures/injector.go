@@ -27,9 +27,9 @@ type IInjector interface {
 	InjectScreenshotSetAnswerController() controllers.ScreenshotSetAnswerController
 	InjectScreenshotResultsController() controllers.ScreenshotResultsController
 
-	InjectStatisticsUserController() controllers.StatisticsUserController
-	InjectStatisticsLeaderboardController() controllers.StatisticsLeaderboardController
-	InjectStatisticsGameController() controllers.StatisticsGameController
+	InjectStatisticUserController() controllers.StatisticUserController
+	InjectStatisticLeaderboardController() controllers.StatisticLeaderboardController
+	InjectStatisticGameController() controllers.StatisticGameController
 
 	// INFO: services
 	InjectGameCacheService() services.GameCacheService
@@ -159,7 +159,7 @@ func (k *kernel) InjectScreenshotResultsController() controllers.ScreenshotResul
 	return controller
 }
 
-func (k *kernel) InjectStatisticsUserController() controllers.StatisticsUserController {
+func (k *kernel) InjectStatisticUserController() controllers.StatisticUserController {
 	handler := &PSQLHandler{k.pool}
 
 	answerRepo := &repositories.AnswerRepository{DBConn: handler}
@@ -174,7 +174,7 @@ func (k *kernel) InjectStatisticsUserController() controllers.StatisticsUserCont
 
 	durationService := k.InjectDurationService()
 
-	controller := controllers.StatisticsUserController{
+	controller := controllers.StatisticUserController{
 		GameService: gameService, ExtSystemService: extSystemService,
 		AnswerService: answerService, UserService: userService,
 		DurationService: &durationService,
@@ -183,19 +183,19 @@ func (k *kernel) InjectStatisticsUserController() controllers.StatisticsUserCont
 	return controller
 }
 
-func (k *kernel) InjectStatisticsLeaderboardController() controllers.StatisticsLeaderboardController {
+func (k *kernel) InjectStatisticLeaderboardController() controllers.StatisticLeaderboardController {
 	extSystemService := k.InjectExtSystemService()
 	gameService := k.InjectGameService()
 	durationService := k.InjectDurationService()
 	leaderboardService := k.InjectLeaderboardService()
 
-	return controllers.StatisticsLeaderboardController{
+	return controllers.StatisticLeaderboardController{
 		ExtSystemService: &extSystemService, GameService: &gameService,
 		DurationService: &durationService, LeaderboardService: &leaderboardService,
 	}
 }
 
-func (k *kernel) InjectStatisticsGameController() controllers.StatisticsGameController {
+func (k *kernel) InjectStatisticGameController() controllers.StatisticGameController {
 	handler := &PSQLHandler{k.pool}
 	redisHandler := &RedisHandler{k.redisClient}
 
@@ -213,7 +213,7 @@ func (k *kernel) InjectStatisticsGameController() controllers.StatisticsGameCont
 
 	activeUsersService := &services.ActiveUsersService{RedisClient: redisHandler}
 
-	controller := controllers.StatisticsGameController{
+	controller := controllers.StatisticGameController{
 		ExtSystemService: extSystemService, GameService: gameService,
 		ScreenshotService: screenshotService, AnswerService: answerService,
 		ActiveUsersService: activeUsersService,

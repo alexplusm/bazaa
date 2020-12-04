@@ -10,14 +10,14 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
 )
 
-type StatisticsLeaderboardController struct {
+type StatisticLeaderboardController struct {
 	ExtSystemService   interfaces.IExtSystemService
 	GameService        interfaces.IGameService
 	DurationService    interfaces.IDurationService
 	LeaderboardService interfaces.ILeaderboardService
 }
 
-func (controller *StatisticsLeaderboardController) GetStatistics(ctx echo.Context) error {
+func (controller *StatisticLeaderboardController) GetStatistics(ctx echo.Context) error {
 	qp := StatisticLeaderboardQP{}
 	qp.fromCtx(ctx)
 

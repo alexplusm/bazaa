@@ -11,7 +11,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
 )
 
-type StatisticsGameController struct {
+type StatisticGameController struct {
 	GameService        interfaces.IGameService
 	ExtSystemService   interfaces.IExtSystemService
 	ScreenshotService  interfaces.IScreenshotService
@@ -19,7 +19,7 @@ type StatisticsGameController struct {
 	ActiveUsersService interfaces.IActiveUsersService
 }
 
-func (controller *StatisticsGameController) GetStatistics(ctx echo.Context) error {
+func (controller *StatisticGameController) GetStatistics(ctx echo.Context) error {
 	qp := StatisticGameQP{}
 	qp.fromCtx(ctx)
 

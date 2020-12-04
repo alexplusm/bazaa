@@ -12,7 +12,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
 )
 
-type StatisticsUserController struct {
+type StatisticUserController struct {
 	GameService      interfaces.IGameService
 	ExtSystemService interfaces.IExtSystemService
 	AnswerService    interfaces.IAnswerService
@@ -20,7 +20,7 @@ type StatisticsUserController struct {
 	DurationService  interfaces.IDurationService
 }
 
-func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error {
+func (controller StatisticUserController) GetStatistics(ctx echo.Context) error {
 	userID := ctx.Param(consts.UserIDUrlParam)
 	qp := StatisticUserQP{}
 	qp.fromCtx(ctx)

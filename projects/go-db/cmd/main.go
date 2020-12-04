@@ -74,9 +74,9 @@ func registerRoutes(e *echo.Echo) error {
 	screenshotSetAnswerController := injector.InjectScreenshotSetAnswerController()
 	screenshotResultsController := injector.InjectScreenshotResultsController()
 
-	statisticsUserController := injector.InjectStatisticsUserController()
-	statisticsLeaderboardController := injector.InjectStatisticsLeaderboardController()
-	statisticsGameController := injector.InjectStatisticsGameController()
+	statisticsUserController := injector.InjectStatisticUserController()
+	statisticsLeaderboardController := injector.InjectStatisticLeaderboardController()
+	statisticsGameController := injector.InjectStatisticGameController()
 
 	// TODO:later
 	// Create middleware for each route with whitelist of ContentTypes:
