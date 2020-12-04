@@ -7,7 +7,6 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
-	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
 )
@@ -21,12 +20,19 @@ type StatisticsGameController struct {
 }
 
 func (controller *StatisticsGameController) GetStatistics(ctx echo.Context) error {
-	qp := dto.StatisticsUserQueryParams{}
-	qp.FromCTX(ctx)
+	qp := StatisticGameQP{}
+	qp.fromCtx(ctx)
 
-	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID)
+	if qp.ExtSystemID.Value != "" {
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildBadRequestErrorResponseWithMgs("extSystem required"),
+		)
+	}
+
+	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID.Value)
 	if err != nil {
-		log.Error("get games controller: ", err)
+		log.Error("statistic game controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
 	}
 	if !exist {
@@ -36,29 +42,28 @@ func (controller *StatisticsGameController) GetStatistics(ctx echo.Context) erro
 		)
 	}
 
-	games, err := controller.GameService.GetGames(qp.ExtSystemID)
-
-	expectedGames := make([]bo.GameBO, 0, len(games))
-
-	// filter games
-	if len(qp.GameIDs) != 0 {
-		for _, game := range games {
-			for _, gameQP := range qp.GameIDs {
-				if game.GameID == gameQP {
-					expectedGames = append(expectedGames, game)
-				}
-			}
-		}
-	} else {
-		expectedGames = games
+	games, err := controller.GameService.GetGames(qp.ExtSystemID.Value)
+	if err != nil {
+		log.Error("statistic game controller: ", err)
+		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
 	}
+
+	games = controller.GameService.FilterGames(qp.GameIDs.Value, games)
+	if len(games) == 0 {
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildNotFoundRequestErrorResponse("game not found"),
+		)
+	}
+
+	// TODO: service.GetStatistic()...
 
 	totalCount := 0
 	answeredCount := 0
 	activityUsers := 0
 	usersList := make([]string, 0, 1024)
 
-	for _, g := range expectedGames {
+	for _, g := range games {
 		c, _ := controller.ScreenshotService.ScreenshotCountByGame(g.GameID)
 		res, _ := controller.AnswerService.GetUsersAndScreenshotCountByGame(g.GameID)
 		answeredCount += res.Count

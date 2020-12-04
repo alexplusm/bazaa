@@ -18,7 +18,7 @@ type StatisticsLeaderboardController struct {
 }
 
 func (controller *StatisticsLeaderboardController) GetStatistics(ctx echo.Context) error {
-	qp := StatisticsLeaderboardQP{}
+	qp := StatisticLeaderboardQP{}
 	qp.fromCtx(ctx)
 
 	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID.Value)
@@ -49,12 +49,16 @@ func (controller *StatisticsLeaderboardController) GetStatistics(ctx echo.Contex
 
 	earliestGame := controller.GameService.GetEarliestGame(games)
 
-	// TODO:discuss: если ошибка в парсинге даты?
-	// 1) оповещать пользователя
-	// 2) использовать дефолтные значения
-	from, to := controller.DurationService.GetDurationByGame(
+	from, to, err := controller.DurationService.GetDurationByGame(
 		qp.Duration.From, qp.Duration.To, earliestGame,
 	)
+	if err != nil {
+		log.Error("user statistic controller: ", err)
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildBadRequestErrorResponseWithMgs("error while date parsing"),
+		)
+	}
 
 	gameIDs := make([]string, 0, len(games))
 	for _, game := range games {

@@ -22,7 +22,7 @@ type StatisticsUserController struct {
 
 func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error {
 	userID := ctx.Param(consts.UserIDUrlParam)
-	qp := StatisticsUserQP{}
+	qp := StatisticUserQP{}
 	qp.fromCtx(ctx)
 
 	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID.Value)
@@ -65,11 +65,16 @@ func (controller StatisticsUserController) GetStatistics(ctx echo.Context) error
 
 	earliestGame := controller.GameService.GetEarliestGame(games)
 
-	// TODO:discuss: если ошибка в парсинге даты?
-	// => кидать badRequest | как и в случае ошибки парсинга всех других QueryParams
-	from, to := controller.DurationService.GetDurationByGame(
+	from, to, err := controller.DurationService.GetDurationByGame(
 		qp.Duration.From, qp.Duration.To, earliestGame,
 	)
+	if err != nil {
+		log.Error("user statistic controller: ", err)
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildBadRequestErrorResponseWithMgs("error while date parsing"),
+		)
+	}
 
 	gameIDs := make([]string, 0, len(games))
 	for _, game := range games {
