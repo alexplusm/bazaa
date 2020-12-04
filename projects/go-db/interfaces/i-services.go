@@ -81,7 +81,7 @@ type IActiveUsersService interface {
 }
 
 type IDurationService interface {
-	GetDurationByGame(from, to string, game bo.GameBO) (time.Time, time.Time)
+	GetDurationByGame(from, to string, game bo.GameBO) (time.Time, time.Time, error)
 }
 
 type ILeaderboardService interface {

@@ -7,7 +7,6 @@ import (
 	"github.com/labstack/echo"
 )
 
-// ItsAlive server alive check
 func ItsAlive(c echo.Context) error {
 	msg := "*** I'm ALIVE! ***"
 	fmt.Println(msg)

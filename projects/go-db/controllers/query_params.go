@@ -4,14 +4,14 @@ import (
 	"github.com/labstack/echo"
 )
 
-type StatisticsUserQP struct {
+type StatisticUserQP struct {
 	ExtSystemID ExtSystemIDQP
 	TotalOnly   TotalOnlyQP
 	GameIDs     GameIDsQP
 	Duration    DurationQP
 }
 
-func (qp *StatisticsUserQP) fromCtx(ctx echo.Context) {
+func (qp *StatisticUserQP) fromCtx(ctx echo.Context) {
 	qp.ExtSystemID = buildExtSystemIDQP(ctx)
 	qp.TotalOnly = buildTotalOnlyQP(ctx)
 	qp.GameIDs = buildGameIDsQP(ctx)
@@ -20,18 +20,30 @@ func (qp *StatisticsUserQP) fromCtx(ctx echo.Context) {
 
 // ---
 
-type StatisticsLeaderboardQP struct {
+type StatisticLeaderboardQP struct {
 	ExtSystemID ExtSystemIDQP
 	Limit       LimitQP
 	GameIDs     GameIDsQP
 	Duration    DurationQP
 }
 
-func (qp *StatisticsLeaderboardQP) fromCtx(ctx echo.Context) {
+func (qp *StatisticLeaderboardQP) fromCtx(ctx echo.Context) {
 	qp.ExtSystemID = buildExtSystemIDQP(ctx)
 	qp.Limit = buildLimitQP(ctx)
 	qp.GameIDs = buildGameIDsQP(ctx)
 	qp.Duration = buildDurationQP(ctx)
+}
+
+// ---
+
+type StatisticGameQP struct {
+	ExtSystemID ExtSystemIDQP
+	GameIDs     GameIDsQP
+}
+
+func (qp *StatisticGameQP) fromCtx(ctx echo.Context) {
+	qp.ExtSystemID = buildExtSystemIDQP(ctx)
+	qp.GameIDs = buildGameIDsQP(ctx)
 }
 
 // ---
