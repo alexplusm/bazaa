@@ -1,6 +1,8 @@
 import VueRouter from 'vue-router'
 import GamePage from '../pages/GamePage'
-import GamesPage from '../pages/GamesPage'
+import GamesPage from '../pages/GameListPage'
+import ExtSystemCreatePage from '../pages/ExtSystemCreatePage'
+import ExtSystemListPage from '../pages/ExtSystemListPage'
 
 const routes = [
     {
@@ -9,8 +11,16 @@ const routes = [
     },
     {
         path: '/game',
-        component: GamePage
-    }
+        component: GamePage,
+    },
+    {
+        path: '/ext-systems',
+        component: ExtSystemListPage,
+    },
+    {
+        path: '/ext-system/create',
+        component: ExtSystemCreatePage,
+    },
 ]
 
 export default new VueRouter({
