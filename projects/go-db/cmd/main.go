@@ -95,8 +95,8 @@ func registerRoutes(e *echo.Echo) error {
 	e.POST("api/v1/game/prepare", gamePrepareController.PrepareGame)
 
 	// TODO: ["application/json"]
-	e.POST("api/v1/ext_system", extSystemController.Create)
-	e.GET("api/v1/ext_system", extSystemController.List)
+	e.POST("api/v1/ext-system", extSystemController.Create)
+	e.GET("api/v1/ext-system", extSystemController.List)
 
 	e.GET("api/v1/game/:"+consts.GameIDUrlParam+"/screenshot", screenshotController.Retrieve)
 

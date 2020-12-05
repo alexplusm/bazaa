@@ -21,9 +21,9 @@ const routes = [
         path: '/ext-system/create',
         component: ExtSystemCreatePage,
     },
-]
+];
 
-export default new VueRouter({
+export const router = new VueRouter({
     mode: 'history',
     routes
-})
+});

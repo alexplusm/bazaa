@@ -1,12 +1,17 @@
 <template>
 	<div>
-		ExtSystemListPage
+		<ExtSystemList></ExtSystemList>
 	</div>
 </template>
 
 <script>
+import ExtSystemList from "../components/ExtSystemList";
+
 export default {
-	name: "ExtSystemListPage"
+	name: "ExtSystemListPage",
+	components: {
+		ExtSystemList,
+	}
 }
 </script>
 
