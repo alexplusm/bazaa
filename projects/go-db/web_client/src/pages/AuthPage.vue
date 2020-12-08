@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import {fieldRequiredFunc} from "../utils/formUtils";
+import {fieldRequiredFunc} from "../utils/form-utils";
 
 function timeout(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));

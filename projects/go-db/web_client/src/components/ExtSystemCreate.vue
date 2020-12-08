@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import {fieldRequiredFunc} from "../utils/formUtils";
+import {fieldRequiredFunc} from "../utils/form-utils";
 import {mapActions} from 'vuex'
 
 export default {
@@ -57,7 +57,12 @@ export default {
 		}
 	},
 	methods: {
-		...mapActions(['createExtSystem']),
+		...mapActions(['createExtSystem', 'getExtSystemList']),
+		clearForm() {
+			this.extSystemId = '';
+			this.description = '';
+			this.postResultsUrl = '';
+		},
 		submit() {
 			const data = {
 				extSystemId: this.extSystemId,
@@ -66,10 +71,10 @@ export default {
 			}
 
 			// TODO: resp process in actions -> return only true|false
-			// если ошибка -> показываем сообщение об ошибке
-			// если ок -> сообщение что ОК и рефрешим список систем (другим экшеном?)
-			// 		-> очищаем форму
-			this.createExtSystem(data).then(resp => console.log("REEESP: ", resp));
+			this.createExtSystem(data)
+				.then(resp => console.log("REEESP: ", resp))
+				.then(() => this.getExtSystemList()) // TODO: process result?
+				.then(() => this.clearForm()); // TODO: form validation error
 		}
 	}
 }
