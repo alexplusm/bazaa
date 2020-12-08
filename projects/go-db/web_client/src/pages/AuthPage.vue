@@ -48,8 +48,7 @@
 </template>
 
 <script>
-// TODO: Form utils
-const fieldRequiredFunc = v => !!v || 'Обязательное поле';
+import {fieldRequiredFunc} from "../utils/formUtils";
 
 function timeout(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
