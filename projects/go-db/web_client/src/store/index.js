@@ -21,6 +21,7 @@ export const store =  new Vuex.Store({
     },
     actions: {
         GET_EXT_SYSTEMS_FROM_API({commit}) {
+            // TODO: api.js
             return axios.get('/api/v1/ext-system')
                 .then(({data}) => data)
                 .then(data => {
@@ -31,6 +32,10 @@ export const store =  new Vuex.Store({
                 })
                 .then(data => commit('SET_EXT_SYSTEMS', data.extSystems))
         },
+
+        createExtSystem(context, extSystem) {
+            return axios.post('/api/v1/ext-system', extSystem)
+        }
 
         // GET_GAMES_FROM_API(inst) {
         //     return axios.get('/api/v1/game')
