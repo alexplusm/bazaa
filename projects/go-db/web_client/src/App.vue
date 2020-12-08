@@ -1,14 +1,14 @@
 <template>
-	<div id="app">
-		<MenuBar></MenuBar>
-		<router-view></router-view>
-	</div>
+	<v-app>
+		<v-main>
+			<router-view></router-view>
+		</v-main>
+	</v-app>
 </template>
 
-
+<!--		<MenuBar></MenuBar>-->
 
 <!--
-
 <template>
   <v-app>
     <v-app-bar
@@ -56,21 +56,20 @@
 
 -->
 
-
-
-
 <script>
 // import HelloWorld from './components/HelloWorld';
 import axios from 'axios';
-import MenuBar from "./components/MenuBar";
+
+// import MenuBar from "./components/MenuBar";
 
 // components: {
 // 	HelloWorld,
+// MenuBar,
 // },
 
 export default {
     name: 'App',
-	components: { MenuBar },
+	components: {},
     mounted () {
         axios
             .get('/api/check/alive')

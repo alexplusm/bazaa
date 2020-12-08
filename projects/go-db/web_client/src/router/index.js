@@ -3,8 +3,13 @@ import GamePage from '../pages/GamePage'
 import GamesPage from '../pages/GameListPage'
 import ExtSystemCreatePage from '../pages/ExtSystemCreatePage'
 import ExtSystemListPage from '../pages/ExtSystemListPage'
+import AuthPage from '../pages/AuthPage'
 
 const routes = [
+    {
+        path: '/',
+        component: AuthPage,
+    },
     {
         path: '/games',
         component: GamesPage,
