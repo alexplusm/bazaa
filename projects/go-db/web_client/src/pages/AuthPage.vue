@@ -83,6 +83,7 @@ export default {
 				})
 				.then(() => {
 					this.loading = false;
+					this.$router.push('home');
 				});
 		},
 	}

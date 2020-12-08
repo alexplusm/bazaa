@@ -1,9 +1,11 @@
-import VueRouter from 'vue-router'
-import GamePage from '../pages/GamePage'
-import GamesPage from '../pages/GameListPage'
-import ExtSystemCreatePage from '../pages/ExtSystemCreatePage'
-import ExtSystemListPage from '../pages/ExtSystemListPage'
-import AuthPage from '../pages/AuthPage'
+import VueRouter from 'vue-router';
+
+// import GamePage from '../pages/GamePage';
+import GamesPage from '../pages/GameListPage';
+// import ExtSystemCreatePage from '../pages/ExtSystemCreatePage';
+// import ExtSystemListPage from '../pages/ExtSystemListPage';
+import AuthPage from '../pages/AuthPage';
+import HomePage from "../pages/HomePage";
 
 const routes = [
     {
@@ -11,21 +13,30 @@ const routes = [
         component: AuthPage,
     },
     {
-        path: '/games',
-        component: GamesPage,
+        path: '/home',
+        component: HomePage,
+        children: [
+            {path: '', redirect: 'game'},
+            {
+                path: 'game',
+                component: GamesPage,
+            },
+            { path: '*', redirect: '/home' }
+        ]
     },
-    {
-        path: '/game',
-        component: GamePage,
-    },
-    {
-        path: '/ext-systems',
-        component: ExtSystemListPage,
-    },
-    {
-        path: '/ext-system/create',
-        component: ExtSystemCreatePage,
-    },
+    { path: '*', redirect: '/' }
+    // {
+    //     path: '/game',
+    //     component: GamePage,
+    // },
+    // {
+    //     path: '/ext-systems',
+    //     component: ExtSystemListPage,
+    // },
+    // {
+    //     path: '/ext-system/create',
+    //     component: ExtSystemCreatePage,
+    // },
 ];
 
 export const router = new VueRouter({
