@@ -4,25 +4,29 @@ import {api} from '../api'
 
 Vue.use(Vuex);
 
-export const store =  new Vuex.Store({
+export const store = new Vuex.Store({
     state: {
         auth : {
             authorized: false,
         },
         extSystems: [],
+        currentExtSystem: null,
     },
     mutations: {
         authorize(state) {
             state.auth.authorized = true;
         },
-        SET_EXT_SYSTEMS(state, extSystems) {
+        setExtSystemList(state, extSystems) {
             state.extSystems = extSystems;
+        },
+        setCurrentExtSystem(state, extSystem) {
+            state.currentExtSystem = extSystem;
         }
     },
     actions: {
-        GET_EXT_SYSTEMS_FROM_API({commit}) {
+        getExtSystemList({commit}) {
             return api.extSystem.list()
-                .then(data => commit('SET_EXT_SYSTEMS', data.extSystems))
+                .then(data => commit('setExtSystemList', data.extSystems))
         },
 
         createExtSystem(context, extSystem) {
@@ -30,8 +34,11 @@ export const store =  new Vuex.Store({
         }
     },
     getters: {
-        EXT_SYSTEMS(state) {
+        extSystems(state) {
             return state.extSystems;
+        },
+        currentExtSystem(state) {
+            return state.currentExtSystem;
         }
     },
     modules: {}

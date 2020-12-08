@@ -2,8 +2,8 @@
 	<section>
 		<v-combobox
 			v-model="model"
-			v-on:change="this.updateCurrentExtSystem"
-			:items="EXT_SYSTEMS"
+			v-on:change="this.setCurrentExtSystem"
+			:items="extSystems"
 			label="ExtSystems"
 			solo
 		>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 
 export default {
 	name: "ExtSystemSelect",
@@ -30,19 +30,14 @@ export default {
 		return {model: ''}
 	},
 	computed: {
-		...mapGetters(['EXT_SYSTEMS'])
+		...mapGetters(['extSystems'])
 	},
 	methods: {
-		...mapActions([
-			'GET_EXT_SYSTEMS_FROM_API'
-		]),
-		updateCurrentExtSystem(extSystem) {
-			console.log("extSystem", extSystem);
-			// TODO: dispatch action
-		}
+		...mapActions(['getExtSystemList']),
+		...mapMutations(['setCurrentExtSystem']),
 	},
 	mounted() {
-		this.GET_EXT_SYSTEMS_FROM_API();
+		this.getExtSystemList();
 	}
 }
 </script>
