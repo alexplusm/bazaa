@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import axios from 'axios';
+import {api} from '../api'
 
 Vue.use(Vuex);
 
@@ -21,29 +21,13 @@ export const store =  new Vuex.Store({
     },
     actions: {
         GET_EXT_SYSTEMS_FROM_API({commit}) {
-            // TODO: api.js
-            return axios.get('/api/v1/ext-system')
-                .then(({data}) => data)
-                .then(data => {
-                    if (!data.success) {
-                        // todo: throw error
-                    }
-                    return data.data;
-                })
+            return api.extSystem.list()
                 .then(data => commit('SET_EXT_SYSTEMS', data.extSystems))
         },
 
         createExtSystem(context, extSystem) {
-            return axios.post('/api/v1/ext-system', extSystem)
+            return api.extSystem.create(extSystem)
         }
-
-        // GET_GAMES_FROM_API(inst) {
-        //     return axios.get('/api/v1/game')
-        //         .then(resp => {
-        //             console.log("inst", inst);
-        //             console.log("resp: ", resp);
-        //         })
-        // }
     },
     getters: {
         EXT_SYSTEMS(state) {
