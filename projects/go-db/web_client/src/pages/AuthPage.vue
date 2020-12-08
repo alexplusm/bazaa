@@ -77,7 +77,7 @@ export default {
 
 			this.loading = true;
 
-			timeout(3000)
+			timeout(3)
 				.then(() => {
 					console.log(this.password, this.login)
 				})

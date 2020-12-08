@@ -1,5 +1,5 @@
 <template>
-	<div>GamePage</div>
+	<div>GamePage {{this.$route.params.id}}  </div>
 </template>
 
 <script>
