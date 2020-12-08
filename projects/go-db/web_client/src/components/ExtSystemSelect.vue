@@ -22,19 +22,18 @@
 </template>
 
 <script>
-import {mapActions, mapGetters, mapMutations} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
 	name: "ExtSystemSelect",
 	data() {
-		return {model: ''}
+		return {model: ''} // todo: remove model !!!
 	},
 	computed: {
 		...mapGetters(['extSystems'])
 	},
 	methods: {
-		...mapActions(['getExtSystemList']),
-		...mapMutations(['setCurrentExtSystem']),
+		...mapActions(['getExtSystemList', 'setCurrentExtSystem']),
 	},
 	mounted() {
 		this.getExtSystemList();

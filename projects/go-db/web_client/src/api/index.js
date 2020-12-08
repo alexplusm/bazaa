@@ -16,9 +16,19 @@ const extSystemCreate = extSystem => {
         .then(data => data)
 }
 
+const gameList = extSystemId => {
+    const params = {extSystemId};
+
+    return axios.get('/api/v1/game', {params})
+        .then(resp => console.log("GAME LIST: ", resp));
+}
+
 export const api = {
     extSystem: {
         list: extSystemList,
         create: extSystemCreate,
+    },
+    game: {
+        list: gameList
     }
 }

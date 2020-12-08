@@ -1,42 +1,20 @@
 <template>
 	<div>
-		GamesPage
-
 		<ExtSystem />
 
+		<hr>
 
-<!--	select	-->
-<!--		<v-select-->
-<!--			:items="this.EXT_SYSTEMS"-->
-<!--			:item-value="'extSystemId'"-->
-<!--			:item-text="this.getText"-->
-<!--			label="ExtSystem"-->
-<!--		></v-select>-->
-
+		<GameList />
 	</div>
 </template>
 
 <script>
 import ExtSystem from "../components/ExtSystem";
-
+import GameList from "../components/game/GameList";
 
 export default {
 	name: "GamesPage",
-	components: {ExtSystem},
-	computed: {
-		// ...mapGetters(['EXT_SYSTEMS'])
-	},
-	methods: {
-		// ...mapActions([
-		// 	'GET_EXT_SYSTEMS_FROM_API'
-		// ]),
-		// getText(extSys) {
-		// 	return extSys.extSystemId + ' | ' + extSys.description + ' | ' + extSys.postResultsUrl
-		// }
-	},
-	mounted() {
-		// this.GET_EXT_SYSTEMS_FROM_API();
-	}
+	components: {GameList, ExtSystem},
 }
 </script>
 
