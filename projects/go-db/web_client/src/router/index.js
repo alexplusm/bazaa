@@ -2,13 +2,11 @@ import VueRouter from 'vue-router';
 
 import {store} from '../store/index';
 
-// import ExtSystemCreatePage from '../pages/ExtSystemCreatePage';
-// import ExtSystemListPage from '../pages/ExtSystemListPage';
 import AuthPage from '../pages/AuthPage';
 import HomePage from "../pages/HomePage";
 import GamePage from '../pages/GamePage';
 import GamesPage from '../pages/GameListPage';
-import ExtSystemCreate from "../components/ExtSystemCreate";
+import ExtSystemCreatePage from "../pages/ExtSystemCreatePage";
 
 
 const routes = [
@@ -32,14 +30,12 @@ const routes = [
             },
             {
                 path: 'ext-system/create',
-                component: ExtSystemCreate, // TODO: page
+                component: ExtSystemCreatePage,
             },
             { path: '*', redirect: '/home' }
         ],
     },
     { path: '*', redirect: '/' }
-    // { path: '/ext-systems', component: ExtSystemListPage },
-    // { path: '/ext-system/create', component: ExtSystemCreatePage },
 ];
 
 export const router = new VueRouter({
