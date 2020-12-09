@@ -11,9 +11,7 @@ import MenuBar from "../components/menu/MenuBar";
 
 export default {
 	name: "HomePage",
-	components: {
-		MenuBar
-	}
+	components: {MenuBar}
 }
 </script>
 

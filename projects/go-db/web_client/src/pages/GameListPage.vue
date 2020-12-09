@@ -2,8 +2,6 @@
 	<div>
 		<ExtSystem />
 
-		<hr>
-
 		<GameList />
 	</div>
 </template>

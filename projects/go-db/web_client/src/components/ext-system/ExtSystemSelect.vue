@@ -4,7 +4,7 @@
 			v-model="model"
 			v-on:change="this.setCurrentExtSystem"
 			:items="extSystems"
-			label="ExtSystems"
+			label="Choose ext system"
 			solo
 		>
 			<template v-slot:selection="{ item }">
