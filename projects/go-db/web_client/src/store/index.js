@@ -11,6 +11,7 @@ export const store = new Vuex.Store({
         },
         extSystems: [],
         currentExtSystem: null,
+        games: [],
     },
     mutations: {
         authorize(state) {
@@ -21,6 +22,9 @@ export const store = new Vuex.Store({
         },
         setCurrentExtSystem(state, extSystem) {
             state.currentExtSystem = extSystem;
+        },
+        setGames(state, games) {
+            state.games = games;
         }
     },
     actions: {
@@ -35,14 +39,13 @@ export const store = new Vuex.Store({
             commit('setCurrentExtSystem', extSystem);
             dispatch('getGameList');
         },
-        getGameList({state}) {
-            // todo check: state.currentExtSystem.extSystemId
-            // todo: commit
+        getGameList({commit, state}) {
+            const {currentExtSystem} = state;
 
-            if (state.currentExtSystem && state.currentExtSystem.extSystemId) {
-                return api.game.list(state.currentExtSystem.extSystemId);
+            if (currentExtSystem && currentExtSystem.extSystemId) {
+                return api.game.list(state.currentExtSystem.extSystemId)
+                    .then(data => commit('setGames', data.games));
             }
-            return;
         }
     },
     getters: {
@@ -51,6 +54,9 @@ export const store = new Vuex.Store({
         },
         currentExtSystem(state) {
             return state.currentExtSystem;
+        },
+        games(state) {
+            return state.games;
         }
     },
     modules: {}

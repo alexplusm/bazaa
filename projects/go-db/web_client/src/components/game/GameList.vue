@@ -1,19 +1,16 @@
 <template>
 	<section>
-
+		{{ this.games }}
 	</section>
 </template>
 
 <script>
-// import {mapActions} from "vuex";
+import {mapGetters} from 'vuex'
 
 export default {
 	name: "GameList",
-	methods: {
-		// ...mapActions(['getGameList'])
-	},
-	mounted() {
-		// this.getGameList(); // TODO: remove
+	computed: {
+		...mapGetters(['games'])
 	}
 }
 </script>

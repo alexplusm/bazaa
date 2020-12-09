@@ -1,5 +1,14 @@
 import axios from 'axios';
 
+const processResponse = response => {
+    const {data} = response;
+
+    if (data.success) {
+        return data.data;
+    }
+    throw new Error('resp error');
+}
+
 const extSystemList = () => {
     return axios.get('/api/v1/ext-system')
         .then(({data}) => data)
@@ -20,7 +29,7 @@ const gameList = extSystemId => {
     const params = {extSystemId};
 
     return axios.get('/api/v1/game', {params})
-        .then(resp => console.log("GAME LIST: ", resp));
+        .then(processResponse);
 }
 
 export const api = {
