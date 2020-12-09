@@ -9,6 +9,7 @@
 		</v-progress-circular>
 
 		<v-row v-else>
+			<!-- TODO: GameDetailsInfo component -->
 			<v-col cols="5">
 				<div>Start date: {{ this.currentGame.startDate }}</div>
 				<div>Finish date: {{ this.currentGame.finishDate }}</div>
@@ -35,8 +36,26 @@
 			</v-col>
 
 			<v-col cols="4">
-				AddSource (check box: true - archive | false - schedule)
-				<GameUploadFile />
+				<h3>Add source</h3>
+
+				<v-select
+					v-model="selectedSourceType"
+					:items="sourceTypes"
+					label="Source type"
+					dense
+				></v-select>
+
+				<div v-if="selectedSourceType === sourceTypes[0].value">
+					<GameUploadFile />
+				</div>
+
+				<div v-if="selectedSourceType === sourceTypes[1].value">
+					Schedule
+				</div>
+
+				<div v-if="selectedSourceType === sourceTypes[2].value">
+					Other game
+				</div>
 			</v-col>
 		</v-row>
 	</section>
@@ -52,6 +71,13 @@ export default {
 	data() {
 		return {
 			loading: true,
+			selectedSourceType: 0,
+			// TODO: sync with sourceTypes
+			sourceTypes: [
+				{value: 0, text: "Archive"},
+				{value: 1, text: "Schedule"},
+				{value: 2, text: "Game results"},
+			],
 		}
 	},
 	methods: {
@@ -69,4 +95,7 @@ export default {
 </script>
 
 <style scoped>
+h3 {
+	padding-bottom: 20px;
+}
 </style>
