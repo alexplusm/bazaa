@@ -1,7 +1,9 @@
 <template>
 	<v-app>
 		<v-main>
-			<router-view></router-view>
+			<section>
+				<router-view></router-view>
+			</section>
 		</v-main>
 	</v-app>
 </template>
@@ -11,11 +13,15 @@ import axios from 'axios';
 
 export default {
     name: 'App',
-	components: {},
-    mounted () {
-        axios
-            .get('/api/check/alive')
+    mounted() {
+        axios.get('/api/check/alive')
             .then(response => console.log("response: ", response))
     }
 }
 </script>
+
+<style scoped>
+section {
+	padding: 10px;
+}
+</style>

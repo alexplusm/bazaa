@@ -58,6 +58,10 @@ export const store = new Vuex.Store({
                 return api.game.details(gameId, currentExtSystem.extSystemId)
                     .then(data => commit('setCurrentGame', data));
             }
+        },
+        updateGameWithArchive({dispatch}, {gameId, file}) {
+            return api.game.updateWithFile(gameId, file)
+                .finally(() => dispatch('getGameDetails', gameId))
         }
     },
     getters: {

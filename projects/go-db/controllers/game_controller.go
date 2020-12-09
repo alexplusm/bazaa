@@ -155,6 +155,13 @@ func (controller *GameController) Update(ctx echo.Context) error {
 
 		archives := form.File["archives"]
 
+		if len(archives) == 0 {
+			return ctx.JSON(
+				http.StatusOK,
+				httputils.BuildBadRequestErrorResponseWithMgs("archive required"),
+			)
+		}
+
 		err = controller.AttachSourceToGameService.AttachZipArchiveToGame(gameID, archives)
 		if err != nil {
 			log.Error("game update controller: ", err)

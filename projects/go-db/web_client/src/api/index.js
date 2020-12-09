@@ -44,6 +44,13 @@ const gameCreate = game => {
         .then(processResponse);
 }
 
+const gameUpdateWithArchive = (gameId, file) => {
+    const formData = new FormData();
+    formData.append('archives', file);
+
+    return axios.put('/api/v1/game/' + gameId, formData);
+}
+
 export const api = {
     extSystem: {
         list: extSystemList,
@@ -53,5 +60,6 @@ export const api = {
         list: gameList,
         details: gameDetails,
         create: gameCreate,
+        updateWithFile: gameUpdateWithArchive,
     }
 }
