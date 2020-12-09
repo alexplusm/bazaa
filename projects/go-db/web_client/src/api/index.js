@@ -32,12 +32,26 @@ const gameList = extSystemId => {
         .then(processResponse);
 }
 
+const gameDetails = (gameId, extSystemId) => {
+    const params = {extSystemId};
+
+    return axios.get('/api/v1/game/' + gameId, {params})
+        .then(processResponse);
+}
+
+const gameCreate = game => {
+    return axios.post('/api/v1/game/', game)
+        .then(processResponse);
+}
+
 export const api = {
     extSystem: {
         list: extSystemList,
         create: extSystemCreate,
     },
     game: {
-        list: gameList
+        list: gameList,
+        details: gameDetails,
+        create: gameCreate,
     }
 }
