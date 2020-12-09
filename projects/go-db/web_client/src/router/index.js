@@ -49,8 +49,8 @@ const authGuard = (to, from, next) => {
 
     // TODO: "/:id" !!!! don't work
 
-    console.log("from: ", from);
-    console.log("to: ", to);
+    // console.log("from: ", from);
+    // console.log("to: ", to);
 
     if (loginRequired && !authorized) {
         next('/');

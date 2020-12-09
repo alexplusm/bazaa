@@ -1,10 +1,15 @@
 <template>
-	<div>GamePage {{this.$route.params.id}}  </div>
+	<section>
+		<GameDetails/>
+	</section>
 </template>
 
 <script>
+import GameDetails from '../components/game/GameDetails';
+
 export default {
-	name: "GamePage"
+	name: "GamePage",
+	components: {GameDetails},
 }
 </script>
 

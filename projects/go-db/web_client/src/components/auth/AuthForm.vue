@@ -36,8 +36,7 @@
 <script>
 import {mapMutations} from "vuex";
 import {fieldRequiredFunc} from "../../utils/form-utils";
-
-const timeout = ms => new Promise(resolve => setTimeout(resolve, ms));
+import {timeout} from "../../utils/test";
 
 export default {
 	name: "AuthForm",

@@ -11,6 +11,7 @@ export const store = new Vuex.Store({
         },
         extSystems: [],
         currentExtSystem: null,
+        currentGame: null,
         games: [],
     },
     mutations: {
@@ -25,6 +26,9 @@ export const store = new Vuex.Store({
         },
         setGames(state, games) {
             state.games = games;
+        },
+        setCurrentGame(state, game) {
+            state.currentGame = game;
         }
     },
     actions: {
@@ -46,6 +50,14 @@ export const store = new Vuex.Store({
                 return api.game.list(state.currentExtSystem.extSystemId)
                     .then(data => commit('setGames', data.games));
             }
+        },
+        getGameDetails({commit, state}, gameId) {
+            const {currentExtSystem} = state;
+
+            if (currentExtSystem && currentExtSystem.extSystemId) {
+                return api.game.details(gameId, currentExtSystem.extSystemId)
+                    .then(data => commit('setCurrentGame', data));
+            }
         }
     },
     getters: {
@@ -57,6 +69,9 @@ export const store = new Vuex.Store({
         },
         games(state) {
             return state.games;
+        },
+        currentGame(state) {
+            return state.currentGame;
         }
     },
     modules: {}
