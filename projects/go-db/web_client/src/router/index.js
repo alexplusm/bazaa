@@ -6,6 +6,7 @@ import AuthPage from '../pages/AuthPage';
 import HomePage from "../pages/HomePage";
 import GamePage from '../pages/GamePage';
 import GamesPage from '../pages/GameListPage';
+import GameCreationPage from '../pages/GameCreationPage';
 import ExtSystemCreatePage from "../pages/ExtSystemCreatePage";
 
 
@@ -23,6 +24,10 @@ const routes = [
             {
                 path: 'game',
                 component: GamesPage,
+            },
+            {
+                path: 'game-create', // todo: -> game/create
+                component: GameCreationPage,
             },
             {
                 path: 'game/:id',

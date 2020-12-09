@@ -1,9 +1,9 @@
 <template>
-	<v-container>
-		<v-row justify="center">
-			<ExtSystemCreate class="form"/>
-		</v-row>
-	</v-container>
+	<v-row>
+		<v-col cols="4">
+			<ExtSystemCreate />
+		</v-col>
+	</v-row>
 </template>
 
 <script>
@@ -16,8 +16,4 @@ export default {
 </script>
 
 <style scoped>
-.form {
-	padding-top: 20px;
-	width: 400px;
-}
 </style>

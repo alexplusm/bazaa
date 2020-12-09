@@ -38,7 +38,8 @@ export default {
 		return {
 			items: [
 				{title: "Home", href: '/home/game'},
-				{title: "Create Ext System", href: '/home/ext-system/create'},
+				{title: "Create ext system", href: '/home/ext-system/create'},
+				{title: "Create game",  href: '/home/game-create'},
 			]
 		}
 	}
