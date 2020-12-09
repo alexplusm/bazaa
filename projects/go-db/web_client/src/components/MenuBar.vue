@@ -1,18 +1,47 @@
 <template>
-	<menu>
-		<router-link to="/games">Games</router-link>
-		<br>
-		<router-link to="/game">Игра</router-link>
-		<br>
-		<router-link to="/ext-systems">Ext-systems</router-link>
-		<br>
-		<router-link to="/ext-system/create">Ext-systems create</router-link>
-	</menu>
+	<v-navigation-drawer permanent app width="200px">
+		<v-list-item>
+			<v-list-item-content>
+				<v-list-item-title class="title">
+					Admin site
+				</v-list-item-title>
+				<v-list-item-subtitle>
+					admin
+				</v-list-item-subtitle>
+			</v-list-item-content>
+		</v-list-item>
+
+		<v-divider></v-divider>
+
+		<v-list
+			dense
+			nav
+		>
+			<v-list-item
+				v-for="item in items"
+				:key="item.title"
+				:to="item.href"
+			>
+				<v-list-item-content>
+					<v-list-item-title>{{ item.title }}</v-list-item-title>
+				</v-list-item-content>
+			</v-list-item>
+		</v-list>
+	</v-navigation-drawer>
+
 </template>
 
 <script>
 export default {
-	name: "MenuBar"
+	name: "MenuBar",
+	data() {
+		return {
+			items: [
+				{title: "Home", href: '/home/game'},
+				{title: "Create Ext System", href: '/home/ext-system/create'},
+			]
+		}
+	}
 }
 </script>
 

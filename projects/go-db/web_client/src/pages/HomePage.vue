@@ -1,9 +1,9 @@
 <template>
-	<div>
+	<section>
 		<MenuBar></MenuBar>
-		<hr>
+
 		<router-view></router-view>
-	</div>
+	</section>
 </template>
 
 <script>

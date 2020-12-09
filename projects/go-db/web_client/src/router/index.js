@@ -8,6 +8,7 @@ import AuthPage from '../pages/AuthPage';
 import HomePage from "../pages/HomePage";
 import GamePage from '../pages/GamePage';
 import GamesPage from '../pages/GameListPage';
+import ExtSystemCreate from "../components/ExtSystemCreate";
 
 
 const routes = [
@@ -28,6 +29,10 @@ const routes = [
             {
                 path: 'game/:id',
                 component: GamePage,
+            },
+            {
+                path: 'ext-system/create',
+                component: ExtSystemCreate, // TODO: page
             },
             { path: '*', redirect: '/home' }
         ],

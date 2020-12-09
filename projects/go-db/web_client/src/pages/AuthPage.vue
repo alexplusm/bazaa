@@ -59,8 +59,8 @@ export default {
 	data: () => ({
 		valid: false,
 		loading: false,
-		login: '',
-		password: '',
+		login: 'a',
+		password: 'b',
 		loginRules: [fieldRequiredFunc],
 		passwordRules: [fieldRequiredFunc],
 	}),
