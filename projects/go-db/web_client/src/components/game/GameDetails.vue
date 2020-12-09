@@ -8,38 +8,38 @@
 		>
 		</v-progress-circular>
 
-		<div v-else>
-			<div>Start date: {{ this.currentGame.startDate }}</div>
-			<div>Finish date: {{ this.currentGame.finishDate }}</div>
-			<div>Answer type: {{ this.currentGame.question.answerType }}</div>
-			<div>Question text: {{ this.currentGame.question.text }}</div>
-			<div>
-				Options
-				<div
-					v-for="option in this.currentGame.question.options"
-					:key="option.option"
-				>
-					{{ option.option }} | {{ option. text }}
-				</div>
-			</div>
+		<v-row v-else>
+			<v-col cols="5">
+				<div>Start date: {{ this.currentGame.startDate }}</div>
+				<div>Finish date: {{ this.currentGame.finishDate }}</div>
+				<div>Answer type: {{ this.currentGame.question.answerType }}</div>
+				<div>Question: {{ this.currentGame.question.text }}</div>
 
-			<div>
-				Sources
-				<div
-					v-for="source in this.currentGame.sources"
-					:key="source.sourceId"
-				>
-					{{ source.sourceId }} | {{ source.type }}
-				</div>
-			</div>
+				<ul>Options
+					<li
+						v-for="option in this.currentGame.question.options"
+						:key="option.option"
+					>
+						text: <strong>{{ option.text }}</strong> (option: <strong>{{ option.option }}</strong>)
+					</li>
+				</ul>
 
-			<hr>
+				<ul>Sources
+					<li
+						v-for="source in this.currentGame.sources"
+						:key="source.sourceId"
+					>
+						{{ source.sourceId }} | {{ source.type }}
+					</li>
+				</ul>
+			</v-col>
 
-			AddSource (check box: true - archive | false - schedule)
-			<GameUploadFile />
-		</div>
+			<v-col cols="4">
+				AddSource (check box: true - archive | false - schedule)
+				<GameUploadFile />
+			</v-col>
+		</v-row>
 	</section>
-
 </template>
 
 <script>
