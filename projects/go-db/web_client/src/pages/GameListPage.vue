@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import ExtSystem from "../components/ExtSystem";
+import ExtSystem from "../components/ext-system/ExtSystem";
 import GameList from "../components/game/GameList";
 
 export default {

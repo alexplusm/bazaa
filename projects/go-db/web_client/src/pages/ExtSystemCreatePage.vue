@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import ExtSystemCreate from "../components/ExtSystemCreate";
+import ExtSystemCreate from "../components/ext-system/ExtSystemCreate";
 
 export default {
 	name: "ExtSystemCreatePage",

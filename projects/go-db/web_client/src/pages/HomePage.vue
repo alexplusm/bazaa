@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import MenuBar from "../components/MenuBar";
+import MenuBar from "../components/menu/MenuBar";
 
 export default {
 	name: "HomePage",

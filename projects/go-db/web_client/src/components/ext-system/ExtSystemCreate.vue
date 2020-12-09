@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import {fieldRequiredFunc} from "../utils/form-utils";
+import {fieldRequiredFunc} from "../../utils/form-utils";
 import {mapActions} from 'vuex'
 
 export default {
