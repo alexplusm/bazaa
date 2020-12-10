@@ -1,10 +1,10 @@
 <template>
 	<section>
 		<v-combobox
-			v-model="model"
-			v-on:change="this.setCurrentExtSystem"
-			:items="extSystems"
-			label="Choose ext system"
+			label="Выберите внешнюю систему"
+			v-bind:selected="selected"
+			v-on:change="onChange"
+			:items="items"
 			solo
 		>
 			<template v-slot:selection="{ item }">
@@ -22,21 +22,21 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
 
 export default {
 	name: "ExtSystemSelect",
-	data() {
-		return {model: ''} // todo: remove model !!!
+	model: {
+		prop: 'selected',
+		event: 'change'
 	},
-	computed: {
-		...mapGetters(['extSystems'])
+	props: {
+		selected: Object,
+		items: Array
 	},
 	methods: {
-		...mapActions(['getExtSystemList', 'setCurrentExtSystem']),
-	},
-	mounted() {
-		this.getExtSystemList();
+		onChange(selected) {
+			this.$emit('change', {...selected});
+		}
 	}
 }
 </script>

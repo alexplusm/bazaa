@@ -2,18 +2,18 @@
 	<v-container>
 		<v-row>
 			<v-col cols="6">
-				<ExtSystemSelect />
+				<ExtSystemSelectBlock />
 			</v-col>
 		</v-row>
 	</v-container>
 </template>
 
 <script>
-import ExtSystemSelect from "./ExtSystemSelect";
+import ExtSystemSelectBlock from "./ExtSystemSelectBlock";
 
 export default {
 	name: "ExtSystem",
-	components: {ExtSystemSelect}
+	components: {ExtSystemSelectBlock}
 }
 </script>
 
