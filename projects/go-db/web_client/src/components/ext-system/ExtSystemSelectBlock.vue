@@ -15,7 +15,6 @@ export default {
 	methods: {
 		...mapActions(['getExtSystemList', 'setCurrentExtSystem']),
 		onChange(selectedExtSystem) {
-			console.log("SelectedExtSystem: ", selectedExtSystem);
 			this.setCurrentExtSystem(selectedExtSystem);
 		},
 	},
@@ -24,6 +23,3 @@ export default {
 	},
 }
 </script>
-
-<style scoped>
-</style>

@@ -5,6 +5,7 @@
 			required
 			v-model="login"
 			:rules="fieldRules"
+			outlined
 		></v-text-field>
 
 		<v-text-field
@@ -12,6 +13,7 @@
 			required
 			v-model="password"
 			:rules="fieldRules"
+			outlined
 		></v-text-field>
 
 		<v-row justify="center">
@@ -65,6 +67,3 @@ export default {
 	}
 }
 </script>
-
-<style scoped>
-</style>

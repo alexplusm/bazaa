@@ -1,11 +1,11 @@
 <template>
 	<section>
 		<v-combobox
-			label="Выберите внешнюю систему"
+			label="Внешняя система"
 			v-bind:selected="selected"
 			v-on:change="onChange"
 			:items="items"
-			solo
+			outlined
 		>
 			<template v-slot:selection="{ item }">
 				{{ item.extSystemId }}
@@ -40,6 +40,3 @@ export default {
 	}
 }
 </script>
-
-<style scoped>
-</style>

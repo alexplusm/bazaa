@@ -4,6 +4,7 @@
 			<v-text-field
 				label="ID"
 				v-model="extSystemId"
+				outlined
 			></v-text-field>
 
 			<v-text-field
@@ -11,6 +12,7 @@
 				v-model="description"
 				:rules="fieldRules"
 				required
+				outlined
 			></v-text-field>
 
 			<v-text-field
@@ -18,16 +20,10 @@
 				v-model="postResultsUrl"
 				:rules="fieldRules"
 				required
+				outlined
 			></v-text-field>
 
 			<v-row justify="center">
-<!--				<v-progress-circular-->
-<!--					v-if="loading"-->
-<!--					indeterminate-->
-<!--					color="primary"-->
-<!--				>-->
-<!--				</v-progress-circular>-->
-<!--				v-else-->
 				<v-btn
 					:disabled="!valid"
 					color="success"
@@ -42,14 +38,15 @@
 </template>
 
 <script>
-import {fieldRequiredFunc} from "../../utils/form-utils";
 import {mapActions} from 'vuex'
+import {fieldRequiredFunc} from "../../utils/form-utils";
 
 export default {
 	name: "ExtSystemCreate",
 	data() {
 		return {
 			valid: false,
+			// TODO: into form
 			extSystemId: '',
 			description: '',
 			postResultsUrl: '',
@@ -79,7 +76,3 @@ export default {
 	}
 }
 </script>
-
-<style scoped>
-
-</style>
