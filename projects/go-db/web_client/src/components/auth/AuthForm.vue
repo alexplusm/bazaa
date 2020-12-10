@@ -1,18 +1,18 @@
 <template>
 	<v-form v-model="valid">
 		<v-text-field
-			label="Login"
-			required
-			v-model="login"
+			label="Логин"
+			v-model="form.login"
 			:rules="fieldRules"
+			required
 			outlined
 		></v-text-field>
 
 		<v-text-field
-			label="Password"
-			required
-			v-model="password"
+			label="Пароль"
+			v-model="form.password"
 			:rules="fieldRules"
+			required
 			outlined
 		></v-text-field>
 
@@ -20,7 +20,7 @@
 			<v-progress-circular v-if="loading" indeterminate color="primary">
 			</v-progress-circular>
 			<v-btn v-else :disabled="!valid" color="success" @click="submit">
-				Log in
+				Войти
 			</v-btn>
 		</v-row>
 	</v-form>
@@ -36,8 +36,10 @@ export default {
 	data: () => ({
 		valid: false,
 		loading: false,
-		login: 'a',
-		password: 'b',
+		form: {
+			login: 'a',
+			password: 'b',
+		},
 		fieldRules: [fieldRequiredFunc],
 	}),
 	methods: {

@@ -1,5 +1,8 @@
 <template>
-	<ExtSystemSelect :items="extSystems" v-on:change="onChange" />
+	<ExtSystemSelect
+		:items="extSystems"
+		v-on:change="onChange"
+	/>
 </template>
 
 <script>
@@ -8,9 +11,12 @@ import ExtSystemSelect from './ExtSystemSelect';
 
 export default {
 	name: 'ExtSystemSelectBlock',
+	data: () => ({
+		val: null
+	}),
 	components: { ExtSystemSelect },
 	computed: {
-		...mapGetters(['extSystems']),
+		...mapGetters(['extSystems', 'currentExtSystem']),
 	},
 	methods: {
 		...mapActions(['getExtSystemList', 'setCurrentExtSystem']),
@@ -19,6 +25,10 @@ export default {
 		},
 	},
 	mounted() {
+		// this.val = {...this.currentExtSystem};
+		//
+		// console.log("currentExtSystem: ", this.currentExtSystem);
+
 		this.getExtSystemList();
 	},
 };

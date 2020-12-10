@@ -1,15 +1,10 @@
 <template>
-	<v-container>
-		<v-row justify="center">
-			<v-col cols="3">
-				<v-row justify="center">
-					<h3>Админка</h3>
-				</v-row>
-
-				<AuthForm />
-			</v-col>
-		</v-row>
-	</v-container>
+	<v-row justify="center">
+		<v-col cols="3" align="center">
+			<h3 class="mb-6">Админка</h3>
+			<AuthForm />
+		</v-col>
+	</v-row>
 </template>
 
 <script>
@@ -20,5 +15,3 @@ export default {
 	components: { AuthForm },
 };
 </script>
-
-<style scoped></style>

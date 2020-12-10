@@ -12,5 +12,3 @@ export default {
 	components: { GameDetails },
 };
 </script>
-
-<style scoped></style>

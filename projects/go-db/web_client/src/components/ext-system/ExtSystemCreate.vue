@@ -8,7 +8,7 @@
 			></v-text-field>
 
 			<v-text-field
-				label="Description"
+				label="Описание"
 				v-model="description"
 				:rules="fieldRules"
 				required
@@ -16,7 +16,7 @@
 			></v-text-field>
 
 			<v-text-field
-				label="Post Results Url"
+				label="Url для отправки результатов"
 				v-model="postResultsUrl"
 				:rules="fieldRules"
 				required
@@ -25,7 +25,7 @@
 
 			<v-row justify="center">
 				<v-btn :disabled="!valid" color="success" @click="submit">
-					Create
+					Создать
 				</v-btn>
 			</v-row>
 		</v-form>

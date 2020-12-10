@@ -1,7 +1,7 @@
 <template>
 	<section>
 		<v-file-input
-			label="Attache archive"
+			label="Прикрепленный файл"
 			v-model="archive"
 			:disabled="loading"
 			show-size
@@ -9,7 +9,7 @@
 			required
 		></v-file-input>
 
-		<v-btn :disabled="!archive" @click="upload"> Upload archive </v-btn>
+		<v-btn :disabled="!archive" @click="upload"> Загрузить файл </v-btn>
 		<v-progress-circular v-if="loading" indeterminate color="primary" />
 	</section>
 </template>

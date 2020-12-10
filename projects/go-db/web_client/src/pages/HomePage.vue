@@ -14,5 +14,3 @@ export default {
 	components: { MenuBar },
 };
 </script>
-
-<style scoped></style>

@@ -22,6 +22,7 @@
 </template>
 
 <script>
+// TODO: init value: must be select current from store
 export default {
 	name: 'ExtSystemSelect',
 	model: {

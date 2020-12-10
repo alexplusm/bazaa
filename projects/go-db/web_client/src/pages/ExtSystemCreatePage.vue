@@ -14,5 +14,3 @@ export default {
 	components: { ExtSystemCreate },
 };
 </script>
-
-<style scoped></style>

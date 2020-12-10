@@ -14,5 +14,3 @@ export default {
 	components: { GameCreateForm },
 };
 </script>
-
-<style scoped></style>

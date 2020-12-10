@@ -1,11 +1,11 @@
 <template>
-	<v-container>
+<!--	<v-container>-->
 		<v-row>
 			<v-col cols="6">
 				<ExtSystemSelectBlock />
 			</v-col>
 		</v-row>
-	</v-container>
+<!--	</v-container>-->
 </template>
 
 <script>
