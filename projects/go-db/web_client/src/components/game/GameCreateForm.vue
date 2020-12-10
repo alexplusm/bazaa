@@ -2,7 +2,7 @@
 	<section>
 		<v-form v-model="valid">
 			<v-text-field
-				label="Name"
+				label="Название игры"
 				v-model="form.name"
 				:rules="fieldRules"
 				required
@@ -11,14 +11,14 @@
 			<!-- Select ExtSystemId -->
 
 			<v-text-field
-				label="Question"
+				label="Вопрос"
 				v-model="form.question"
 				:rules="fieldRules"
 				required
 			></v-text-field>
 
 			<v-select
-				label="Answer type"
+				label="Тип ответов"
 				v-model="form.answerType"
 				:items="answerTypes"
 			></v-select>
@@ -26,7 +26,7 @@
 			<v-row justify="space-around">
 				<div>
 					<label for="start-date">
-						Start date
+						Начало игры
 					</label>
 					<datetime
 						id="start-date"
@@ -39,7 +39,7 @@
 				</div>
 				<div>
 					<label for="end-date">
-						End date
+						Конец игры
 					</label>
 					<datetime
 						id="end-date"
@@ -67,7 +67,7 @@
 					color="success"
 					@click="submit"
 				>
-					Create
+					Создать игру
 				</v-btn>
 			</v-row>
 		</v-form>
@@ -76,14 +76,13 @@
 
 <script>
 import {fieldRequiredFunc} from "../../utils/form-utils";
+import {answerTypesMap, answerTypesArray} from "../../domain/consts";
 
 // ExtSystemID string `json:"extSystemId"`
-
 // AnswerType  int    `json:"answerType"`
 // Options     string `json:"options"`
 // StartDate   string `json:"startDate"`
 // EndDate     string `json:"endDate"`
-
 
 export default {
 	name: "GameCreateForm",
@@ -92,22 +91,13 @@ export default {
 		form: {
 			name: '',
 			question: '',
-			answerType: 0, // TODO: default value
+			answerType: answerTypesMap.categoryType.value,
 			startDate: null,
 			endDate: null,
 		},
-		datesError: 'Some error one two three',
-
-		menu: false, // TODO: K EEE K
-		date: new Date().toISOString().substr(0, 10),
-
+		datesError: '',
 		fieldRules: [fieldRequiredFunc],
-		answerTypes: [
-			{value: 0, text: 'kek'},
-			{value: 1, text: 'lol'},
-			{value: 2, text: 'azaza'},
-			{value: 3, text: 'lelelele'},
-		]
+		answerTypes: answerTypesArray,
 	}),
 	methods: {
 		submit() {
