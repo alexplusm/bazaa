@@ -7,22 +7,22 @@ import (
 )
 
 type ExtSystemService struct {
-	ExtSystemRepo interfaces.IExtSystemRepository
+	ExtSystemRepo interfaces.IExtSystemRepo
 }
 
-func (service *ExtSystemService) CreateExtSystem(extSystem bo.ExtSystemBO) (string, error) {
+func (service *ExtSystemService) Create(extSystem bo.ExtSystemBO) (string, error) {
 	extSystemDAO := dao.ExtSystemDAO{}
 	extSystemDAO.FromBO(extSystem)
 
-	return service.ExtSystemRepo.InsertExtSystem(extSystemDAO)
+	return service.ExtSystemRepo.InsertOne(extSystemDAO)
 }
 
-func (service *ExtSystemService) ExtSystemExist(extSystemID string) (bool, error) {
-	return service.ExtSystemRepo.ExtSystemExist(extSystemID)
+func (service *ExtSystemService) Exist(extSystemID string) (bool, error) {
+	return service.ExtSystemRepo.Exist(extSystemID)
 }
 
-func (service *ExtSystemService) ExtSystemList() ([]bo.ExtSystemBO, error) {
-	list, err := service.ExtSystemRepo.SelectExtSystems()
+func (service *ExtSystemService) List() ([]bo.ExtSystemBO, error) {
+	list, err := service.ExtSystemRepo.SelectList()
 	if err != nil {
 		return nil, err
 	}

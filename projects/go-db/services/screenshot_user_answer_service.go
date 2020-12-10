@@ -11,8 +11,8 @@ import (
 )
 
 type ScreenshotUserAnswerService struct {
-	AnswerRepo     interfaces.IAnswerRepository
-	ScreenshotRepo interfaces.IScreenshotRepository
+	AnswerRepo     interfaces.IAnswerRepo
+	ScreenshotRepo interfaces.IScreenshotRepo
 }
 
 func (service *ScreenshotUserAnswerService) BuildUserAnswerResponse(
@@ -112,7 +112,7 @@ func (service *ScreenshotUserAnswerService) SaveUsersAnswers(
 	if err != nil {
 		log.Error("save users answer: ", err)
 	}
-	service.AnswerRepo.InsertAnswers(answersDAO)
+	service.AnswerRepo.InsertList(answersDAO)
 }
 
 func getRightAnswerCategoryType(answers []bo.UserAnswerCacheBO) (string, bool) {

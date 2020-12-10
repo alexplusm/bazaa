@@ -1,4 +1,4 @@
-package repositories
+package repos
 
 import (
 	"context"
@@ -8,20 +8,23 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 )
 
-type UserRepository struct {
+type UserRepo struct {
 	DBConn interfaces.IDBHandler
 }
 
 const (
-	insertUserStatement = `INSERT INTO users ("user_id") VALUES ($1);`
-	existUserStatement  = `
+	insertUserStatement = `
+INSERT INTO users ("user_id") 
+VALUES ($1)
+`
+	existUserStatement = `
 SELECT COUNT(1)
 FROM users
-WHERE "user_id" = ($1);
+WHERE "user_id" = ($1)
 `
 )
 
-func (repo *UserRepository) InsertUser(user dao.UserDAO) error {
+func (repo *UserRepo) InsertOne(user dao.UserDAO) error {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -38,7 +41,7 @@ func (repo *UserRepository) InsertUser(user dao.UserDAO) error {
 	return nil
 }
 
-func (repo *UserRepository) UserExist(userID string) (bool, error) {
+func (repo *UserRepo) Exist(userID string) (bool, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {

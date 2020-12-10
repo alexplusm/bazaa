@@ -25,7 +25,7 @@ func (controller *ScreenshotResultsController) GetResult(ctx echo.Context) error
 
 	fmt.Println(gameID, screenshotID)
 
-	gameExist, err := controller.GameService.GameExist(gameID)
+	gameExist, err := controller.GameService.Exist(gameID)
 	if err != nil {
 		log.Error("get result: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
@@ -37,7 +37,7 @@ func (controller *ScreenshotResultsController) GetResult(ctx echo.Context) error
 		)
 	}
 
-	screenshotExist, err := controller.ScreenshotService.ScreenshotExist(screenshotID)
+	screenshotExist, err := controller.ScreenshotService.Exist(screenshotID)
 	if err != nil {
 		log.Error("get result: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())

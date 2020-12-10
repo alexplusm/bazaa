@@ -1,4 +1,4 @@
-package repositories
+package repos
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 )
 
-type SourceRepository struct {
+type SourceRepo struct {
 	DBConn interfaces.IDBHandler
 }
 
@@ -30,7 +30,7 @@ WHERE sources.game_id = ($1);
 `
 )
 
-func (repo *SourceRepository) InsertSource(source dao.SourceDAO) (string, error) {
+func (repo *SourceRepo) InsertOne(source dao.SourceDAO) (string, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -54,7 +54,7 @@ func (repo *SourceRepository) InsertSource(source dao.SourceDAO) (string, error)
 	return sourceID, nil
 }
 
-func (repo *SourceRepository) SelectSourcesByGame(gameID string) ([]dao.Source2DAO, error) {
+func (repo *SourceRepo) SelectListByGame(gameID string) ([]dao.Source2DAO, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {

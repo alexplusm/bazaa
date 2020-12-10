@@ -10,18 +10,18 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
 )
 
-type StatisticsLeaderboardController struct {
+type StatisticLeaderboardController struct {
 	ExtSystemService   interfaces.IExtSystemService
 	GameService        interfaces.IGameService
 	DurationService    interfaces.IDurationService
 	LeaderboardService interfaces.ILeaderboardService
 }
 
-func (controller *StatisticsLeaderboardController) GetStatistics(ctx echo.Context) error {
-	qp := StatisticsLeaderboardQueryParams{}
+func (controller *StatisticLeaderboardController) GetStatistics(ctx echo.Context) error {
+	qp := StatisticLeaderboardQP{}
 	qp.fromCtx(ctx)
 
-	exist, err := controller.ExtSystemService.ExtSystemExist(qp.ExtSystemID.Value)
+	exist, err := controller.ExtSystemService.Exist(qp.ExtSystemID.Value)
 	if err != nil {
 		log.Error("leaderboard statistic controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
@@ -33,7 +33,7 @@ func (controller *StatisticsLeaderboardController) GetStatistics(ctx echo.Contex
 		)
 	}
 
-	games, err := controller.GameService.GetGames(qp.ExtSystemID.Value)
+	games, err := controller.GameService.List(qp.ExtSystemID.Value)
 	if err != nil {
 		log.Error("leaderboard statistic controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
@@ -49,12 +49,16 @@ func (controller *StatisticsLeaderboardController) GetStatistics(ctx echo.Contex
 
 	earliestGame := controller.GameService.GetEarliestGame(games)
 
-	// TODO:discuss: если ошибка в парсинге даты?
-	// 1) оповещать пользователя
-	// 2) использовать дефолтные значения
-	from, to := controller.DurationService.GetDurationByGame(
+	from, to, err := controller.DurationService.GetDurationByGame(
 		qp.Duration.From, qp.Duration.To, earliestGame,
 	)
+	if err != nil {
+		log.Error("user statistic controller: ", err)
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildBadRequestErrorResponseWithMgs("error while date parsing"),
+		)
+	}
 
 	gameIDs := make([]string, 0, len(games))
 	for _, game := range games {

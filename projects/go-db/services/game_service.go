@@ -9,18 +9,18 @@ import (
 )
 
 type GameService struct {
-	GameRepo interfaces.IGameRepository
+	GameRepo interfaces.IGameRepo
 }
 
-func (service *GameService) CreateGame(game bo.GameBO) (string, error) {
+func (service *GameService) Create(game bo.GameBO) (string, error) {
 	gameDAO := dao.GameDAO{}
 	gameDAO.FromBO(game)
 
-	return service.GameRepo.InsertGame(gameDAO)
+	return service.GameRepo.InsertOne(gameDAO)
 }
 
-func (service *GameService) GetGame(gameID string) (bo.GameBO, error) {
-	gameDAO, err := service.GameRepo.SelectGame(gameID)
+func (service *GameService) Retrieve(gameID string) (bo.GameBO, error) {
+	gameDAO, err := service.GameRepo.SelectOne(gameID)
 	if err != nil {
 		return bo.GameBO{}, fmt.Errorf("get game: %v", err)
 	}
@@ -30,8 +30,8 @@ func (service *GameService) GetGame(gameID string) (bo.GameBO, error) {
 	return gameBO, nil
 }
 
-func (service *GameService) GetGames(extSystemID string) ([]bo.GameBO, error) {
-	gamesDAO, err := service.GameRepo.SelectGames(extSystemID)
+func (service *GameService) List(extSystemID string) ([]bo.GameBO, error) {
+	gamesDAO, err := service.GameRepo.SelectList(extSystemID)
 	if err != nil {
 		return nil, fmt.Errorf("get games: %v", err)
 	}
@@ -45,8 +45,8 @@ func (service *GameService) GetGames(extSystemID string) ([]bo.GameBO, error) {
 	return list, nil
 }
 
-func (service *GameService) GameExist(gameID string) (bool, error) {
-	return service.GameRepo.GameExist(gameID)
+func (service *GameService) Exist(gameID string) (bool, error) {
+	return service.GameRepo.Exist(gameID)
 }
 
 func (service *GameService) FilterGames(gamesID []string, games []bo.GameBO) []bo.GameBO {

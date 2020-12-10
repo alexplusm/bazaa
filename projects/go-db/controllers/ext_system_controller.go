@@ -30,7 +30,7 @@ func (controller *ExtSystemController) Create(ctx echo.Context) error {
 		return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
 	}
 
-	extSystemID, err := controller.ExtSystemService.CreateExtSystem(*extSystem)
+	extSystemID, err := controller.ExtSystemService.Create(*extSystem)
 	if err != nil {
 		log.Error("extSystem create controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
@@ -43,7 +43,7 @@ func (controller *ExtSystemController) Create(ctx echo.Context) error {
 }
 
 func (controller *ExtSystemController) List(ctx echo.Context) error {
-	listBO, err := controller.ExtSystemService.ExtSystemList()
+	listBO, err := controller.ExtSystemService.List()
 	if err != nil {
 		log.Error("extSystem list controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())

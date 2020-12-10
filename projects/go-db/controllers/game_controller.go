@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -17,10 +16,10 @@ import (
 )
 
 type GameController struct {
-	GameService               interfaces.IGameService
-	ExtSystemService          interfaces.IExtSystemService
-	SourceService             interfaces.ISourceService
 	AttachSourceToGameService interfaces.IAttachSourceToGameService
+	ExtSystemService          interfaces.IExtSystemService
+	GameService               interfaces.IGameService
+	SourceService             interfaces.ISourceService
 }
 
 func (controller *GameController) Create(ctx echo.Context) error {
@@ -42,7 +41,7 @@ func (controller *GameController) Create(ctx echo.Context) error {
 		)
 	}
 
-	gameID, err := controller.GameService.CreateGame(*game)
+	gameID, err := controller.GameService.Create(*game)
 	if err != nil {
 		log.Error("game create controller: ", err)
 		return ctx.JSON(
@@ -57,7 +56,7 @@ func (controller *GameController) Create(ctx echo.Context) error {
 func (controller *GameController) Details(ctx echo.Context) error {
 	gameID := ctx.Param(consts.GameIDUrlParam)
 
-	game, err := controller.GameService.GetGame(gameID)
+	game, err := controller.GameService.Retrieve(gameID)
 	if err != nil {
 		log.Error("game details: ", err)
 		return ctx.JSON(
@@ -65,9 +64,9 @@ func (controller *GameController) Details(ctx echo.Context) error {
 			httputils.BuildNotFoundRequestErrorResponse("game not found"),
 		)
 	}
-	sources, err := controller.SourceService.GetSourcesByGame(gameID)
+	sources, err := controller.SourceService.ListByGame(gameID)
 
-	fmt.Println("Game: ", game)
+	// TODO: service!!!
 
 	resp := dto.GameInfoResponseBody{}
 	resp.StartDate = strconv.FormatInt(game.StartDate.Unix(), 10)
@@ -97,9 +96,9 @@ func (controller *GameController) Details(ctx echo.Context) error {
 }
 
 func (controller *GameController) List(ctx echo.Context) error {
-	extSystemID := ctx.QueryParam(consts.ExtSystemIDQueryParamName)
+	extSystemID := ctx.QueryParam(consts.ExtSystemIDQPName)
 
-	exist, err := controller.ExtSystemService.ExtSystemExist(extSystemID)
+	exist, err := controller.ExtSystemService.Exist(extSystemID)
 	if err != nil {
 		log.Error("game list controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
@@ -111,7 +110,7 @@ func (controller *GameController) List(ctx echo.Context) error {
 		)
 	}
 
-	gamesBO, err := controller.GameService.GetGames(extSystemID)
+	gamesBO, err := controller.GameService.List(extSystemID)
 	if err != nil {
 		log.Error("game list controller: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
@@ -137,7 +136,7 @@ func (controller *GameController) Update(ctx echo.Context) error {
 			return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
 		}
 
-		game, err := controller.GameService.GetGame(gameID)
+		game, err := controller.GameService.Retrieve(gameID)
 		if err != nil {
 			log.Error("game update controller: ", err)
 			return ctx.JSON(
@@ -155,6 +154,13 @@ func (controller *GameController) Update(ctx echo.Context) error {
 		}
 
 		archives := form.File["archives"]
+
+		if len(archives) == 0 {
+			return ctx.JSON(
+				http.StatusOK,
+				httputils.BuildBadRequestErrorResponseWithMgs("archive required"),
+			)
+		}
 
 		err = controller.AttachSourceToGameService.AttachZipArchiveToGame(gameID, archives)
 		if err != nil {

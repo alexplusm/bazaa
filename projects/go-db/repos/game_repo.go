@@ -1,4 +1,4 @@
-package repositories
+package repos
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 )
 
-type GameRepository struct {
+type GameRepo struct {
 	DBConn interfaces.IDBHandler
 }
 
@@ -43,7 +43,7 @@ WHERE "game_id" = ($1);
 `
 )
 
-func (repo *GameRepository) InsertGame(game dao.GameDAO) (string, error) {
+func (repo *GameRepo) InsertOne(game dao.GameDAO) (string, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -80,7 +80,7 @@ func (repo *GameRepository) InsertGame(game dao.GameDAO) (string, error) {
 	return gameID, nil // TODO:log: saving game into DB
 }
 
-func (repo *GameRepository) SelectGame(gameID string) (dao.GameDAO, error) {
+func (repo *GameRepo) SelectOne(gameID string) (dao.GameDAO, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -90,10 +90,14 @@ func (repo *GameRepository) SelectGame(gameID string) (dao.GameDAO, error) {
 
 	g := new(dao.GameDAO)
 	row := conn.QueryRow(context.Background(), selectGameWithSameIDStatement, gameID)
+	var options []byte
 	err = row.Scan(
 		&g.ExtSystemID, &g.Name, &g.StartDate,
-		&g.EndDate, &g.AnswerType, &g.Question, &g.Options,
+		&g.EndDate, &g.AnswerType, &g.Question, &options,
 	)
+	g.Options = string(options)
+
+	// TODO: REFACTOR if AnswerType == 2 |-> optionsNoNeed
 
 	if err != nil {
 		return dao.GameDAO{}, fmt.Errorf("select game: %v", err)
@@ -102,7 +106,7 @@ func (repo *GameRepository) SelectGame(gameID string) (dao.GameDAO, error) {
 	return *g, nil
 }
 
-func (repo *GameRepository) SelectGames(extSystemID string) ([]dao.GameDAO, error) {
+func (repo *GameRepo) SelectList(extSystemID string) ([]dao.GameDAO, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -120,14 +124,16 @@ func (repo *GameRepository) SelectGames(extSystemID string) ([]dao.GameDAO, erro
 
 	for rows.Next() {
 		g := new(dao.GameDAO)
+		var options []byte
 		err = rows.Scan(
 			&g.GameID, &g.ExtSystemID, &g.Name, &g.StartDate,
-			&g.EndDate, &g.AnswerType, &g.Question, &g.Options,
+			&g.EndDate, &g.AnswerType, &g.Question, &options,
 		)
 		if err != nil {
 			log.Error("select games: retrieve game: ", err)
 			continue
 		}
+		g.Options = string(options)
 		list = append(list, *g)
 	}
 	if rows.Err() != nil {
@@ -137,7 +143,7 @@ func (repo *GameRepository) SelectGames(extSystemID string) ([]dao.GameDAO, erro
 	return list, nil
 }
 
-func (repo *GameRepository) GameExist(gameID string) (bool, error) {
+func (repo *GameRepo) Exist(gameID string) (bool, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {

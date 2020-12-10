@@ -1,4 +1,4 @@
-package repositories
+package repos
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 )
 
-type AnswerRepository struct {
+type AnswerRepo struct {
 	DBConn interfaces.IDBHandler
 }
 
@@ -57,16 +57,16 @@ ans.game_id = ($2) AND
 `
 )
 
-func (repo *AnswerRepository) InsertAnswers(answers []dao.AnswerDAO) {
+func (repo *AnswerRepo) InsertList(answers []dao.AnswerDAO) {
 	for _, answer := range answers {
-		err := repo.InsertAnswer(answer)
+		err := repo.InsertOne(answer)
 		if err != nil {
 			fmt.Println("err: insert answers: ", err) // TODO: log error | return error
 		}
 	}
 }
 
-func (repo *AnswerRepository) InsertAnswer(answer dao.AnswerDAO) error {
+func (repo *AnswerRepo) InsertOne(answer dao.AnswerDAO) error {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -88,7 +88,7 @@ func (repo *AnswerRepository) InsertAnswer(answer dao.AnswerDAO) error {
 	return nil
 }
 
-func (repo *AnswerRepository) SelectScreenshotResult(gameID, screenshotID string) ([]dao.ScreenshotResultDAO, error) {
+func (repo *AnswerRepo) SelectScreenshotResult(gameID, screenshotID string) ([]dao.ScreenshotResultDAO, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -124,7 +124,7 @@ func (repo *AnswerRepository) SelectScreenshotResult(gameID, screenshotID string
 }
 
 // TODO: check
-func (repo *AnswerRepository) SelectAnsweredScreenshotsByGame(
+func (repo *AnswerRepo) SelectAnsweredScreenshotsByGame(
 	gameID string,
 ) (dao.AnsweredScreenshotsDAO, error) {
 	p := repo.DBConn.GetPool()
@@ -175,7 +175,7 @@ func (repo *AnswerRepository) SelectAnsweredScreenshotsByGame(
 	return res, nil
 }
 
-func (repo *AnswerRepository) SelectAnswersTODO(gameID string, from, to time.Time) ([]dao.AnswerStatLeadDAO, error) {
+func (repo *AnswerRepo) SelectListTODO(gameID string, from, to time.Time) ([]dao.AnswerStatLeadDAO, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -216,7 +216,7 @@ func (repo *AnswerRepository) SelectAnswersTODO(gameID string, from, to time.Tim
 	return list, nil
 }
 
-func (repo *AnswerRepository) SelectAnswersByUserAndGame(
+func (repo *AnswerRepo) SelectListByUserAndGame(
 	userID string, gameID string, from, to time.Time,
 ) ([]dao.UserAnswerDAO, error) {
 	p := repo.DBConn.GetPool()

@@ -4,32 +4,56 @@ import (
 	"github.com/labstack/echo"
 )
 
-type StatisticsUserQueryParams struct {
-	ExtSystemID ExtSystemIDQueryParam
-	TotalOnly   TotalOnlyQueryParam
-	GameIDs     GameIDsQueryParam
-	Duration    DurationQueryParams
+type StatisticUserQP struct {
+	ExtSystemID ExtSystemIDQP
+	TotalOnly   TotalOnlyQP
+	GameIDs     GameIDsQP
+	Duration    DurationQP
 }
 
-func (qp *StatisticsUserQueryParams) fromCtx(ctx echo.Context) {
-	qp.ExtSystemID = buildExtSystemIDQueryParam(ctx)
-	qp.TotalOnly = buildTotalOnlyQueryParam(ctx)
-	qp.GameIDs = buildGameIDsQueryParam(ctx)
-	qp.Duration = buildDurationQueryParams(ctx)
+func (qp *StatisticUserQP) fromCtx(ctx echo.Context) {
+	qp.ExtSystemID = buildExtSystemIDQP(ctx)
+	qp.TotalOnly = buildTotalOnlyQP(ctx)
+	qp.GameIDs = buildGameIDsQP(ctx)
+	qp.Duration = buildDurationQP(ctx)
 }
 
 // ---
 
-type StatisticsLeaderboardQueryParams struct {
-	ExtSystemID ExtSystemIDQueryParam
-	Limit       LimitQueryParam
-	GameIDs     GameIDsQueryParam
-	Duration    DurationQueryParams
+type StatisticLeaderboardQP struct {
+	ExtSystemID ExtSystemIDQP
+	Limit       LimitQP
+	GameIDs     GameIDsQP
+	Duration    DurationQP
 }
 
-func (qp *StatisticsLeaderboardQueryParams) fromCtx(ctx echo.Context) {
-	qp.ExtSystemID = buildExtSystemIDQueryParam(ctx)
-	qp.Limit = buildLimitQueryParam(ctx)
-	qp.GameIDs = buildGameIDsQueryParam(ctx)
-	qp.Duration = buildDurationQueryParams(ctx)
+func (qp *StatisticLeaderboardQP) fromCtx(ctx echo.Context) {
+	qp.ExtSystemID = buildExtSystemIDQP(ctx)
+	qp.Limit = buildLimitQP(ctx)
+	qp.GameIDs = buildGameIDsQP(ctx)
+	qp.Duration = buildDurationQP(ctx)
+}
+
+// ---
+
+type StatisticGameQP struct {
+	ExtSystemID ExtSystemIDQP
+	GameIDs     GameIDsQP
+}
+
+func (qp *StatisticGameQP) fromCtx(ctx echo.Context) {
+	qp.ExtSystemID = buildExtSystemIDQP(ctx)
+	qp.GameIDs = buildGameIDsQP(ctx)
+}
+
+// ---
+
+type ScreenshotRetrieveQP struct {
+	ExtSystemID ExtSystemIDQP
+	UserID      UserIDQP
+}
+
+func (qp *ScreenshotRetrieveQP) fromCtx(ctx echo.Context) {
+	qp.ExtSystemID = buildExtSystemIDQP(ctx)
+	qp.UserID = buildUserIDQP(ctx)
 }

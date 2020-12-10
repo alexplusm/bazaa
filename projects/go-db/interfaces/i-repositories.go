@@ -5,43 +5,43 @@ import (
 	"time"
 )
 
-type IGameRepository interface {
-	InsertGame(game dao.GameDAO) (string, error)
-	SelectGame(gameID string) (dao.GameDAO, error)
-	SelectGames(extSystemID string) ([]dao.GameDAO, error)
-	GameExist(gameID string) (bool, error)
+type IGameRepo interface {
+	InsertOne(game dao.GameDAO) (string, error)
+	SelectOne(gameID string) (dao.GameDAO, error)
+	SelectList(extSystemID string) ([]dao.GameDAO, error)
+	Exist(gameID string) (bool, error)
 }
 
-type IExtSystemRepository interface {
-	InsertExtSystem(extSystemDAO dao.ExtSystemDAO) (string, error)
-	SelectExtSystems() ([]dao.ExtSystemDAO, error)
-	ExtSystemExist(extSystemID string) (bool, error)
+type IExtSystemRepo interface {
+	InsertOne(extSystemDAO dao.ExtSystemDAO) (string, error)
+	SelectList() ([]dao.ExtSystemDAO, error)
+	Exist(extSystemID string) (bool, error)
 }
 
-type ISourceRepository interface {
-	InsertSource(source dao.SourceDAO) (string, error)
-	SelectSourcesByGame(gameID string) ([]dao.Source2DAO, error)
+type ISourceRepo interface {
+	InsertOne(source dao.SourceDAO) (string, error)
+	SelectListByGame(gameID string) ([]dao.Source2DAO, error)
 }
 
-type IScreenshotRepository interface {
-	SelectScreenshotsByGameID(gameID string) ([]dao.ScreenshotDAOFull, error)
-	InsertScreenshots(screenshots []dao.ScreenshotDAO) error
-	InsertScreenshotsWithExpertAnswer(screenshots []dao.ScreenshotWithExpertAnswerDAO) error
+type IScreenshotRepo interface {
+	SelectListByGameID(gameID string) ([]dao.ScreenshotDAOFull, error)
+	InsertList(screenshots []dao.ScreenshotDAO) error
+	InsertListWithExpertAnswer(screenshots []dao.ScreenshotWithExpertAnswerDAO) error
 	UpdateScreenshotUsersAnswer(screenshotID, usersAnswer string) error
-	ScreenshotExist(screenshotID string) (bool, error)
+	Exist(screenshotID string) (bool, error)
 	ScreenshotCountByGame(gameID string) (int, error)
 }
 
-type IAnswerRepository interface {
-	InsertAnswer(answer dao.AnswerDAO) error
-	InsertAnswers(answers []dao.AnswerDAO)
+type IAnswerRepo interface {
+	InsertOne(answer dao.AnswerDAO) error
+	InsertList(answers []dao.AnswerDAO)
 	SelectScreenshotResult(gameID, screenshotID string) ([]dao.ScreenshotResultDAO, error)
 	SelectAnsweredScreenshotsByGame(gameID string) (dao.AnsweredScreenshotsDAO, error)
-	SelectAnswersTODO(gameID string, from, to time.Time) ([]dao.AnswerStatLeadDAO, error)
-	SelectAnswersByUserAndGame(userID string, gameID string, from, to time.Time) ([]dao.UserAnswerDAO, error)
+	SelectListTODO(gameID string, from, to time.Time) ([]dao.AnswerStatLeadDAO, error)
+	SelectListByUserAndGame(userID string, gameID string, from, to time.Time) ([]dao.UserAnswerDAO, error)
 }
 
-type IUserRepository interface {
-	InsertUser(user dao.UserDAO) error
-	UserExist(userID string) (bool, error)
+type IUserRepo interface {
+	InsertOne(user dao.UserDAO) error
+	Exist(userID string) (bool, error)
 }

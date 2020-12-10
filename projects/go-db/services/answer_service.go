@@ -12,11 +12,11 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
-	"github.com/Alexplusm/bazaa/projects/go-db/utils"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/timeutils"
 )
 
 type AnswerService struct {
-	AnswerRepo interfaces.IAnswerRepository
+	AnswerRepo interfaces.IAnswerRepo
 }
 
 func (service *AnswerService) GetScreenshotResults(
@@ -62,7 +62,7 @@ func (service *AnswerService) GetUserStatistics(
 	userAnswers := make([]dao.UserAnswerDAO, 0, 1024)
 
 	for _, gameID := range gameIDs {
-		oneRes, err := service.AnswerRepo.SelectAnswersByUserAndGame(userID, gameID, from, to)
+		oneRes, err := service.AnswerRepo.SelectListByUserAndGame(userID, gameID, from, to)
 		if err != nil {
 			log.Error("user statistics service: ", err)
 			continue
@@ -79,10 +79,10 @@ func (service *AnswerService) GetUserStatistics(
 		return make([]bo.StatisticAnswersDateSlicedBO, 0, 0), nil
 	}
 
-	start := utils.TrimTime(time.Unix(userAnswers[0].AnswerDate, 0))
+	start := timeutils.TrimTime(time.Unix(userAnswers[0].AnswerDate, 0))
 	end := time.Unix(userAnswers[len(userAnswers)-1].AnswerDate, 0)
 	end = end.AddDate(0, 0, 1)
-	end = utils.TrimTime(end)
+	end = timeutils.TrimTime(end)
 
 	results := countRes(userAnswers, start, end)
 
@@ -96,7 +96,7 @@ func (service *AnswerService) GetUsersAndScreenshotCountByGame(
 }
 
 func (service *AnswerService) ABC(gameID string, from, to time.Time) ([]dao.AnswerStatLeadDAO, error) {
-	return service.AnswerRepo.SelectAnswersTODO(gameID, from, to)
+	return service.AnswerRepo.SelectListTODO(gameID, from, to)
 }
 
 func countRes(userAnswers []dao.UserAnswerDAO, start, end time.Time) []bo.StatisticAnswersDateSlicedBO {

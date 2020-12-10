@@ -1,35 +1,36 @@
 package services
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
-	"github.com/Alexplusm/bazaa/projects/go-db/utils"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/timeutils"
 )
 
 type DurationService struct{}
 
-func (service *DurationService) GetDurationByGame(from, to string, game bo.GameBO) (time.Time, time.Time) {
+func (service *DurationService) GetDurationByGame(from, to string, game bo.GameBO) (time.Time, time.Time, error) {
 	year, month, day := time.Now().Date()
-	fromRes := game.StartDate
-	toRes := time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
+	fromResult := game.StartDate
+	toResult := time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
 
 	if from != "" {
-		parsedFrom, err := utils.FromTimestampToTime(from)
+		parsedFrom, err := timeutils.FromTimestampToTime(from)
 		if err != nil {
-			// TODO: log?
+			return fromResult, toResult, fmt.Errorf("get duration by game: ", err)
 		} else {
-			fromRes = parsedFrom
+			fromResult = parsedFrom
 		}
 	}
 	if to != "" {
-		parsedTo, err := utils.FromTimestampToTime(to)
+		parsedTo, err := timeutils.FromTimestampToTime(to)
 		if err != nil {
-			// TODO: log?
+			return fromResult, toResult, fmt.Errorf("get duration by game: ", err)
 		} else {
-			toRes = parsedTo
+			toResult = parsedTo
 		}
 	}
 
-	return fromRes, toRes
+	return fromResult, toResult, nil
 }

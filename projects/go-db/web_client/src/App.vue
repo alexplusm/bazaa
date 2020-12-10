@@ -1,18 +1,21 @@
 <template>
-  <div>
-    "hello world!"
-  </div>
+	<v-app>
+		<v-main>
+			<section>
+				<router-view></router-view>
+			</section>
+		</v-main>
+	</v-app>
 </template>
 
 <script>
-import axios from "axios"
-
 export default {
-    name: 'App',
-    mounted () {
-        axios
-            .get('/check/alive')
-            .then(response => console.log("response3333: ", response))
-    }
-}
+	name: 'App',
+};
 </script>
+
+<style scoped>
+section {
+	padding: 10px;
+}
+</style>

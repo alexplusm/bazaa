@@ -6,9 +6,9 @@ import (
 )
 
 type SourceService struct {
-	SourceRepo interfaces.ISourceRepository
+	SourceRepo interfaces.ISourceRepo
 }
 
-func (repo *SourceService) GetSourcesByGame(gameID string) ([]dao.Source2DAO, error) {
-	return repo.SourceRepo.SelectSourcesByGame(gameID)
+func (repo *SourceService) ListByGame(gameID string) ([]dao.Source2DAO, error) {
+	return repo.SourceRepo.SelectListByGame(gameID)
 }

@@ -10,10 +10,10 @@ import (
 )
 
 type IGameService interface {
-	CreateGame(game bo.GameBO) (string, error)
-	GetGame(gameID string) (bo.GameBO, error)
-	GetGames(extSystemID string) ([]bo.GameBO, error)
-	GameExist(gameID string) (bool, error)
+	Create(game bo.GameBO) (string, error)
+	Retrieve(gameID string) (bo.GameBO, error)
+	List(extSystemID string) ([]bo.GameBO, error)
+	Exist(gameID string) (bool, error)
 	FilterGames(gamesID []string, games []bo.GameBO) []bo.GameBO
 	GetEarliestGame(games []bo.GameBO) bo.GameBO
 }
@@ -24,9 +24,9 @@ type IAttachSourceToGameService interface {
 }
 
 type IExtSystemService interface {
-	CreateExtSystem(extSystem bo.ExtSystemBO) (string, error)
-	ExtSystemExist(extSystemID string) (bool, error)
-	ExtSystemList() ([]bo.ExtSystemBO, error)
+	Create(extSystem bo.ExtSystemBO) (string, error)
+	Exist(extSystemID string) (bool, error)
+	List() ([]bo.ExtSystemBO, error)
 }
 
 type IGameCacheService interface {
@@ -67,12 +67,16 @@ type IAnswerService interface {
 }
 
 type IScreenshotService interface {
-	ScreenshotExist(screenshotID string) (bool, error)
+	Exist(screenshotID string) (bool, error)
 	ScreenshotCountByGame(gameID string) (int, error)
 }
 
+type IStatisticGameService interface {
+	GetStatistics(games []bo.GameBO) (dto.StatisticGameDTO, error)
+}
+
 type ISourceService interface {
-	GetSourcesByGame(gameID string) ([]dao.Source2DAO, error)
+	ListByGame(gameID string) ([]dao.Source2DAO, error)
 }
 
 type IActiveUsersService interface {
@@ -81,7 +85,7 @@ type IActiveUsersService interface {
 }
 
 type IDurationService interface {
-	GetDurationByGame(from, to string, game bo.GameBO) (time.Time, time.Time)
+	GetDurationByGame(from, to string, game bo.GameBO) (time.Time, time.Time, error)
 }
 
 type ILeaderboardService interface {
@@ -90,4 +94,9 @@ type ILeaderboardService interface {
 
 type IImageService interface {
 	BuildImageURL(imageName string) (string, error)
+}
+
+type IFileService interface {
+	CopyFiles(files []*multipart.FileHeader, copyPath string) ([]string, error)
+	UnzipImages(filenames []string) ([]bo.ImageParsingResult, error)
 }
