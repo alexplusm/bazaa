@@ -120,14 +120,16 @@ func (repo *GameRepo) SelectList(extSystemID string) ([]dao.GameDAO, error) {
 
 	for rows.Next() {
 		g := new(dao.GameDAO)
+		var options []byte
 		err = rows.Scan(
 			&g.GameID, &g.ExtSystemID, &g.Name, &g.StartDate,
-			&g.EndDate, &g.AnswerType, &g.Question, &g.Options,
+			&g.EndDate, &g.AnswerType, &g.Question, &options,
 		)
 		if err != nil {
 			log.Error("select games: retrieve game: ", err)
 			continue
 		}
+		g.Options = string(options)
 		list = append(list, *g)
 	}
 	if rows.Err() != nil {
