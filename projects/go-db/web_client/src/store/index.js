@@ -62,6 +62,9 @@ export const store = new Vuex.Store({
         updateGameWithArchive({dispatch}, {gameId, file}) {
             return api.game.updateWithFile(gameId, file)
                 .finally(() => dispatch('getGameDetails', gameId))
+        },
+        createGame(_,game) {
+            return api.game.create(game);
         }
     },
     getters: {

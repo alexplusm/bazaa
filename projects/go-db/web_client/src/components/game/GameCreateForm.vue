@@ -168,7 +168,10 @@ export default {
 		}
 	},
 	methods: {
-		...mapActions(['getExtSystemList', 'setCurrentExtSystem']),
+		...mapActions(['getExtSystemList', 'setCurrentExtSystem', 'createGame']),
+		clearForm() {
+			// TODO: clear Form
+		},
 		submit() {
 			const options = this.form.options.split(',').map(s => s.trim()).filter(s => s !== "");
 
@@ -186,6 +189,10 @@ export default {
 			const dto = createGameToDTO({...this.form})
 
 			console.log("123", dto);
+
+			this.createGame(dto)
+				.then(() => this.clearForm())
+				.then(resp => console.log("RESSSSP: ", resp));
 		}
 	},
 	mounted() {

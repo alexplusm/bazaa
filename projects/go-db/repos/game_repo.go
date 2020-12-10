@@ -90,10 +90,14 @@ func (repo *GameRepo) SelectOne(gameID string) (dao.GameDAO, error) {
 
 	g := new(dao.GameDAO)
 	row := conn.QueryRow(context.Background(), selectGameWithSameIDStatement, gameID)
+	var options []byte
 	err = row.Scan(
 		&g.ExtSystemID, &g.Name, &g.StartDate,
-		&g.EndDate, &g.AnswerType, &g.Question, &g.Options,
+		&g.EndDate, &g.AnswerType, &g.Question, &options,
 	)
+	g.Options = string(options)
+
+	// TODO: REFACTOR if AnswerType == 2 |-> optionsNoNeed
 
 	if err != nil {
 		return dao.GameDAO{}, fmt.Errorf("select game: %v", err)
