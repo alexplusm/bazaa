@@ -77,12 +77,52 @@
 <script>
 import {fieldRequiredFunc} from "../../utils/form-utils";
 import {answerTypesMap, answerTypesArray} from "../../domain/consts";
+import {isValid, isAfter} from 'date-fns'
 
 // ExtSystemID string `json:"extSystemId"`
 // AnswerType  int    `json:"answerType"`
 // Options     string `json:"options"`
 // StartDate   string `json:"startDate"`
 // EndDate     string `json:"endDate"`
+
+// TODO: in utils !!!
+function processDates(start, end) {
+	const result = { start: null, end: null,  error: null };
+
+	if (!start) {
+		result.error = 'Необходимо ввести начало игры';
+		return result;
+	}
+	if (!end) {
+		result.error = 'Необходимо ввести конец игры';
+		return result;
+	}
+	const startDate = new Date(start);
+	const endDate = new Date(end);
+	if (!isValid(startDate)) {
+		result.error = 'Не правильный формат начала игры';
+		return result;
+	}
+	if (!isValid(endDate)) {
+		result.error = 'Не правильный формат конца игры';
+		return result;
+	}
+
+	const now = new Date();
+
+	if (isAfter(now, startDate)) {
+		result.error = 'Начало игры не может быть в прошлом';
+		return result;
+	}
+	if (isAfter(startDate, endDate)) {
+		result.error = 'Начало игры не может после конца игры';
+		return result;
+	}
+	result.start = startDate;
+	result.end = endDate;
+
+	return result;
+}
 
 export default {
 	name: "GameCreateForm",
@@ -102,11 +142,15 @@ export default {
 	methods: {
 		submit() {
 			console.log("form: ", this.form);
-			console.log("start: ", this.form.startDate, typeof(this.form.startDate));
-			console.log("end: ", this.form.endDate, typeof(this.form.endDate));
 
-			const startDate = new Date(this.form.startDate);
-			console.log("s", startDate);
+			const res = processDates(this.form.startDate, this.form.endDate);
+			this.datesError = res.error;
+
+			console.log("res: ", res);
+
+			if (res.error != null) return;
+
+			console.log("123");
 		}
 	}
 }
