@@ -1,11 +1,6 @@
 <template>
-
 	<section>
-		<v-progress-circular
-			v-if="loading"
-			indeterminate
-			color="primary"
-		>
+		<v-progress-circular v-if="loading" indeterminate color="primary">
 		</v-progress-circular>
 
 		<v-row v-else>
@@ -13,19 +8,25 @@
 			<v-col cols="5">
 				<div>Start date: {{ this.currentGame.startDate }}</div>
 				<div>Finish date: {{ this.currentGame.finishDate }}</div>
-				<div>Answer type: {{ this.currentGame.question.answerType }}</div>
+				<div>
+					Answer type: {{ this.currentGame.question.answerType }}
+				</div>
 				<div>Question: {{ this.currentGame.question.text }}</div>
 
-				<ul>Options
+				<ul>
+					Options
 					<li
 						v-for="option in this.currentGame.question.options"
 						:key="option.option"
 					>
-						text: <strong>{{ option.text }}</strong> (option: <strong>{{ option.option }}</strong>)
+						text: <strong>{{ option.text }}</strong> (option:
+						<strong>{{ option.option }}</strong
+						>)
 					</li>
 				</ul>
 
-				<ul>Sources
+				<ul>
+					Sources
 					<li
 						v-for="source in this.currentGame.sources"
 						:key="source.sourceId"
@@ -62,36 +63,35 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from 'vuex';
-import GameUploadFile from "./GameUploadFile";
+import { mapActions, mapGetters } from 'vuex';
+import GameUploadFile from './GameUploadFile';
 
 export default {
-	name: "GameDetails",
-	components: {GameUploadFile},
+	name: 'GameDetails',
+	components: { GameUploadFile },
 	data() {
 		return {
 			loading: true,
 			selectedSourceType: 0,
 			// TODO: sync with sourceTypes
 			sourceTypes: [
-				{value: 0, text: "Archive"},
-				{value: 1, text: "Schedule"},
-				{value: 2, text: "Game results"},
+				{ value: 0, text: 'Archive' },
+				{ value: 1, text: 'Schedule' },
+				{ value: 2, text: 'Game results' },
 			],
-		}
+		};
 	},
 	methods: {
-		...mapActions(['getGameDetails'])
+		...mapActions(['getGameDetails']),
 	},
 	computed: {
-		...mapGetters(['currentGame'])
+		...mapGetters(['currentGame']),
 	},
 	mounted() {
-		const {id} = this.$route.params;
-		this.getGameDetails(id)
-			.finally(() => this.loading = false);
-	}
-}
+		const { id } = this.$route.params;
+		this.getGameDetails(id).finally(() => (this.loading = false));
+	},
+};
 </script>
 
 <style scoped>

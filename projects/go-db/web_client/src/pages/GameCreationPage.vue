@@ -10,10 +10,9 @@
 import GameCreateForm from '../components/game/GameCreateForm';
 
 export default {
-	name: "GameCreationPage",
-	components: {GameCreateForm},
-}
+	name: 'GameCreationPage',
+	components: { GameCreateForm },
+};
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

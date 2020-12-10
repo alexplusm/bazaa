@@ -7,13 +7,12 @@
 </template>
 
 <script>
-import MenuBar from "../components/menu/MenuBar";
+import MenuBar from '../components/menu/MenuBar';
 
 export default {
-	name: "HomePage",
-	components: {MenuBar}
-}
+	name: 'HomePage',
+	components: { MenuBar },
+};
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

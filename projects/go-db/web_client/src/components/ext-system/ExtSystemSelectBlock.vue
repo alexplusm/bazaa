@@ -3,14 +3,14 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
+import { mapActions, mapGetters } from 'vuex';
 import ExtSystemSelect from './ExtSystemSelect';
 
 export default {
-	name: "ExtSystemSelectBlock",
-	components: {ExtSystemSelect},
+	name: 'ExtSystemSelectBlock',
+	components: { ExtSystemSelect },
 	computed: {
-		...mapGetters(['extSystems'])
+		...mapGetters(['extSystems']),
 	},
 	methods: {
 		...mapActions(['getExtSystemList', 'setCurrentExtSystem']),
@@ -21,5 +21,5 @@ export default {
 	mounted() {
 		this.getExtSystemList();
 	},
-}
+};
 </script>

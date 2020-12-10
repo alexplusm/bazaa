@@ -9,13 +9,12 @@
 </template>
 
 <script>
-import ExtSystemSelectBlock from "./ExtSystemSelectBlock";
+import ExtSystemSelectBlock from './ExtSystemSelectBlock';
 
 export default {
-	name: "ExtSystem",
-	components: {ExtSystemSelectBlock}
-}
+	name: 'ExtSystem',
+	components: { ExtSystemSelectBlock },
+};
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -1,1 +1,1 @@
-export const fieldRequiredFunc = v => !!v || 'Обязательное поле';
+export const fieldRequiredFunc = (v) => !!v || 'Обязательное поле';

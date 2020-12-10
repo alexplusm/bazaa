@@ -17,18 +17,9 @@
 		></v-text-field>
 
 		<v-row justify="center">
-			<v-progress-circular
-				v-if="loading"
-				indeterminate
-				color="primary"
-			>
+			<v-progress-circular v-if="loading" indeterminate color="primary">
 			</v-progress-circular>
-			<v-btn
-				v-else
-				:disabled="!valid"
-				color="success"
-				@click="submit"
-			>
+			<v-btn v-else :disabled="!valid" color="success" @click="submit">
 				Log in
 			</v-btn>
 		</v-row>
@@ -36,12 +27,12 @@
 </template>
 
 <script>
-import {mapMutations} from "vuex";
-import {fieldRequiredFunc} from "../../utils/form-utils";
-import {timeout} from "../../utils/test";
+import { mapMutations } from 'vuex';
+import { fieldRequiredFunc } from '../../utils/form-utils';
+import { timeout } from '../../utils/test';
 
 export default {
-	name: "AuthForm",
+	name: 'AuthForm',
 	data: () => ({
 		valid: false,
 		loading: false,
@@ -57,13 +48,12 @@ export default {
 			}
 
 			this.loading = true;
-			timeout(3)
-				.then(() => {
-					this.loading = false;
-					this.authorize();
-					this.$router.push('home');
-				});
+			timeout(3).then(() => {
+				this.loading = false;
+				this.authorize();
+				this.$router.push('home');
+			});
 		},
-	}
-}
+	},
+};
 </script>

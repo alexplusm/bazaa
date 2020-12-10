@@ -13,13 +13,12 @@
 </template>
 
 <script>
-import AuthForm from '../components/auth/AuthForm'
+import AuthForm from '../components/auth/AuthForm';
 
 export default {
-	name: "AuthPage",
-	components: {AuthForm},
-}
+	name: 'AuthPage',
+	components: { AuthForm },
+};
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -12,8 +12,8 @@
 			</template>
 			<template v-slot:item="{ item }">
 				<div>
-					{{ item.extSystemId}}
-					<p>{{ item.description}}</p>
+					{{ item.extSystemId }}
+					<p>{{ item.description }}</p>
 					<div>{{ item.postResultsUrl }}</div>
 				</div>
 			</template>
@@ -22,21 +22,20 @@
 </template>
 
 <script>
-
 export default {
-	name: "ExtSystemSelect",
+	name: 'ExtSystemSelect',
 	model: {
 		prop: 'selected',
-		event: 'change'
+		event: 'change',
 	},
 	props: {
 		selected: Object,
-		items: Array
+		items: Array,
 	},
 	methods: {
 		onChange(selected) {
-			this.$emit('change', {...selected});
-		}
-	}
-}
+			this.$emit('change', { ...selected });
+		},
+	},
+};
 </script>

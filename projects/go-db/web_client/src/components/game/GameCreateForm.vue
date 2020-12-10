@@ -27,11 +27,7 @@
 			></v-select>
 
 			<div v-if="optionsRequired">
-				<v-alert
-					type="info"
-					outlined
-					dense
-				>
+				<v-alert type="info" outlined dense>
 					Введите возможные ответы через <strong>запятую</strong>.
 				</v-alert>
 
@@ -46,9 +42,7 @@
 
 			<v-row justify="space-around">
 				<div>
-					<label for="start-date">
-						Начало игры
-					</label>
+					<label for="start-date"> Начало игры </label>
 					<datetime
 						id="start-date"
 						input-id="start-date"
@@ -59,9 +53,7 @@
 					></datetime>
 				</div>
 				<div>
-					<label for="end-date">
-						Конец игры
-					</label>
+					<label for="end-date"> Конец игры </label>
 					<datetime
 						id="end-date"
 						input-id="end-date"
@@ -84,29 +76,23 @@
 			</v-alert>
 
 			<v-row class="mt-8" justify="center">
-				<v-btn
-					color="success"
-					@click="submit"
-				>
-					Создать игру
-				</v-btn>
+				<v-btn color="success" @click="submit"> Создать игру </v-btn>
 			</v-row>
 		</v-form>
 	</section>
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
-import {isValid, isAfter} from 'date-fns'
+import { mapActions, mapGetters } from 'vuex';
+import { isValid, isAfter } from 'date-fns';
 import ExtSystemSelect from '../../components/ext-system/ExtSystemSelect';
-import {fieldRequiredFunc} from "../../utils/form-utils";
-import {answerTypesMap, answerTypesArray} from "../../domain/consts";
-import {createGameToDTO} from "../../domain/dto";
-
+import { fieldRequiredFunc } from '../../utils/form-utils';
+import { answerTypesMap, answerTypesArray } from '../../domain/consts';
+import { createGameToDTO } from '../../domain/dto';
 
 // TODO: in utils !!!
 function processDates(start, end) {
-	const result = { start: null, end: null,  error: null };
+	const result = { start: null, end: null, error: null };
 
 	if (!start) {
 		result.error = 'Необходимо ввести начало игры';
@@ -144,8 +130,8 @@ function processDates(start, end) {
 }
 
 export default {
-	name: "GameCreateForm",
-	components: {ExtSystemSelect},
+	name: 'GameCreateForm',
+	components: { ExtSystemSelect },
 	data: () => ({
 		valid: false,
 		form: {
@@ -164,16 +150,23 @@ export default {
 	computed: {
 		...mapGetters(['extSystems']),
 		optionsRequired() {
-			return this.form.answerType === answerTypesMap.categoryType.value
-		}
+			return this.form.answerType === answerTypesMap.categoryType.value;
+		},
 	},
 	methods: {
-		...mapActions(['getExtSystemList', 'setCurrentExtSystem', 'createGame']),
+		...mapActions([
+			'getExtSystemList',
+			'setCurrentExtSystem',
+			'createGame',
+		]),
 		clearForm() {
 			// TODO: clear Form
 		},
 		submit() {
-			const options = this.form.options.split(',').map(s => s.trim()).filter(s => s !== "");
+			const options = this.form.options
+				.split(',')
+				.map((s) => s.trim())
+				.filter((s) => s !== '');
 
 			if (this.optionsRequired && options.length === 0) {
 				this.errorMessage = 'Возможные ответы введены не корректно';
@@ -186,17 +179,17 @@ export default {
 
 			if (res.error != null) return;
 
-			const dto = createGameToDTO({...this.form})
+			const dto = createGameToDTO({ ...this.form });
 
-			console.log("123", dto);
+			console.log('123', dto);
 
 			this.createGame(dto)
 				.then(() => this.clearForm())
-				.then(resp => console.log("RESSSSP: ", resp));
-		}
+				.then((resp) => console.log('RESSSSP: ', resp));
+		},
 	},
 	mounted() {
 		this.getExtSystemList();
 	},
-}
+};
 </script>

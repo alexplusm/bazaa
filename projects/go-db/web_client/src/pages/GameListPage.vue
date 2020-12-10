@@ -7,14 +7,13 @@
 </template>
 
 <script>
-import ExtSystem from "../components/ext-system/ExtSystem";
-import GameList from "../components/game/GameList";
+import ExtSystem from '../components/ext-system/ExtSystem';
+import GameList from '../components/game/GameList';
 
 export default {
-	name: "GamesPage",
-	components: {GameList, ExtSystem},
-}
+	name: 'GamesPage',
+	components: { GameList, ExtSystem },
+};
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

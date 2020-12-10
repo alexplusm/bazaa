@@ -7,13 +7,12 @@
 </template>
 
 <script>
-import ExtSystemCreate from "../components/ext-system/ExtSystemCreate";
+import ExtSystemCreate from '../components/ext-system/ExtSystemCreate';
 
 export default {
-	name: "ExtSystemCreatePage",
-	components: {ExtSystemCreate},
-}
+	name: 'ExtSystemCreatePage',
+	components: { ExtSystemCreate },
+};
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
