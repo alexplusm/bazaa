@@ -1,6 +1,6 @@
 <template>
 	<v-row>
-		<v-col cols="8">
+		<v-col cols="5">
 			<GameCreateForm />
 		</v-col>
 	</v-row>
