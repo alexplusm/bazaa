@@ -6,22 +6,43 @@
 				v-model="form.name"
 				:rules="fieldRules"
 				required
+				outlined
 			></v-text-field>
 
-			<!-- Select ExtSystemId -->
+			<ExtSystemSelect :items="extSystems" v-model="form.extSystem" />
 
 			<v-text-field
 				label="Вопрос"
 				v-model="form.question"
 				:rules="fieldRules"
 				required
+				outlined
 			></v-text-field>
 
 			<v-select
 				label="Тип ответов"
 				v-model="form.answerType"
 				:items="answerTypes"
+				outlined
 			></v-select>
+
+			<div v-if="optionsRequired">
+				<v-alert
+					type="info"
+					outlined
+					dense
+				>
+					Введите возможные ответы через <strong>запятую</strong>.
+				</v-alert>
+
+				<v-text-field
+					label="Возможные ответы"
+					v-model="form.options"
+					:rules="fieldRules"
+					required
+					outlined
+				></v-text-field>
+			</div>
 
 			<v-row justify="space-around">
 				<div>
@@ -50,19 +71,19 @@
 						:input-style="'border: #9E9E9E 1px solid;'"
 					></datetime>
 				</div>
-
-				<div class="mt-4" v-if="!!datesError">
-					<v-alert
-						dense
-						outlined
-						type="error"
-					>
-						{{ datesError }}
-					</v-alert>
-				</div>
 			</v-row>
 
-			<v-row class="mt-12" justify="center">
+			<v-alert
+				v-if="!!errorMessage"
+				class="mt-8"
+				type="error"
+				outlined
+				dense
+			>
+				{{ errorMessage }}
+			</v-alert>
+
+			<v-row class="mt-8" justify="center">
 				<v-btn
 					color="success"
 					@click="submit"
@@ -75,15 +96,13 @@
 </template>
 
 <script>
+import {mapActions, mapGetters} from "vuex";
+import {isValid, isAfter} from 'date-fns'
+import ExtSystemSelect from '../../components/ext-system/ExtSystemSelect';
 import {fieldRequiredFunc} from "../../utils/form-utils";
 import {answerTypesMap, answerTypesArray} from "../../domain/consts";
-import {isValid, isAfter} from 'date-fns'
+import {createGameToDTO} from "../../domain/dto";
 
-// ExtSystemID string `json:"extSystemId"`
-// AnswerType  int    `json:"answerType"`
-// Options     string `json:"options"`
-// StartDate   string `json:"startDate"`
-// EndDate     string `json:"endDate"`
 
 // TODO: in utils !!!
 function processDates(start, end) {
@@ -126,35 +145,51 @@ function processDates(start, end) {
 
 export default {
 	name: "GameCreateForm",
+	components: {ExtSystemSelect},
 	data: () => ({
 		valid: false,
 		form: {
 			name: '',
 			question: '',
+			extSystem: null,
 			answerType: answerTypesMap.categoryType.value,
+			options: '',
 			startDate: null,
 			endDate: null,
 		},
-		datesError: '',
+		errorMessage: '',
 		fieldRules: [fieldRequiredFunc],
 		answerTypes: answerTypesArray,
 	}),
+	computed: {
+		...mapGetters(['extSystems']),
+		optionsRequired() {
+			return this.form.answerType === answerTypesMap.categoryType.value
+		}
+	},
 	methods: {
+		...mapActions(['getExtSystemList', 'setCurrentExtSystem']),
 		submit() {
-			console.log("form: ", this.form);
+			const options = this.form.options.split(',').map(s => s.trim()).filter(s => s !== "");
+
+			if (this.optionsRequired && options.length === 0) {
+				this.errorMessage = 'Возможные ответы введены не корректно';
+				return;
+			}
+			this.form.options = options.join(',');
 
 			const res = processDates(this.form.startDate, this.form.endDate);
-			this.datesError = res.error;
-
-			console.log("res: ", res);
+			this.errorMessage = res.error;
 
 			if (res.error != null) return;
 
-			console.log("123");
+			const dto = createGameToDTO({...this.form})
+
+			console.log("123", dto);
 		}
-	}
+	},
+	mounted() {
+		this.getExtSystemList();
+	},
 }
 </script>
-
-<style scoped>
-</style>
