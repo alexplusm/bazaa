@@ -30,6 +30,7 @@ type GameItemResponseBody struct {
 	To     string `json:"to"`
 }
 
+// TODO!
 //“sources”: [ { “type”: “schedule” | “file” | “url”, “sourceId”: “someid” } ]
 
 type OptionDTO struct {

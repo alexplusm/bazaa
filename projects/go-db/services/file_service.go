@@ -20,6 +20,7 @@ func (service *FileService) CopyFiles(files []*multipart.FileHeader, copyPath st
 	filenames := make([]string, 0)
 
 	for _, file := range files {
+		// TODO: remove
 		fmt.Println("file:", file.Filename, file.Size)
 
 		// Source
@@ -116,10 +117,10 @@ func unzipFiles(srcPath string, destPath string, filenames []string) ([]bo.Image
 		result = append(result, res...)
 
 		if err != nil {
-			fmt.Println("EEEEE", err)
+			fmt.Println("EEEEE", err) // TODO: log error
 		}
 
-		fmt.Println("res", len(res)) // todo: error
+		fmt.Println("res", len(res)) // todo: log this
 	}
 
 	return result, nil

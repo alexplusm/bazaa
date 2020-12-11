@@ -114,3 +114,28 @@ func (g *GameBO) InProcess() bool {
 func (g *GameBO) Finished() bool {
 	return time.Now().After(g.EndDate)
 }
+
+func (g *GameBO) ToDetailsDTO(sources []dto.SourceDTO) dto.GameDetailsResponseBody {
+	body := dto.GameDetailsResponseBody{}
+
+	body.StartDate = strconv.FormatInt(g.StartDate.Unix(), 10)
+	body.FinishDate = strconv.FormatInt(g.EndDate.Unix(), 10)
+
+	question := dto.QuestionDTO{}
+	question.AnswerType = g.AnswerType
+	question.Text = g.Question
+
+	if g.AnswerType == consts.CategoricalAnswerType {
+		optionsDTO := make([]dto.OptionDTO, 0, 10)
+		options := strings.Split(g.Options, ",")
+		for i, option := range options {
+			optionsDTO = append(optionsDTO, dto.OptionDTO{Option: i, Text: option})
+		}
+		question.Options = optionsDTO
+	}
+
+	body.Question = question
+	body.Sources = sources
+
+	return body
+}
