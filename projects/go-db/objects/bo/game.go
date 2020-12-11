@@ -10,6 +10,7 @@ import (
 
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/timeutils"
 )
 
 type GameBO struct {
@@ -64,14 +65,13 @@ func (g *GameBO) FromDTO(src dto.CreateGameRequestBody, validate *validator.Vali
 }
 
 func (g *GameBO) ToListItemDTO() dto.GameItemResponseBody {
-	gameDTO := new(dto.GameItemResponseBody)
-	gameDTO.GameID = g.GameID
-	gameDTO.Name = g.Name
-	gameDTO.Status = g.Status()
-	gameDTO.From = strconv.FormatInt(g.StartDate.Unix(), 10)
-	gameDTO.To = strconv.FormatInt(g.EndDate.Unix(), 10)
-
-	return *gameDTO
+	return dto.GameItemResponseBody{
+		GameID: g.GameID,
+		Name:   g.Name,
+		Status: g.Status(),
+		From:   timeutils.FromTimeToStrTimestamp(g.StartDate),
+		To:     timeutils.FromTimeToStrTimestamp(g.EndDate),
+	}
 }
 
 func (g *GameBO) validate() error {
@@ -116,14 +116,15 @@ func (g *GameBO) Finished() bool {
 }
 
 func (g *GameBO) ToDetailsDTO(sources []dto.SourceDTO) dto.GameDetailsResponseBody {
-	body := dto.GameDetailsResponseBody{}
+	body := dto.GameDetailsResponseBody{
+		StartDate:  timeutils.FromTimeToStrTimestamp(g.StartDate),
+		FinishDate: timeutils.FromTimeToStrTimestamp(g.EndDate),
+	}
 
-	body.StartDate = strconv.FormatInt(g.StartDate.Unix(), 10)
-	body.FinishDate = strconv.FormatInt(g.EndDate.Unix(), 10)
-
-	question := dto.QuestionDTO{}
-	question.AnswerType = g.AnswerType
-	question.Text = g.Question
+	question := dto.QuestionDTO{
+		AnswerType: g.AnswerType,
+		Text:       g.Question,
+	}
 
 	if g.AnswerType == consts.CategoricalAnswerType {
 		optionsDTO := make([]dto.OptionDTO, 0, 10)
