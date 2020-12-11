@@ -13,8 +13,8 @@
 		<v-progress-circular
 			v-if="loading"
 			:rotate="360"
-			:size="100"
-			:width="15"
+			:size="50"
+			:width="8"
 			:value="progress"
 			color="primary"
 		>
@@ -30,8 +30,9 @@ function progressCallback(progressEvent) {
 	const percentCompleted = Math.round(
 		(progressEvent.loaded * 100) / progressEvent.total
 	);
-	this.progress =
-		percentCompleted > 70 ? percentCompleted - 5 : percentCompleted;
+	if (percentCompleted <= 95) {
+		this.progress = percentCompleted;
+	}
 }
 
 export default {
