@@ -11,7 +11,7 @@ const processResponse = (response) => {
 
 const extSystemList = () => {
 	return axios
-		.get('/api/v1/ext-system')
+		.get('/api/v1/ext_system')
 		.then(({ data }) => data)
 		.then((data) => {
 			if (!data.success) {
@@ -22,7 +22,7 @@ const extSystemList = () => {
 };
 
 const extSystemCreate = (extSystem) => {
-	return axios.post('/api/v1/ext-system', extSystem).then((data) => data);
+	return axios.post('/api/v1/ext_system', extSystem).then((data) => data);
 };
 
 const gameList = (extSystemId) => {
