@@ -3,13 +3,13 @@
 		<v-form v-model="valid">
 			<v-text-field
 				label="ID"
-				v-model="extSystemId"
+				v-model="form.extSystemId"
 				outlined
 			></v-text-field>
 
 			<v-text-field
 				label="Описание"
-				v-model="description"
+				v-model="form.description"
 				:rules="fieldRules"
 				required
 				outlined
@@ -17,7 +17,7 @@
 
 			<v-text-field
 				label="Url для отправки результатов"
-				v-model="postResultsUrl"
+				v-model="form.postResultsUrl"
 				:rules="fieldRules"
 				required
 				outlined
@@ -41,25 +41,26 @@ export default {
 	data() {
 		return {
 			valid: false,
-			// TODO: into form
-			extSystemId: '',
-			description: '',
-			postResultsUrl: '',
+			form: {
+				extSystemId: '',
+				description: '',
+				postResultsUrl: '',
+			},
 			fieldRules: [fieldRequiredFunc],
 		};
 	},
 	methods: {
 		...mapActions(['createExtSystem', 'getExtSystemList']),
 		clearForm() {
-			this.extSystemId = '';
-			this.description = '';
-			this.postResultsUrl = '';
+			this.form.extSystemId = '';
+			this.form.description = '';
+			this.form.postResultsUrl = '';
 		},
 		submit() {
 			const data = {
-				extSystemId: this.extSystemId,
-				description: this.description,
-				postResultsUrl: this.postResultsUrl,
+				extSystemId: this.form.extSystemId,
+				description: this.form.description,
+				postResultsUrl: this.form.postResultsUrl,
 			};
 
 			// TODO: resp process in actions -> return only true|false
