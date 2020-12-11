@@ -48,7 +48,7 @@ type QuestionDTO struct {
 	Options    []OptionDTO `json:"options"`
 }
 
-type GameInfoResponseBody struct {
+type GameDetailsResponseBody struct {
 	StartDate  string      `json:"startDate"`
 	FinishDate string      `json:"finishDate"`
 	Question   QuestionDTO `json:"question"`

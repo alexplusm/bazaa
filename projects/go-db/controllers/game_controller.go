@@ -68,7 +68,7 @@ func (controller *GameController) Details(ctx echo.Context) error {
 
 	// TODO: service!!!
 
-	resp := dto.GameInfoResponseBody{}
+	resp := dto.GameDetailsResponseBody{}
 	resp.StartDate = strconv.FormatInt(game.StartDate.Unix(), 10)
 	resp.FinishDate = strconv.FormatInt(game.EndDate.Unix(), 10)
 
