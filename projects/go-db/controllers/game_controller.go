@@ -71,11 +71,9 @@ func (controller *GameController) Details(ctx echo.Context) error {
 		)
 	}
 
-	// TODO: sourceBO.ToDTO()
 	sourcesDTO := make([]dto.SourceDTO, 0, len(sources))
-	for _, s := range sources {
-		// TODO:!!!! s.Type -> "file"
-		sourcesDTO = append(sourcesDTO, dto.SourceDTO{Type: "file", SourceID: s.SourceID})
+	for _, source := range sources {
+		sourcesDTO = append(sourcesDTO, source.ToDTO())
 	}
 
 	body := game.ToDetailsDTO(sourcesDTO)

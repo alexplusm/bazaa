@@ -76,7 +76,7 @@ type IStatisticGameService interface {
 }
 
 type ISourceService interface {
-	ListByGame(gameID string) ([]dao.Source2DAO, error)
+	ListByGame(gameID string) ([]bo.SourceBO, error)
 }
 
 type IActiveUsersService interface {

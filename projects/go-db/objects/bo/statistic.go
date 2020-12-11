@@ -1,10 +1,10 @@
 package bo
 
 import (
-	"strconv"
 	"time"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/timeutils"
 )
 
 type StatisticsUserBO struct {
@@ -78,7 +78,7 @@ func StatisticAnswersDateSlicedBOToDTO(stats []StatisticAnswersDateSlicedBO) dto
 
 	for _, s := range stats {
 		d := dto.StatisticsUserDTO{}
-		d.Date = strconv.FormatInt(s.Date.Unix(), 10)
+		d.Date = timeutils.FromTimeToStrTimestamp(s.Date)
 		d.Statistics.MatchWithExpert = s.Statistics.MatchWithExpert
 		d.Statistics.RightAnswers = s.Statistics.RightAnswers
 		d.Statistics.TotalScreenshots = s.Statistics.TotalScreenshots

@@ -39,8 +39,9 @@ type OptionDTO struct {
 }
 
 type SourceDTO struct {
-	Type     string `json:"type"`
-	SourceID string `json:"sourceId"`
+	SourceID  string `json:"sourceId"`
+	CreatedAt string `json:"createdAt"`
+	Type      int    `json:"type"` // TODO: update docs
 }
 
 type QuestionDTO struct {
