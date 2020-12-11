@@ -12,9 +12,13 @@
 			</template>
 			<template v-slot:item="{ item }">
 				<div>
-					{{ item.extSystemId }}
-					<p>{{ item.description }}</p>
-					<div>{{ item.postResultsUrl }}</div>
+					<v-divider></v-divider>
+					<strong>{{ item.extSystemId }}</strong>
+					<div>
+						{{ item.description }}
+						(<i>{{ item.postResultsUrl }}</i>)
+					</div>
+					<v-divider></v-divider>
 				</div>
 			</template>
 		</v-combobox>
