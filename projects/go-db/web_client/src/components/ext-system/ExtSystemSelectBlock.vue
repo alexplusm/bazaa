@@ -1,5 +1,6 @@
 <template>
 	<ExtSystemSelect
+		v-model="currentExtSystem"
 		:items="extSystems"
 		v-on:change="onChange"
 	/>
@@ -12,7 +13,7 @@ import ExtSystemSelect from './ExtSystemSelect';
 export default {
 	name: 'ExtSystemSelectBlock',
 	data: () => ({
-		val: null
+		selectedExtSystem: null
 	}),
 	components: { ExtSystemSelect },
 	computed: {
@@ -25,10 +26,8 @@ export default {
 		},
 	},
 	mounted() {
-		// this.val = {...this.currentExtSystem};
-		//
-		// console.log("currentExtSystem: ", this.currentExtSystem);
-
+		// TODO: не корректно работает
+		this.selectedExtSystem = this.currentExtSystem;
 		this.getExtSystemList();
 	},
 };
