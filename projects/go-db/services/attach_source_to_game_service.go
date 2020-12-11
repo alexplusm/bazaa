@@ -34,7 +34,7 @@ func (service *AttachSourceToGameService) AttachZipArchiveToGame(
 		return fmt.Errorf("attach zip archive: %v", err)
 	}
 
-	source := dao.SourceDAO{Type: dao.ArchiveSourceType, CreatedAt: time.Now().Unix(), GameID: gameID}
+	source := dao.SourceInsertDAO{Type: consts.ArchiveSourceType, CreatedAt: time.Now().Unix(), GameID: gameID}
 	sourceID, err := service.SourceRepo.InsertOne(source)
 	if err != nil {
 		return fmt.Errorf("attach zip archive: %v", err)

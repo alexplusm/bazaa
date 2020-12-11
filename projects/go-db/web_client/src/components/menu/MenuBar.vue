@@ -1,11 +1,10 @@
 <template>
-	<v-navigation-drawer permanent app width="200px">
+	<v-navigation-drawer permanent app width="280px">
 		<v-list-item>
 			<v-list-item-content>
 				<v-list-item-title class="title">
-					Админка
+					Портал Администратора
 				</v-list-item-title>
-				<v-list-item-subtitle> admin </v-list-item-subtitle>
 			</v-list-item-content>
 		</v-list-item>
 
@@ -31,8 +30,11 @@ export default {
 	data() {
 		return {
 			items: [
-				{ title: 'Home', href: '/home/game' },
-				{ title: 'Создать внешнюю систему', href: '/home/ext-system/create' },
+				{ title: 'Главная', href: '/home/game' },
+				{
+					title: 'Создать внешнюю систему',
+					href: '/home/ext-system/create',
+				},
 				{ title: 'Создать игру', href: '/home/game-create' },
 			],
 		};

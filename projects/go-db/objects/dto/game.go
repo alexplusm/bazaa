@@ -30,6 +30,7 @@ type GameItemResponseBody struct {
 	To     string `json:"to"`
 }
 
+// TODO!
 //“sources”: [ { “type”: “schedule” | “file” | “url”, “sourceId”: “someid” } ]
 
 type OptionDTO struct {
@@ -38,8 +39,9 @@ type OptionDTO struct {
 }
 
 type SourceDTO struct {
-	Type     string `json:"type"`
-	SourceID string `json:"sourceId"`
+	SourceID  string `json:"sourceId"`
+	CreatedAt string `json:"createdAt"`
+	Type      int    `json:"type"` // TODO: update docs
 }
 
 type QuestionDTO struct {
@@ -48,7 +50,7 @@ type QuestionDTO struct {
 	Options    []OptionDTO `json:"options"`
 }
 
-type GameInfoResponseBody struct {
+type GameDetailsResponseBody struct {
 	StartDate  string      `json:"startDate"`
 	FinishDate string      `json:"finishDate"`
 	Question   QuestionDTO `json:"question"`

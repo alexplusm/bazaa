@@ -9,6 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/fileutils"
@@ -20,8 +22,6 @@ func (service *FileService) CopyFiles(files []*multipart.FileHeader, copyPath st
 	filenames := make([]string, 0)
 
 	for _, file := range files {
-		fmt.Println("file:", file.Filename, file.Size)
-
 		// Source
 		src, err := file.Open()
 		if err != nil {
@@ -97,30 +97,27 @@ const (
 )
 
 func unzipFiles(srcPath string, destPath string, filenames []string) ([]bo.ImageParsingResult, error) {
+	// TODO: unused filenames !!!
 	dir, err := os.Open(srcPath)
 	if err != nil {
-		return nil, err // todo: nil?
+		return nil, err
 	}
 	filesInfo, err := dir.Readdir(-1)
 	if err != nil {
-		return nil, err // todo: nil?
+		return nil, err
 	}
 
 	result := make([]bo.ImageParsingResult, 0, 500)
 
 	for _, fileInfo := range filesInfo {
-		fmt.Println("zip archive", fileInfo.Name(), fileInfo.Size())
-
 		res, err := unzip(filepath.Join(srcPath, fileInfo.Name()), destPath)
-
 		result = append(result, res...)
 
 		if err != nil {
-			fmt.Println("EEEEE", err)
+			return nil, fmt.Errorf("unzip files: %v", err)
 		}
-
-		fmt.Println("res", len(res)) // todo: error
 	}
+	log.Info("unzip archive: count files =", len(result))
 
 	return result, nil
 }
@@ -162,14 +159,12 @@ func unzip(src string, destination string) ([]bo.ImageParsingResult, error) {
 		var result bo.ImageParsingResult
 
 		if withViolation {
-			result = bo.ImageParsingResult{fname, WithViolationCategory}
+			result = bo.ImageParsingResult{Filename: fname, Category: WithViolationCategory}
 		} else if noViolation {
-			result = bo.ImageParsingResult{fname, NoViolationCategory}
+			result = bo.ImageParsingResult{Filename: fname, Category: NoViolationCategory}
 		} else {
-			result = bo.ImageParsingResult{fname, UndefinedCategory}
+			result = bo.ImageParsingResult{Filename: fname, Category: UndefinedCategory}
 		}
-
-		fmt.Println(result)
 
 		// Creating the files in the target directory
 		if err = os.MkdirAll(filepath.Dir(fpath), os.ModePerm); err != nil {

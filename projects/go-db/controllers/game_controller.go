@@ -2,8 +2,6 @@ package controllers
 
 import (
 	"net/http"
-	"strconv"
-	"strings"
 
 	"github.com/labstack/echo"
 	log "github.com/sirupsen/logrus"
@@ -65,34 +63,22 @@ func (controller *GameController) Details(ctx echo.Context) error {
 		)
 	}
 	sources, err := controller.SourceService.ListByGame(gameID)
-
-	// TODO: service!!!
-
-	resp := dto.GameInfoResponseBody{}
-	resp.StartDate = strconv.FormatInt(game.StartDate.Unix(), 10)
-	resp.FinishDate = strconv.FormatInt(game.EndDate.Unix(), 10)
-
-	question := dto.QuestionDTO{}
-	question.AnswerType = game.AnswerType
-	question.Text = game.Question
-
-	optsList := make([]dto.OptionDTO, 0, 10)
-	opts := strings.Split(game.Options, ",")
-	for i, o := range opts {
-		optsList = append(optsList, dto.OptionDTO{Option: i, Text: o})
+	if err != nil {
+		log.Error("game details: ", err)
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildInternalServerErrorResponse(),
+		)
 	}
-	question.Options = optsList
-
-	resp.Question = question
 
 	sourcesDTO := make([]dto.SourceDTO, 0, len(sources))
-	for _, s := range sources {
-		// TODO:!!!! s.Type -> "file"
-		sourcesDTO = append(sourcesDTO, dto.SourceDTO{Type: "file", SourceID: s.SourceID})
+	for _, source := range sources {
+		sourcesDTO = append(sourcesDTO, source.ToDTO())
 	}
-	resp.Sources = sourcesDTO
 
-	return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(resp))
+	body := game.ToDetailsDTO(sourcesDTO)
+
+	return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(body))
 }
 
 func (controller *GameController) List(ctx echo.Context) error {

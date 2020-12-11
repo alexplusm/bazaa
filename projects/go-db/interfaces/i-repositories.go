@@ -19,8 +19,8 @@ type IExtSystemRepo interface {
 }
 
 type ISourceRepo interface {
-	InsertOne(source dao.SourceDAO) (string, error)
-	SelectListByGame(gameID string) ([]dao.Source2DAO, error)
+	InsertOne(source dao.SourceInsertDAO) (string, error)
+	SelectListByGame(gameID string) ([]dao.SourceRetrieveDAO, error)
 }
 
 type IScreenshotRepo interface {

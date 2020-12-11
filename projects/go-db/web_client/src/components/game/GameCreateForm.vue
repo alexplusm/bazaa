@@ -41,6 +41,7 @@
 			</div>
 
 			<v-row justify="space-around">
+				<!-- TODO: create component and use it -->
 				<div>
 					<label for="start-date"> Начало игры </label>
 					<datetime
@@ -50,6 +51,9 @@
 						type="datetime"
 						:input-class="'rounded-lg pl-4'"
 						:input-style="'border: #9E9E9E 1px solid;'"
+						minute-step="5"
+						auto="true"
+						title="Начало игры"
 					></datetime>
 				</div>
 				<div>
@@ -61,6 +65,9 @@
 						type="datetime"
 						:input-class="'rounded-lg pl-4'"
 						:input-style="'border: #9E9E9E 1px solid;'"
+						minute-step="5"
+						auto="true"
+						title="Конец игры"
 					></datetime>
 				</div>
 			</v-row>

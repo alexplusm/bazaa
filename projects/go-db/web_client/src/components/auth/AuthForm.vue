@@ -12,6 +12,9 @@
 			label="Пароль"
 			v-model="form.password"
 			:rules="fieldRules"
+			:type="showPassword ? 'text' : 'password'"
+			:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+			@click:append="showPassword = !showPassword"
 			required
 			outlined
 		></v-text-field>
@@ -32,7 +35,7 @@ import { fieldRequiredFunc } from '../../utils/form-utils';
 import { timeout } from '../../utils/test';
 
 const requiredLogin = 'AzUseRadm';
-const requiredPass = 'Qca05+Bz)3';
+const requiredPass = 'Qca05Bz_3';
 
 export default {
 	name: 'AuthForm',
@@ -43,6 +46,7 @@ export default {
 			login: '',
 			password: '',
 		},
+		showPassword: false,
 		fieldRules: [fieldRequiredFunc],
 	}),
 	methods: {
@@ -60,7 +64,10 @@ export default {
 			timeout(1500).then(() => {
 				this.loading = false;
 
-				if (this.form.login === requiredLogin && this.form.password === requiredPass) {
+				if (
+					this.form.login === requiredLogin &&
+					this.form.password === requiredPass
+				) {
 					this.authorize();
 					this.$router.push('home');
 				} else {

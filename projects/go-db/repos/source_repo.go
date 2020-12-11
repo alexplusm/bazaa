@@ -16,21 +16,22 @@ const (
 	insertSourceStatement = `
 INSERT INTO sources ("game_id", "source_type", "created_at")
 VALUES ($1, $2, $3)
-RETURNING "source_id";
+RETURNING "source_id"
 `
 	// TODO: for schedule
 	insertSourceWithExistingIDStatement = `
 INSERT INTO sources ("game_id", "source_id", "source_type", "created_at")
 VALUES ($1, $2, $3, $4)
-RETURNING "source_id";
+RETURNING "source_id"
 `
 	selectSourcesByGamesStatement = `
-SELECT "source_id", "source_type" FROM sources
-WHERE sources.game_id = ($1);
+SELECT "source_id", "source_type", "created_at"
+FROM sources
+WHERE sources.game_id = ($1)
 `
 )
 
-func (repo *SourceRepo) InsertOne(source dao.SourceDAO) (string, error) {
+func (repo *SourceRepo) InsertOne(source dao.SourceInsertDAO) (string, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -54,7 +55,7 @@ func (repo *SourceRepo) InsertOne(source dao.SourceDAO) (string, error) {
 	return sourceID, nil
 }
 
-func (repo *SourceRepo) SelectListByGame(gameID string) ([]dao.Source2DAO, error) {
+func (repo *SourceRepo) SelectListByGame(gameID string) ([]dao.SourceRetrieveDAO, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -70,16 +71,16 @@ func (repo *SourceRepo) SelectListByGame(gameID string) ([]dao.Source2DAO, error
 	}
 	defer rows.Close()
 
-	list := make([]dao.Source2DAO, 0, 10)
+	list := make([]dao.SourceRetrieveDAO, 0, 10)
 
 	for rows.Next() {
-		r := dao.Source2DAO{}
-		err = rows.Scan(&r.SourceID, &r.Type)
-		list = append(list, r)
+		s := dao.SourceRetrieveDAO{}
+		err = rows.Scan(&s.SourceID, &s.Type, &s.CreatedAt)
+		if err != nil {
+			return nil, fmt.Errorf("select sources by game: %v", err)
+		}
+		list = append(list, s)
 	}
-	//if rows.Err() != nil {
-	//	log.Error("select screenshot result: ", rows.Err())
-	//}
 
 	return list, nil
 }

@@ -1,19 +1,27 @@
 package dao
 
-const (
-	ArchiveSourceType = iota
-	ScheduleSourceType
+import (
+	"time"
+
+	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 )
 
-//TODO: schedules
-
-type SourceDAO struct {
+type SourceInsertDAO struct {
 	Type      int
 	CreatedAt int64
 	GameID    string
 }
 
-type Source2DAO struct {
-	SourceID string
-	Type     int
+type SourceRetrieveDAO struct {
+	SourceID  string
+	CreatedAt int64
+	Type      int
+}
+
+func (s *SourceRetrieveDAO) ToBO() bo.SourceBO {
+	return bo.SourceBO{
+		SourceID:  s.SourceID,
+		CreatedAt: time.Unix(s.CreatedAt, 0),
+		Type:      s.Type,
+	}
 }

@@ -1,7 +1,6 @@
 <template>
 	<section>
 		<MenuBar></MenuBar>
-
 		<router-view></router-view>
 	</section>
 </template>
