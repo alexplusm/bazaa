@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { Settings } from 'luxon'
+import { Settings } from 'luxon';
 import VueRouter from 'vue-router';
 import { Datetime } from 'vue-datetime';
 

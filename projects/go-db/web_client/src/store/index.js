@@ -62,9 +62,12 @@ export const store = new Vuex.Store({
 					.then((data) => commit('setCurrentGame', data));
 			}
 		},
-		updateGameWithArchive({ dispatch }, { gameId, file }) {
+		updateGameWithArchive(
+			{ dispatch },
+			{ gameId, file, progressCallback }
+		) {
 			return api.game
-				.updateWithFile(gameId, file)
+				.updateWithFile(gameId, file, progressCallback)
 				.finally(() => dispatch('getGameDetails', gameId));
 		},
 		createGame(_, game) {

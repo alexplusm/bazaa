@@ -10,18 +10,36 @@
 		></v-file-input>
 
 		<v-btn :disabled="!archive" @click="upload"> Загрузить файл </v-btn>
-		<v-progress-circular v-if="loading" indeterminate color="primary" />
+		<v-progress-circular
+			v-if="loading"
+			:rotate="360"
+			:size="100"
+			:width="15"
+			:value="progress"
+			color="primary"
+		>
+			{{ progress }}
+		</v-progress-circular>
 	</section>
 </template>
 
 <script>
 import { mapActions } from 'vuex';
 
+function progressCallback(progressEvent) {
+	const percentCompleted = Math.round(
+		(progressEvent.loaded * 100) / progressEvent.total
+	);
+	this.progress =
+		percentCompleted > 70 ? percentCompleted - 5 : percentCompleted;
+}
+
 export default {
 	name: 'GameUploadFile',
 	data: () => ({
 		archive: null,
 		loading: false,
+		progress: 0,
 	}),
 	methods: {
 		...mapActions(['updateGameWithArchive']),
@@ -31,7 +49,11 @@ export default {
 
 			if (skip) return;
 
-			const payload = { gameId: id, file: this.archive };
+			const payload = {
+				gameId: id,
+				file: this.archive,
+				progressCallback: progressCallback.bind(this),
+			};
 
 			this.loading = true;
 			this.updateGameWithArchive(payload)
@@ -39,7 +61,10 @@ export default {
 					this.archive = null;
 				})
 				.catch((err) => console.log('err: ', err))
-				.finally(() => (this.loading = false));
+				.finally(() => {
+					this.loading = false;
+					this.progress = 0;
+				});
 		},
 	},
 };

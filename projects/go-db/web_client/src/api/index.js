@@ -43,11 +43,12 @@ const gameCreate = (game) => {
 	return axios.post('/api/v1/game/', game).then(processResponse);
 };
 
-const gameUpdateWithArchive = (gameId, file) => {
+const gameUpdateWithArchive = (gameId, file, onUploadProgress) => {
+	const config = { onUploadProgress };
 	const formData = new FormData();
 	formData.append('archives', file);
 
-	return axios.put('/api/v1/game/' + gameId, formData);
+	return axios.put('/api/v1/game/' + gameId, formData, config);
 };
 
 export const api = {
