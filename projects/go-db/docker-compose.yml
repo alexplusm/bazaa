@@ -48,11 +48,25 @@ services:
   redis:
     image: redis:6.0-alpine3.12
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_container
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    depends_on:
+      - database
+    ports:
+      - "12002:80" # TODO: !!!
+#    networks:
+#      - fullstack
+    restart: unless-stopped
 
 volumes:
   media_root:
     name: 'media_root_001'
 
+# TODO: net
 networks:
   net:
     driver: bridge
