@@ -31,29 +31,41 @@ import { mapMutations } from 'vuex';
 import { fieldRequiredFunc } from '../../utils/form-utils';
 import { timeout } from '../../utils/test';
 
+const requiredLogin = 'AzUseRadm';
+const requiredPass = 'Qca05+Bz)3';
+
 export default {
 	name: 'AuthForm',
 	data: () => ({
 		valid: false,
 		loading: false,
 		form: {
-			login: 'a',
-			password: 'b',
+			login: '',
+			password: '',
 		},
 		fieldRules: [fieldRequiredFunc],
 	}),
 	methods: {
 		...mapMutations(['authorize']),
+		clearForm() {
+			this.form.login = '';
+			this.form.password = '';
+		},
 		submit() {
 			if (!this.valid) {
 				return;
 			}
 
 			this.loading = true;
-			timeout(3).then(() => {
+			timeout(1500).then(() => {
 				this.loading = false;
-				this.authorize();
-				this.$router.push('home');
+
+				if (this.form.login === requiredLogin && this.form.password === requiredPass) {
+					this.authorize();
+					this.$router.push('home');
+				} else {
+					this.clearForm();
+				}
 			});
 		},
 	},
