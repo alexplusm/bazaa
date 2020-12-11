@@ -4,10 +4,10 @@
 			<thead>
 				<tr>
 					<th class="text-left">ID</th>
-					<th class="text-left">Name</th>
-					<th class="text-left">Status</th>
-					<th class="text-left">From</th>
-					<th class="text-left">To</th>
+					<th class="text-left">Название</th>
+					<th class="text-left">Статус</th>
+					<th class="text-left">Начало</th>
+					<th class="text-left">Конец</th>
 				</tr>
 			</thead>
 			<tbody>

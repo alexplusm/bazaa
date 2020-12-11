@@ -13,7 +13,7 @@ import ExtSystemSelect from './ExtSystemSelect';
 export default {
 	name: 'ExtSystemSelectBlock',
 	data: () => ({
-		selectedExtSystem: null
+		selectedExtSystem: null,
 	}),
 	components: { ExtSystemSelect },
 	computed: {

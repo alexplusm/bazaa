@@ -11,15 +11,14 @@
 				{{ item.extSystemId }}
 			</template>
 			<template v-slot:item="{ item }">
-				<div>
-					<v-divider></v-divider>
+				<v-col>
 					<strong>{{ item.extSystemId }}</strong>
 					<div>
 						{{ item.description }}
-						(<i>{{ item.postResultsUrl }}</i>)
+						<i>({{ item.postResultsUrl }})</i>
 					</div>
 					<v-divider></v-divider>
-				</div>
+				</v-col>
 			</template>
 		</v-combobox>
 	</section>
