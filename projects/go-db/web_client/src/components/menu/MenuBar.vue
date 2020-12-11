@@ -3,7 +3,7 @@
 		<v-list-item>
 			<v-list-item-content>
 				<v-list-item-title class="title">
-					Admin site
+					Админка
 				</v-list-item-title>
 				<v-list-item-subtitle> admin </v-list-item-subtitle>
 			</v-list-item-content>
@@ -32,8 +32,8 @@ export default {
 		return {
 			items: [
 				{ title: 'Home', href: '/home/game' },
-				{ title: 'Create ext system', href: '/home/ext-system/create' },
-				{ title: 'Create game', href: '/home/game-create' },
+				{ title: 'Создать внешнюю систему', href: '/home/ext-system/create' },
+				{ title: 'Создать игру', href: '/home/game-create' },
 			],
 		};
 	},
