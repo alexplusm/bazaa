@@ -32,12 +32,3 @@ type AnswerScreenshotRetrieveDAO struct {
 	UsersAnswer  []byte
 	ExpertAnswer []byte
 }
-
-// AnswerRetrieveDAO
-
-type AnswerRetrieve2DAO struct {
-	UserID       string
-	Value        string
-	UsersAnswer  []byte
-	ExpertAnswer []byte
-}

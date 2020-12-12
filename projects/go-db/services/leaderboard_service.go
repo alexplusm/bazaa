@@ -18,7 +18,7 @@ type LeaderboardService struct {
 
 func (service *LeaderboardService) GetLeaderboard(gameIDs []string, from, to time.Time, limit int) dto.LeadersResponseDTO {
 	// TODO: refactor
-	listDAO := make([]dao.AnswerRetrieve2DAO, 0, 1024)
+	listDAO := make([]dao.AnswerScreenshotRetrieveDAO, 0, 1024)
 
 	for _, gameID := range gameIDs {
 		res, err := service.AnswerService.ABC(gameID, from, to)

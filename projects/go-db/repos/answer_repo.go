@@ -29,7 +29,7 @@ SELECT DISTINCT user_id FROM answers
 WHERE answers.game_id = ($1)
 `
 	selectAnswersByGame = `
-SELECT ans.user_id, ans.value, s.users_answer, s.expert_answer 
+SELECT ans.game_id, ans.user_id, ans.screenshot_id, ans.answer_date, ans.value, s.users_answer, s.expert_answer
 FROM answers ans
 INNER JOIN screenshots s
 ON s.screenshot_id = ans.screenshot_id
@@ -48,7 +48,7 @@ ans.game_id = ($2) AND
 (ans.answer_date BETWEEN ($3) AND ($4))
 `
 	selectScreenshotResultsStatement = `
-SELECT ans.user_id, ans.value, s.users_answer, s.expert_answer
+SELECT ans.game_id, ans.user_id, ans.screenshot_id, ans.answer_date, ans.value, s.users_answer, s.expert_answer
 FROM answers ans
 INNER JOIN screenshots s
 ON s.screenshot_id = ans.screenshot_id
@@ -88,7 +88,7 @@ func (repo *AnswerRepo) InsertOne(answer dao.AnswerDAO) error {
 	return nil
 }
 
-func (repo *AnswerRepo) SelectScreenshotResult(gameID, screenshotID string) ([]dao.AnswerRetrieve2DAO, error) {
+func (repo *AnswerRepo) SelectScreenshotResult(gameID, screenshotID string) ([]dao.AnswerScreenshotRetrieveDAO, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -105,14 +105,15 @@ func (repo *AnswerRepo) SelectScreenshotResult(gameID, screenshotID string) ([]d
 	}
 	defer rows.Close()
 
-	list := make([]dao.AnswerRetrieve2DAO, 0, 10)
+	list := make([]dao.AnswerScreenshotRetrieveDAO, 0, 10)
 
 	for rows.Next() {
-		value := dao.AnswerRetrieve2DAO{}
+		v := dao.AnswerScreenshotRetrieveDAO{}
 		err = rows.Scan(
-			&value.UserID, &value.Value, &value.UsersAnswer, &value.ExpertAnswer,
+			&v.GameID, &v.UserID, &v.ScreenshotID,
+			&v.AnswerDate, &v.Value, &v.UsersAnswer, &v.ExpertAnswer,
 		)
-		list = append(list, value)
+		list = append(list, v)
 	}
 	if rows.Err() != nil {
 		log.Error("select screenshot result: ", rows.Err())
@@ -173,7 +174,7 @@ func (repo *AnswerRepo) SelectAnsweredScreenshotsByGame(
 	return res, nil
 }
 
-func (repo *AnswerRepo) SelectListTODO(gameID string, from, to time.Time) ([]dao.AnswerRetrieve2DAO, error) {
+func (repo *AnswerRepo) SelectListTODO(gameID string, from, to time.Time) ([]dao.AnswerScreenshotRetrieveDAO, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -191,19 +192,20 @@ func (repo *AnswerRepo) SelectListTODO(gameID string, from, to time.Time) ([]dao
 	}
 	defer rows.Close()
 
-	list := make([]dao.AnswerRetrieve2DAO, 0, 1024)
+	list := make([]dao.AnswerScreenshotRetrieveDAO, 0, 1024)
 
 	for rows.Next() {
-		value := dao.AnswerRetrieve2DAO{}
+		v := dao.AnswerScreenshotRetrieveDAO{}
 
 		err = rows.Scan(
-			&value.UserID, &value.Value, &value.UsersAnswer, &value.ExpertAnswer,
+			&v.GameID, &v.UserID, &v.ScreenshotID,
+			&v.AnswerDate, &v.Value, &v.UsersAnswer, &v.ExpertAnswer,
 		)
 		if err != nil {
 			log.Error("seletoodoo user: retrieve answer: ", err)
 			continue
 		}
-		list = append(list, value)
+		list = append(list, v)
 	}
 	if rows.Err() != nil {
 		log.Error("toodoooooo: ", rows.Err())

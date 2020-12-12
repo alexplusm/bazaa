@@ -95,7 +95,7 @@ func (service *AnswerService) GetUsersAndScreenshotCountByGame(
 	return service.AnswerRepo.SelectAnsweredScreenshotsByGame(gameID)
 }
 
-func (service *AnswerService) ABC(gameID string, from, to time.Time) ([]dao.AnswerRetrieve2DAO, error) {
+func (service *AnswerService) ABC(gameID string, from, to time.Time) ([]dao.AnswerScreenshotRetrieveDAO, error) {
 	return service.AnswerRepo.SelectListTODO(gameID, from, to)
 }
 

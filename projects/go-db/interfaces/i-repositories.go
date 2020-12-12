@@ -35,9 +35,9 @@ type IScreenshotRepo interface {
 type IAnswerRepo interface {
 	InsertOne(answer dao.AnswerDAO) error
 	InsertList(answers []dao.AnswerDAO)
-	SelectScreenshotResult(gameID, screenshotID string) ([]dao.AnswerRetrieve2DAO, error)
+	SelectScreenshotResult(gameID, screenshotID string) ([]dao.AnswerScreenshotRetrieveDAO, error)
 	SelectAnsweredScreenshotsByGame(gameID string) (dao.AnsweredScreenshotsDAO, error)
-	SelectListTODO(gameID string, from, to time.Time) ([]dao.AnswerRetrieve2DAO, error)
+	SelectListTODO(gameID string, from, to time.Time) ([]dao.AnswerScreenshotRetrieveDAO, error)
 	SelectListByUserAndGame(userID string, gameID string, from, to time.Time) ([]dao.AnswerScreenshotRetrieveDAO, error)
 }
 
