@@ -4,8 +4,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 )
 
-// TODO: AnswerInsertDAO
-type AnswerDAO struct {
+type AnswerInsertDAO struct {
 	AnswerID     int64
 	UserID       string
 	ScreenshotID string
@@ -13,7 +12,7 @@ type AnswerDAO struct {
 	Value        string
 }
 
-func (dest *AnswerDAO) FromCacheBO(src bo.UserAnswerCacheBO, gameID, screenshotID string) {
+func (dest *AnswerInsertDAO) FromCacheBO(src bo.UserAnswerCacheBO, gameID, screenshotID string) {
 	dest.GameID = gameID
 	dest.ScreenshotID = screenshotID
 	dest.UserID = src.UserID

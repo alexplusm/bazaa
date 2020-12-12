@@ -57,7 +57,7 @@ ans.game_id = ($1) AND ans.screenshot_id = ($2)
 `
 )
 
-func (repo *AnswerRepo) InsertList(answers []dao.AnswerDAO) {
+func (repo *AnswerRepo) InsertList(answers []dao.AnswerInsertDAO) {
 	for _, answer := range answers {
 		err := repo.InsertOne(answer)
 		if err != nil {
@@ -66,7 +66,7 @@ func (repo *AnswerRepo) InsertList(answers []dao.AnswerDAO) {
 	}
 }
 
-func (repo *AnswerRepo) InsertOne(answer dao.AnswerDAO) error {
+func (repo *AnswerRepo) InsertOne(answer dao.AnswerInsertDAO) error {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {

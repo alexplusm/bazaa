@@ -94,9 +94,9 @@ func (service *ScreenshotUserAnswerService) SaveUsersAnswers(
 	// (когда пользователи не выбрали ответ достаточно однозначно)
 	//  < 7 одинаковых ответов
 	usersAnswer := "-1"
-	answersDAO := make([]dao.AnswerDAO, 0, len(answers))
+	answersDAO := make([]dao.AnswerInsertDAO, 0, len(answers))
 	for _, answer := range answers {
-		answerDAO := dao.AnswerDAO{}
+		answerDAO := dao.AnswerInsertDAO{}
 		answerDAO.FromCacheBO(answer, gameID, screenshotID)
 		answersCountMap[answerDAO.Value]++
 		answersDAO = append(answersDAO, answerDAO)
