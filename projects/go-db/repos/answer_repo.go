@@ -20,14 +20,6 @@ const (
 INSERT INTO answers ("screenshot_id", "game_id", "user_id", "value", "answer_date")
 VALUES ($1, $2, $3, $4, $5);
 `
-	selectScreenshotResultsStatement = `
-SELECT ans.user_id, ans.value, s.users_answer
-FROM answers ans
-INNER JOIN screenshots s
-ON s.screenshot_id = ans.screenshot_id
-WHERE
-ans.game_id = ($1) AND ans.screenshot_id = ($2) 
-`
 	selectAnsweredScreenshotsCountStatement = `
 select COUNT(DISTINCT screenshot_id) FROM answers
 WHERE answers.game_id = ($1)
@@ -37,7 +29,7 @@ SELECT DISTINCT user_id FROM answers
 WHERE answers.game_id = ($1)
 `
 	selectAnswersByGame = `
-SELECT ans.user_id, ans.value, s.expert_answer, s.users_answer
+SELECT ans.user_id, ans.value, s.users_answer, s.expert_answer 
 FROM answers ans
 INNER JOIN screenshots s
 ON s.screenshot_id = ans.screenshot_id
@@ -55,13 +47,21 @@ ans.user_id = ($1) AND
 ans.game_id = ($2) AND
 (ans.answer_date BETWEEN ($3) AND ($4))
 `
+	selectScreenshotResultsStatement = `
+SELECT ans.user_id, ans.value, s.users_answer, s.expert_answer
+FROM answers ans
+INNER JOIN screenshots s
+ON s.screenshot_id = ans.screenshot_id
+WHERE
+ans.game_id = ($1) AND ans.screenshot_id = ($2) 
+`
 )
 
 func (repo *AnswerRepo) InsertList(answers []dao.AnswerDAO) {
 	for _, answer := range answers {
 		err := repo.InsertOne(answer)
 		if err != nil {
-			fmt.Println("err: insert answers: ", err) // TODO: log error | return error
+			log.Error("answer repo: insert list: ", err)
 		}
 	}
 }
@@ -74,11 +74,11 @@ func (repo *AnswerRepo) InsertOne(answer dao.AnswerDAO) error {
 	}
 	defer conn.Release()
 
-	ts := time.Now().Unix()
+	nowTimestamp := time.Now().Unix()
 	row, err := conn.Query(
 		context.Background(),
 		insertAnswerStatement,
-		answer.ScreenshotID, answer.GameID, answer.UserID, answer.Value, ts,
+		answer.ScreenshotID, answer.GameID, answer.UserID, answer.Value, nowTimestamp,
 	)
 	if err != nil {
 		return fmt.Errorf("insert answer: %v", err)
@@ -88,7 +88,7 @@ func (repo *AnswerRepo) InsertOne(answer dao.AnswerDAO) error {
 	return nil
 }
 
-func (repo *AnswerRepo) SelectScreenshotResult(gameID, screenshotID string) ([]dao.ScreenshotResultDAO, error) {
+func (repo *AnswerRepo) SelectScreenshotResult(gameID, screenshotID string) ([]dao.AnswerRetrieve2DAO, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -105,16 +105,14 @@ func (repo *AnswerRepo) SelectScreenshotResult(gameID, screenshotID string) ([]d
 	}
 	defer rows.Close()
 
-	list := make([]dao.ScreenshotResultDAO, 0, 10)
+	list := make([]dao.AnswerRetrieve2DAO, 0, 10)
 
 	for rows.Next() {
-		r := dao.ScreenshotResultDAO{}
-		var usersAnswer []byte
-
-		err = rows.Scan(&r.UserID, &r.Value, &usersAnswer)
-		r.UsersAnswer = string(usersAnswer)
-
-		list = append(list, r)
+		value := dao.AnswerRetrieve2DAO{}
+		err = rows.Scan(
+			&value.UserID, &value.Value, &value.UsersAnswer, &value.ExpertAnswer,
+		)
+		list = append(list, value)
 	}
 	if rows.Err() != nil {
 		log.Error("select screenshot result: ", rows.Err())
@@ -175,7 +173,7 @@ func (repo *AnswerRepo) SelectAnsweredScreenshotsByGame(
 	return res, nil
 }
 
-func (repo *AnswerRepo) SelectListTODO(gameID string, from, to time.Time) ([]dao.AnswerStatLeadDAO, error) {
+func (repo *AnswerRepo) SelectListTODO(gameID string, from, to time.Time) ([]dao.AnswerRetrieve2DAO, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -193,21 +191,19 @@ func (repo *AnswerRepo) SelectListTODO(gameID string, from, to time.Time) ([]dao
 	}
 	defer rows.Close()
 
-	list := make([]dao.AnswerStatLeadDAO, 0, 1024)
+	list := make([]dao.AnswerRetrieve2DAO, 0, 1024)
 
 	for rows.Next() {
-		a := dao.AnswerStatLeadDAO{}
-		var usersAnswer []byte
+		value := dao.AnswerRetrieve2DAO{}
 
 		err = rows.Scan(
-			&a.UserID, &a.Value, &a.ExpertAnswer, &usersAnswer,
+			&value.UserID, &value.Value, &value.UsersAnswer, &value.ExpertAnswer,
 		)
-		a.UsersAnswer = string(usersAnswer)
 		if err != nil {
 			log.Error("seletoodoo user: retrieve answer: ", err)
 			continue
 		}
-		list = append(list, a)
+		list = append(list, value)
 	}
 	if rows.Err() != nil {
 		log.Error("toodoooooo: ", rows.Err())

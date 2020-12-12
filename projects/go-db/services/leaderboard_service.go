@@ -1,9 +1,10 @@
 package services
 
 import (
-	"fmt"
 	"sort"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
@@ -17,55 +18,50 @@ type LeaderboardService struct {
 
 func (service *LeaderboardService) GetLeaderboard(gameIDs []string, from, to time.Time, limit int) dto.LeadersResponseDTO {
 	// TODO: refactor
-	listDAO := make([]dao.AnswerStatLeadDAO, 0, 1024)
+	listDAO := make([]dao.AnswerRetrieve2DAO, 0, 1024)
 
 	for _, gameID := range gameIDs {
 		res, err := service.AnswerService.ABC(gameID, from, to)
 		if err != nil {
-			// TODO: LOG
+			log.Error("get leaderboard statistic: ", err)
 			continue
 		}
-		fmt.Println("Res: ", res)
 		listDAO = append(listDAO, res...)
 	}
 
 	// MAP
 
-	userAnswerMap := make(map[string]bo.StatisticsUsersInner)
+	userStatisticMap := make(map[string]bo.StatisticsUsersInner)
 
 	for _, listItem := range listDAO {
-		_, ok := userAnswerMap[listItem.UserID]
-		if !ok {
-			userAnswerMap[listItem.UserID] = bo.StatisticsUsersInner{}
+		_, exist := userStatisticMap[listItem.UserID]
+		if !exist {
+			userStatisticMap[listItem.UserID] = bo.StatisticsUsersInner{}
 		}
 
-		val := userAnswerMap[listItem.UserID]
+		statistic := userStatisticMap[listItem.UserID]
 
-		if listItem.Value == listItem.UsersAnswer {
-			val.RightAnswers++
-			//userAnswerMap[listItem.UserID].RightAnswers++
+		if listItem.Value == string(listItem.UsersAnswer) { // TODO: refactor
+			statistic.RightAnswers++
 		}
-		if listItem.ExpertAnswer == listItem.Value {
-			val.MatchWithExpert++
-			//userAnswerMap[listItem.UserID].MatchWithExpert++
+		if listItem.Value == string(listItem.ExpertAnswer) { // TODO: refactor
+			statistic.MatchWithExpert++
 		}
-		val.TotalScreenshots++
-		//userAnswerMap[listItem.UserID].TotalScreenshots++
+		statistic.TotalScreenshots++
 
-		userAnswerMap[listItem.UserID] = val
+		userStatisticMap[listItem.UserID] = statistic
 	}
 
 	leaders := make([]dto.LeadersDTO, 0, 1024)
 
-	for key, item := range userAnswerMap {
-		sts := dto.StatisticUsersInnerDTO{
+	for key, item := range userStatisticMap {
+		stats := dto.StatisticUsersInnerDTO{
 			TotalScreenshots: item.TotalScreenshots,
 			RightAnswers:     item.RightAnswers,
 			MatchWithExpert:  item.MatchWithExpert,
 			AverageAccuracy:  item.AverageAccuracy,
 		}
-		dtooo := dto.LeadersDTO{UserID: key, Statistics: sts}
-		leaders = append(leaders, dtooo)
+		leaders = append(leaders, dto.LeadersDTO{UserID: key, Statistics: stats})
 	}
 
 	sort.Slice(leaders, func(i, j int) bool {
@@ -74,7 +70,5 @@ func (service *LeaderboardService) GetLeaderboard(gameIDs []string, from, to tim
 
 	leaders = leaders[:limit]
 
-	resp := dto.LeadersResponseDTO{Leaders: leaders}
-
-	return resp
+	return dto.LeadersResponseDTO{Leaders: leaders}
 }

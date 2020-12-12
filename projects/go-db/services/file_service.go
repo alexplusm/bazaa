@@ -172,29 +172,28 @@ func unzip(src string, destination string) ([]bo.ImageParsingResult, error) {
 		}
 
 		// The created file will be stored in outFile with permissions to read
-		// todo: нужен ли  os.O_TRUNC пермишен ?
 		outFile, err := os.OpenFile(fpath, os.O_RDWR|os.O_CREATE, f.Mode())
 		if err != nil {
-			// todo: log error and continue?
-			return parsingResults, err
+			log.Error("unzip: error while file opening: ", err, fpath)
+			continue
 		}
 
 		rc, err := f.Open()
 		if err != nil {
-			// todo: log error and continue
-			return parsingResults, err
+			log.Error("unzip: error while file opening: ", err, fpath, outFile.Close())
+			continue
 		}
 
 		_, err = io.Copy(outFile, rc)
 
-		// Close the file without defer so that it closes the outfile
+		// INFO: Close the file without defer so that it closes the outfile
 		// before the loop moves to the next iteration.
-		outFile.Close()
-		rc.Close()
+		err = outFile.Close()
+		err = rc.Close()
 
 		if err != nil {
-			// todo: log error and continue
-			return parsingResults, err
+			log.Error("unzip: error while file closing: %v", err)
+			continue
 		}
 
 		parsingResults = append(parsingResults, result)

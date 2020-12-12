@@ -65,7 +65,6 @@ func (service *ScreenshotUserAnswerService) BuildUserAnswerResponse(
 			return dto.UserAnswerResponseData{
 				Finished: finished, UserResult: currentUserResult, Answers: answers,
 			}
-
 		}
 	}
 

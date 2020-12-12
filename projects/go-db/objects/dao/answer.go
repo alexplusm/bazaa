@@ -4,6 +4,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 )
 
+// TODO: AnswerInsertDAO
 type AnswerDAO struct {
 	AnswerID     int64
 	UserID       string
@@ -19,24 +20,25 @@ func (dest *AnswerDAO) FromCacheBO(src bo.UserAnswerCacheBO, gameID, screenshotI
 	dest.Value = src.Answer
 }
 
+// AnswerScreenshotRetrieveDAO
+// INFO:
+//		use this struct for queries
+//		which require JOIN on "answers" and "screenshots" tables
 type UserAnswerDAO struct {
 	GameID       string
 	ScreenshotID string
 	AnswerDate   int64
+
 	Value        string
 	ExpertAnswer string
 	UsersAnswer  string
 }
 
-type ScreenshotResultDAO struct {
-	Value       string
-	UsersAnswer string
-	UserID      string
-}
+// AnswerRetrieveDAO
 
-type AnswerStatLeadDAO struct {
+type AnswerRetrieve2DAO struct {
 	UserID       string
 	Value        string
-	ExpertAnswer string
-	UsersAnswer  string
+	UsersAnswer  []byte
+	ExpertAnswer []byte
 }

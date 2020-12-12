@@ -37,10 +37,10 @@ func (service *AnswerService) GetScreenshotResults(
 		if res_len < consts.RequiredAnswerCountToFinishScreenshot {
 			dtoo.Result = "inProcess"
 		} else {
-			if r.UsersAnswer == "-1" {
+			if string(r.UsersAnswer) == "-1" { // TODO: refactor
 				dtoo.Result = "undefined"
 			} else {
-				if r.Value == r.UsersAnswer {
+				if r.Value == string(r.UsersAnswer) { // TODO: refactor
 					dtoo.Result = "right"
 				} else {
 					dtoo.Result = "wrong"
@@ -95,7 +95,7 @@ func (service *AnswerService) GetUsersAndScreenshotCountByGame(
 	return service.AnswerRepo.SelectAnsweredScreenshotsByGame(gameID)
 }
 
-func (service *AnswerService) ABC(gameID string, from, to time.Time) ([]dao.AnswerStatLeadDAO, error) {
+func (service *AnswerService) ABC(gameID string, from, to time.Time) ([]dao.AnswerRetrieve2DAO, error) {
 	return service.AnswerRepo.SelectListTODO(gameID, from, to)
 }
 
