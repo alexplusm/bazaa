@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/jackc/pgx/v4"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
@@ -108,21 +109,7 @@ func (repo *AnswerRepo) SelectScreenshotResult(gameID, screenshotID string) ([]d
 	}
 	defer rows.Close()
 
-	list := make([]dao.AnswerScreenshotRetrieveDAO, 0, 10)
-
-	for rows.Next() {
-		v := dao.AnswerScreenshotRetrieveDAO{}
-		err = rows.Scan(
-			&v.GameID, &v.UserID, &v.ScreenshotID,
-			&v.AnswerDate, &v.Value, &v.UsersAnswer, &v.ExpertAnswer,
-		)
-		list = append(list, v)
-	}
-	if rows.Err() != nil {
-		log.Error("select screenshot result: ", rows.Err())
-	}
-
-	return list, nil
+	return retrieveAnswerScreenshotList(rows)
 }
 
 // TODO: check
@@ -195,28 +182,7 @@ func (repo *AnswerRepo) SelectListTODO(gameID string, from, to time.Time) ([]dao
 	}
 	defer rows.Close()
 
-	list := make([]dao.AnswerScreenshotRetrieveDAO, 0, 1024)
-
-	for rows.Next() {
-		v := dao.AnswerScreenshotRetrieveDAO{}
-
-		err = rows.Scan(
-			&v.GameID, &v.UserID, &v.ScreenshotID,
-			&v.AnswerDate, &v.Value, &v.UsersAnswer, &v.ExpertAnswer,
-		)
-		if err != nil {
-			log.Error("seletoodoo user: retrieve answer: ", err)
-			return nil, fmt.Errorf("retrieve todo name: %v", err)
-		}
-		list = append(list, v)
-	}
-
-	// TODO: если ошибка обработана в цикле, то  тут уже нет смыслв -> удалить везде
-	//if rows.Err() != nil {
-	//	log.Error("toodoooooo: ", rows.Err())
-	//}
-
-	return list, nil
+	return retrieveAnswerScreenshotList(rows)
 }
 
 func (repo *AnswerRepo) SelectListByUserAndGame(
@@ -239,25 +205,23 @@ func (repo *AnswerRepo) SelectListByUserAndGame(
 	}
 	defer rows.Close()
 
+	return retrieveAnswerScreenshotList(rows)
+}
+
+func retrieveAnswerScreenshotList(rows pgx.Rows) ([]dao.AnswerScreenshotRetrieveDAO, error) {
 	list := make([]dao.AnswerScreenshotRetrieveDAO, 0, 1024)
 
 	for rows.Next() {
 		v := dao.AnswerScreenshotRetrieveDAO{}
 
-		// TODO: выделить в функцию
-		err = rows.Scan(
+		err := rows.Scan(
 			&v.GameID, &v.UserID, &v.ScreenshotID,
 			&v.AnswerDate, &v.Value, &v.UsersAnswer, &v.ExpertAnswer,
 		)
-
 		if err != nil {
-			log.Error("select answers by user and game: retrieve answer: ", err)
-			continue
+			return nil, fmt.Errorf("retrieve list: %v", err)
 		}
 		list = append(list, v)
-	}
-	if rows.Err() != nil {
-		log.Error("select answers by user and game: ", rows.Err())
 	}
 
 	return list, nil
