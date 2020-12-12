@@ -1,10 +1,9 @@
 package services
 
 import (
+	"fmt"
 	"sort"
 	"time"
-
-	log "github.com/sirupsen/logrus"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
@@ -16,15 +15,14 @@ type LeaderboardService struct {
 	AnswerService interfaces.IAnswerService
 }
 
-func (service *LeaderboardService) GetLeaderboard(gameIDs []string, from, to time.Time, limit int) dto.LeadersResponseDTO {
+func (service *LeaderboardService) GetLeaderboard(gameIDs []string, from, to time.Time, limit int) (dto.LeadersResponseDTO, error) {
 	// TODO: refactor
 	listDAO := make([]dao.AnswerScreenshotRetrieveDAO, 0, 1024)
 
 	for _, gameID := range gameIDs {
 		res, err := service.AnswerService.ABC(gameID, from, to)
 		if err != nil {
-			log.Error("get leaderboard statistic: ", err)
-			continue
+			return dto.LeadersResponseDTO{}, fmt.Errorf("leaderboear todo msg: %v", err)
 		}
 		listDAO = append(listDAO, res...)
 	}
@@ -70,5 +68,5 @@ func (service *LeaderboardService) GetLeaderboard(gameIDs []string, from, to tim
 
 	leaders = leaders[:limit]
 
-	return dto.LeadersResponseDTO{Leaders: leaders}
+	return dto.LeadersResponseDTO{Leaders: leaders}, nil
 }

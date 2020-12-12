@@ -29,7 +29,8 @@ SELECT DISTINCT user_id FROM answers
 WHERE answers.game_id = ($1)
 `
 	selectAnswersByGame = `
-SELECT ans.game_id, ans.user_id, ans.screenshot_id, ans.answer_date, ans.value, s.users_answer, s.expert_answer
+SELECT 
+ans.game_id, ans.user_id, ans.screenshot_id, ans.answer_date, ans.value, s.users_answer, s.expert_answer
 FROM answers ans
 INNER JOIN screenshots s
 ON s.screenshot_id = ans.screenshot_id
@@ -38,7 +39,8 @@ ans.game_id = ($1) AND
 (ans.answer_date BETWEEN ($2) AND ($3))
 `
 	selectAnswersByUserAndGameStatement = `
-SELECT ans.game_id, ans.user_id, ans.screenshot_id, ans.answer_date, ans.value, s.users_answer, s.expert_answer
+SELECT 
+ans.game_id, ans.user_id, ans.screenshot_id, ans.answer_date, ans.value, s.users_answer, s.expert_answer
 FROM answers ans
 INNER JOIN screenshots s
 ON s.screenshot_id = ans.screenshot_id
@@ -48,7 +50,8 @@ ans.game_id = ($2) AND
 (ans.answer_date BETWEEN ($3) AND ($4))
 `
 	selectScreenshotResultsStatement = `
-SELECT ans.game_id, ans.user_id, ans.screenshot_id, ans.answer_date, ans.value, s.users_answer, s.expert_answer
+SELECT 
+ans.game_id, ans.user_id, ans.screenshot_id, ans.answer_date, ans.value, s.users_answer, s.expert_answer
 FROM answers ans
 INNER JOIN screenshots s
 ON s.screenshot_id = ans.screenshot_id
@@ -203,13 +206,15 @@ func (repo *AnswerRepo) SelectListTODO(gameID string, from, to time.Time) ([]dao
 		)
 		if err != nil {
 			log.Error("seletoodoo user: retrieve answer: ", err)
-			continue
+			return nil, fmt.Errorf("retrieve todo name: %v", err)
 		}
 		list = append(list, v)
 	}
-	if rows.Err() != nil {
-		log.Error("toodoooooo: ", rows.Err())
-	}
+
+	// TODO: если ошибка обработана в цикле, то  тут уже нет смыслв -> удалить везде
+	//if rows.Err() != nil {
+	//	log.Error("toodoooooo: ", rows.Err())
+	//}
 
 	return list, nil
 }
