@@ -38,7 +38,7 @@ type IAnswerRepo interface {
 	SelectScreenshotResult(gameID, screenshotID string) ([]dao.AnswerRetrieve2DAO, error)
 	SelectAnsweredScreenshotsByGame(gameID string) (dao.AnsweredScreenshotsDAO, error)
 	SelectListTODO(gameID string, from, to time.Time) ([]dao.AnswerRetrieve2DAO, error)
-	SelectListByUserAndGame(userID string, gameID string, from, to time.Time) ([]dao.UserAnswerDAO, error)
+	SelectListByUserAndGame(userID string, gameID string, from, to time.Time) ([]dao.AnswerScreenshotRetrieveDAO, error)
 }
 
 type IUserRepo interface {

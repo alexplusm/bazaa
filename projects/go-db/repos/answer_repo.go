@@ -38,7 +38,7 @@ ans.game_id = ($1) AND
 (ans.answer_date BETWEEN ($2) AND ($3))
 `
 	selectAnswersByUserAndGameStatement = `
-SELECT ans.game_id, ans.screenshot_id, ans.answer_date, ans.value, s.expert_answer, s.users_answer
+SELECT ans.game_id, ans.user_id, ans.screenshot_id, ans.answer_date, ans.value, s.users_answer, s.expert_answer
 FROM answers ans
 INNER JOIN screenshots s
 ON s.screenshot_id = ans.screenshot_id
@@ -214,7 +214,7 @@ func (repo *AnswerRepo) SelectListTODO(gameID string, from, to time.Time) ([]dao
 
 func (repo *AnswerRepo) SelectListByUserAndGame(
 	userID string, gameID string, from, to time.Time,
-) ([]dao.UserAnswerDAO, error) {
+) ([]dao.AnswerScreenshotRetrieveDAO, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -232,22 +232,22 @@ func (repo *AnswerRepo) SelectListByUserAndGame(
 	}
 	defer rows.Close()
 
-	list := make([]dao.UserAnswerDAO, 0, 1024)
+	list := make([]dao.AnswerScreenshotRetrieveDAO, 0, 1024)
 
 	for rows.Next() {
-		a := dao.UserAnswerDAO{}
-		var usersAnswer []byte
+		v := dao.AnswerScreenshotRetrieveDAO{}
 
+		// TODO: выделить в функцию
 		err = rows.Scan(
-			&a.GameID, &a.ScreenshotID, &a.AnswerDate,
-			&a.Value, &a.ExpertAnswer, &usersAnswer,
+			&v.GameID, &v.UserID, &v.ScreenshotID,
+			&v.AnswerDate, &v.Value, &v.UsersAnswer, &v.ExpertAnswer,
 		)
-		a.UsersAnswer = string(usersAnswer)
+
 		if err != nil {
 			log.Error("select answers by user and game: retrieve answer: ", err)
 			continue
 		}
-		list = append(list, a)
+		list = append(list, v)
 	}
 	if rows.Err() != nil {
 		log.Error("select answers by user and game: ", rows.Err())

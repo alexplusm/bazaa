@@ -20,18 +20,17 @@ func (dest *AnswerDAO) FromCacheBO(src bo.UserAnswerCacheBO, gameID, screenshotI
 	dest.Value = src.Answer
 }
 
-// AnswerScreenshotRetrieveDAO
 // INFO:
 //		use this struct for queries
 //		which require JOIN on "answers" and "screenshots" tables
-type UserAnswerDAO struct {
+type AnswerScreenshotRetrieveDAO struct {
 	GameID       string
+	UserID       string
 	ScreenshotID string
 	AnswerDate   int64
-
 	Value        string
-	ExpertAnswer string
-	UsersAnswer  string
+	UsersAnswer  []byte
+	ExpertAnswer []byte
 }
 
 // AnswerRetrieveDAO
