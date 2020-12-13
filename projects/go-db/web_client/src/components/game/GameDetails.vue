@@ -9,26 +9,7 @@
 			</v-col>
 
 			<v-col cols="4">
-				<h3>Добавить источник</h3>
-
-				<v-select
-					v-model="selectedSourceType"
-					:items="sourceTypes"
-					label="Source type"
-					dense
-				></v-select>
-
-				<div v-if="selectedSourceType === sourceTypes[0].value">
-					<GameUploadFile />
-				</div>
-
-				<div v-if="selectedSourceType === sourceTypes[1].value">
-					Расписание
-				</div>
-
-				<div v-if="selectedSourceType === sourceTypes[2].value">
-					Другая игра
-				</div>
+				<GameAddSources />
 			</v-col>
 		</v-row>
 	</section>
@@ -36,24 +17,15 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import GameUploadFile from './GameUploadFile';
 import GameInfo from "./GameInfo";
+import GameAddSources from "./GameAddSources"
 
 export default {
 	name: 'GameDetails',
-	components: { GameUploadFile, GameInfo },
-	data() {
-		return {
-			loading: true,
-			selectedSourceType: 0,
-			// TODO: sync with sourceTypes
-			sourceTypes: [
-				{ value: 0, text: 'Archive' },
-				{ value: 1, text: 'Schedule' },
-				{ value: 2, text: 'Game results' },
-			],
-		};
-	},
+	components: { GameInfo, GameAddSources },
+	data: () => ({
+		loading: true,
+	}),
 	methods: {
 		...mapActions(['getGameDetails']),
 	},
