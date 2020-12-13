@@ -2,7 +2,7 @@
 	<section>
 		<v-select
 			label="Внешняя система"
-			:value="selected"
+			:value="selectedItem"
 			:items="items"
 			item-value="extSystemId"
 			@change="onChange"
@@ -28,12 +28,20 @@
 <script>
 export default {
 	name: 'ExtSystemSelect',
+	model: {
+		prop: 'selected',
+	},
 	props: {
 		selected: Object || null,
 		items: {
 			type: Array,
 			default: () => [],
 		},
+	},
+	computed: {
+		selectedItem() {
+			return this.selected ? this.selected.extSystemId : null;
+		}
 	},
 	methods: {
 		onChange(selected) {
