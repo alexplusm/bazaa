@@ -4,6 +4,7 @@
 			label="Внешняя система"
 			:value="selected"
 			:items="items"
+			item-value="extSystemId"
 			@input="onInput"
 			outlined
 		>
