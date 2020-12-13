@@ -36,26 +36,26 @@ export const answerTypesArray = [
 const archiveSourceType = {
 	value: 1,
 	text: 'Архив',
-}
+};
 
 const scheduleSourceType = {
 	value: 2,
-	text: 'Расписание'
-}
+	text: 'Расписание',
+};
 
 const anotherGameSourceType = {
 	value: 3,
-	text: 'Другая игра'
-}
+	text: 'Другая игра',
+};
 
 export const sourceTypesMap = {
 	archiveSourceType,
 	scheduleSourceType,
-	anotherGameSourceType
-}
+	anotherGameSourceType,
+};
 
 export const sourceTypesArray = [
 	archiveSourceType,
 	scheduleSourceType,
-	anotherGameSourceType
-]
+	anotherGameSourceType,
+];

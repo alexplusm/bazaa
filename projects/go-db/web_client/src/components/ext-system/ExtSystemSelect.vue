@@ -41,7 +41,7 @@ export default {
 	computed: {
 		selectedItem() {
 			return this.selected ? this.selected.extSystemId : null;
-		}
+		},
 	},
 	methods: {
 		onChange(selected) {

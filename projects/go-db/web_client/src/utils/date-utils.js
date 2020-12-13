@@ -1,3 +1,3 @@
 export function dateToDto(date) {
-    return Number(date) / 1000;
+	return Number(date) / 1000;
 }

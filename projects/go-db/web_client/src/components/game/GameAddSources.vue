@@ -13,9 +13,7 @@
 			<GameUploadArchive />
 		</div>
 
-		<div v-if="selectedSourceType === sourceTypes[1].value">
-			Расписание
-		</div>
+		<div v-if="selectedSourceType === sourceTypes[1].value">Расписание</div>
 
 		<div v-if="selectedSourceType === sourceTypes[2].value">
 			Другая игра
@@ -24,15 +22,15 @@
 </template>
 
 <script>
-import {sourceTypesMap, sourceTypesArray} from '../../domain/consts'
-import GameUploadArchive from "./GameUploadArchive"
+import { sourceTypesMap, sourceTypesArray } from '../../domain/consts';
+import GameUploadArchive from './GameUploadArchive';
 
 export default {
-	name: "GameAddSources",
-	components: {GameUploadArchive},
+	name: 'GameAddSources',
+	components: { GameUploadArchive },
 	data: () => ({
 		selectedSourceType: sourceTypesMap.archiveSourceType.value,
 		sourceTypes: sourceTypesArray,
 	}),
-}
+};
 </script>

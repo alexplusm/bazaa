@@ -1,18 +1,13 @@
 <template>
 	<section>
-		<div>Start date: {{ game.startDate }}</div>
-		<div>Finish date: {{ game.finishDate }}</div>
-		<div>
-			Answer type: {{ game.question.answerType }}
-		</div>
-		<div>Question: {{ game.question.text }}</div>
+		<div>Начало игры: {{ game.startDate }}</div>
+		<div>Конец игры: {{ game.finishDate }}</div>
+		<div>Тип ответов: {{ game.question.answerType }}</div>
+		<div>Вопрос: {{ game.question.text }}</div>
 
 		<ul>
-			Options
-			<li
-				v-for="option in game.question.options"
-				:key="option.option"
-			>
+			Опции
+			<li v-for="option in game.question.options" :key="option.option">
 				text: <strong>{{ option.text }}</strong> (option:
 				<strong>{{ option.option }}</strong
 				>)
@@ -20,11 +15,8 @@
 		</ul>
 
 		<ul>
-			Sources
-			<li
-				v-for="source in game.sources"
-				:key="source.sourceId"
-			>
+			Источники
+			<li v-for="source in game.sources" :key="source.sourceId">
 				{{ source.sourceId }} | {{ source.type }}
 			</li>
 		</ul>
@@ -33,13 +25,9 @@
 
 <script>
 export default {
-	name: "GameInfo",
+	name: 'GameInfo',
 	props: {
-		game: Object
-	}
-}
+		game: Object,
+	},
+};
 </script>
-
-<style scoped>
-
-</style>

@@ -5,7 +5,7 @@
 
 		<v-row v-else>
 			<v-col cols="5">
-				<GameInfo :game="currentGame"/>
+				<GameInfo :game="currentGame" />
 			</v-col>
 
 			<v-col cols="4">
@@ -17,8 +17,8 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import GameInfo from "./GameInfo";
-import GameAddSources from "./GameAddSources"
+import GameInfo from './GameInfo';
+import GameAddSources from './GameAddSources';
 
 export default {
 	name: 'GameDetails',
