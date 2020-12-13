@@ -24,19 +24,15 @@
 </template>
 
 <script>
+import {sourceTypesMap, sourceTypesArray} from '../../domain/consts'
 import GameUploadArchive from "./GameUploadArchive"
 
 export default {
 	name: "GameAddSources",
 	components: {GameUploadArchive},
 	data: () => ({
-		selectedSourceType: 0,  // TODO: default value
-		// TODO: sync with sourceTypes || TODO domain consts
-		sourceTypes: [
-			{ value: 0, text: 'Архив' },
-			{ value: 1, text: 'Расписание' },
-			{ value: 2, text: 'Результат другой игры' },
-		],
+		selectedSourceType: sourceTypesMap.archiveSourceType.value,
+		sourceTypes: sourceTypesArray,
 	}),
 }
 </script>

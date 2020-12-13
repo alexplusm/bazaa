@@ -38,10 +38,3 @@ export default {
 	},
 };
 </script>
-
-<style scoped>
-h3 {
-	padding-bottom: 20px;
-	/*	TODO: use vue class pt-16 ? */
-}
-</style>
