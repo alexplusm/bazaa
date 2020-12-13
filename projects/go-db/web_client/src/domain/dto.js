@@ -1,4 +1,5 @@
 import { answerTypesMap } from './consts';
+import { dateToDto } from '../utils/date-utils';
 
 export function createGameToDTO(game) {
 	const result = {};
@@ -8,8 +9,9 @@ export function createGameToDTO(game) {
 	result.extSystemId = game.extSystem.extSystemId;
 	result.answerType = game.answerType;
 
-	const startDate = Number(new Date(game.startDate)) / 1000;
-	const endDate = Number(new Date(game.endDate)) / 1000;
+	// TODO: test!
+	const startDate = dateToDto(new Date(game.startDate));
+	const endDate = dateToDto(new Date(game.endDate));
 
 	result.startDate = startDate.toString();
 	result.endDate = endDate.toString();
