@@ -4,36 +4,8 @@
 		</v-progress-circular>
 
 		<v-row v-else>
-			<!-- TODO: GameDetailsInfo component -->
 			<v-col cols="5">
-				<div>Start date: {{ this.currentGame.startDate }}</div>
-				<div>Finish date: {{ this.currentGame.finishDate }}</div>
-				<div>
-					Answer type: {{ this.currentGame.question.answerType }}
-				</div>
-				<div>Question: {{ this.currentGame.question.text }}</div>
-
-				<ul>
-					Options
-					<li
-						v-for="option in this.currentGame.question.options"
-						:key="option.option"
-					>
-						text: <strong>{{ option.text }}</strong> (option:
-						<strong>{{ option.option }}</strong
-						>)
-					</li>
-				</ul>
-
-				<ul>
-					Sources
-					<li
-						v-for="source in this.currentGame.sources"
-						:key="source.sourceId"
-					>
-						{{ source.sourceId }} | {{ source.type }}
-					</li>
-				</ul>
+				<GameInfo :game="currentGame"/>
 			</v-col>
 
 			<v-col cols="4">
@@ -65,10 +37,11 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import GameUploadFile from './GameUploadFile';
+import GameInfo from "./GameInfo";
 
 export default {
 	name: 'GameDetails',
-	components: { GameUploadFile },
+	components: { GameUploadFile, GameInfo },
 	data() {
 		return {
 			loading: true,
