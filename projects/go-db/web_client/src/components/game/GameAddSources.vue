@@ -1,17 +1,16 @@
 <template>
 	<section>
-
-		<h3>Добавить источник ккк</h3>
+		<h3 class="mb-8">Добавить источник</h3>
 
 		<v-select
+			label="Источник"
 			v-model="selectedSourceType"
 			:items="sourceTypes"
-			label="Source type"
 			dense
 		></v-select>
 
 		<div v-if="selectedSourceType === sourceTypes[0].value">
-			<GameUploadFile />
+			<GameUploadArchive />
 		</div>
 
 		<div v-if="selectedSourceType === sourceTypes[1].value">
@@ -25,26 +24,19 @@
 </template>
 
 <script>
-import GameUploadFile from "./GameUploadFile"
+import GameUploadArchive from "./GameUploadArchive"
 
 export default {
 	name: "GameAddSources",
-	components: {
-		GameUploadFile
-	},
-	data() {
-		return {
-			selectedSourceType: 0,
-			// TODO: sync with sourceTypes
-			sourceTypes: [
-				{ value: 0, text: 'Архив' },
-				{ value: 1, text: 'Расписание' },
-				{ value: 2, text: 'Результат другой игры' },
-			],
-		};
-	},
+	components: {GameUploadArchive},
+	data: () => ({
+		selectedSourceType: 0,  // TODO: default value
+		// TODO: sync with sourceTypes || TODO domain consts
+		sourceTypes: [
+			{ value: 0, text: 'Архив' },
+			{ value: 1, text: 'Расписание' },
+			{ value: 2, text: 'Результат другой игры' },
+		],
+	}),
 }
 </script>
-
-<style scoped>
-</style>
