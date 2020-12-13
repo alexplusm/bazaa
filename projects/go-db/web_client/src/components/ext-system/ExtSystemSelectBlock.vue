@@ -1,8 +1,8 @@
 <template>
 	<ExtSystemSelect
-		v-model="currentExtSystem"
+		v-model="selectedExtSystem"
 		:items="extSystems"
-		v-on:change="onChange"
+		@input="onChange"
 	/>
 </template>
 
@@ -26,7 +26,6 @@ export default {
 		},
 	},
 	mounted() {
-		// TODO: не корректно работает
 		this.selectedExtSystem = this.currentExtSystem;
 		this.getExtSystemList();
 	},
