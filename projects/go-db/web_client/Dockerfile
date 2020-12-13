@@ -1,8 +1,8 @@
-# build stage
+# INFO: build stage
 FROM node:15.2-alpine3.10 as build-stage
 
-# INFO: for server
-ENV https_proxy http://10.200.81.56:3128/
+# INFO: for production on server
+#ENV https_proxy http://10.200.81.56:3128/
 
 LABEL maintainer="Alex Mogilevskiy <dark.qvark@gmail.com>"
 
@@ -16,11 +16,11 @@ COPY . .
 
 RUN npm run build
 
-# production stage
-FROM nginx:1.19.4-alpine as production-stage
+# INFO: production stage
+FROM nginx:1.19-alpine as production-stage
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 COPY --from=build-stage /app/dist /usr/share/nginx/html
-
-#EXPOSE 8000
 
 CMD ["nginx", "-g", "daemon off;"]

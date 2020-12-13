@@ -1,8 +1,8 @@
 <template>
 	<ExtSystemSelect
-		v-model="currentExtSystem"
+		v-model="selectedExtSystem"
 		:items="extSystems"
-		v-on:change="onChange"
+		@change="onChange"
 	/>
 </template>
 
@@ -11,7 +11,7 @@ import { mapActions, mapGetters } from 'vuex';
 import ExtSystemSelect from './ExtSystemSelect';
 
 export default {
-	name: 'ExtSystemSelectBlock',
+	name: 'ExtSystemSelectForm',
 	data: () => ({
 		selectedExtSystem: null,
 	}),
@@ -26,7 +26,6 @@ export default {
 		},
 	},
 	mounted() {
-		// TODO: не корректно работает
 		this.selectedExtSystem = this.currentExtSystem;
 		this.getExtSystemList();
 	},

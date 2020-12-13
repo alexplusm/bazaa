@@ -63,7 +63,7 @@ type IAnswerService interface {
 	) ([]bo.StatisticAnswersDateSlicedBO, error)
 	GetScreenshotResults(gameID, screenshotID string) ([]dto.UserAnswerForScreenshotResultDTO, error)
 	GetUsersAndScreenshotCountByGame(gameID string) (dao.AnsweredScreenshotsDAO, error)
-	ABC(gameID string, from, to time.Time) ([]dao.AnswerStatLeadDAO, error)
+	ABC(gameID string, from, to time.Time) ([]dao.AnswerScreenshotRetrieveDAO, error) // TODO: BO?
 }
 
 type IScreenshotService interface {
@@ -89,7 +89,7 @@ type IDurationService interface {
 }
 
 type ILeaderboardService interface {
-	GetLeaderboard(gameIDs []string, from, to time.Time, limit int) dto.LeadersResponseDTO
+	GetLeaderboard(gameIDs []string, from, to time.Time, limit int) (dto.LeadersResponseDTO, error)
 }
 
 type IImageService interface {

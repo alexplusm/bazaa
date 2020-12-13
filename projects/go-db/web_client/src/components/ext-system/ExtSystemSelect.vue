@@ -1,10 +1,12 @@
 <template>
 	<section>
-		<v-combobox
+		<v-select
 			label="Внешняя система"
-			v-bind:selected="selected"
-			v-on:change="onChange"
+			:value="selectedItem"
 			:items="items"
+			item-value="extSystemId"
+			@change="onChange"
+			clearable
 			outlined
 		>
 			<template v-slot:selection="{ item }">
@@ -17,28 +19,36 @@
 						{{ item.description }}
 						<i>({{ item.postResultsUrl }})</i>
 					</div>
-					<v-divider></v-divider>
 				</v-col>
 			</template>
-		</v-combobox>
+		</v-select>
 	</section>
 </template>
 
 <script>
-// TODO: init value: must be select current from store
 export default {
 	name: 'ExtSystemSelect',
 	model: {
 		prop: 'selected',
-		event: 'change',
 	},
 	props: {
-		selected: Object,
-		items: Array,
+		selected: Object || null,
+		items: {
+			type: Array,
+			default: () => [],
+		},
+	},
+	computed: {
+		selectedItem() {
+			return this.selected ? this.selected.extSystemId : null;
+		},
 	},
 	methods: {
 		onChange(selected) {
-			this.$emit('change', { ...selected });
+			const value = this.items.find(
+				(item) => item.extSystemId === selected
+			);
+			this.$emit('change', value);
 		},
 	},
 };

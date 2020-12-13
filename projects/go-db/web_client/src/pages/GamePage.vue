@@ -1,7 +1,5 @@
 <template>
-	<section>
-		<GameDetails />
-	</section>
+	<GameDetails />
 </template>
 
 <script>

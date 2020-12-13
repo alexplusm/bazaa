@@ -32,3 +32,30 @@ export const answerTypesArray = [
 	rectangleCoordsType,
 	polygonCoordsType,
 ];
+
+const archiveSourceType = {
+	value: 1,
+	text: 'Архив',
+};
+
+const scheduleSourceType = {
+	value: 2,
+	text: 'Расписание',
+};
+
+const anotherGameSourceType = {
+	value: 3,
+	text: 'Другая игра',
+};
+
+export const sourceTypesMap = {
+	archiveSourceType,
+	scheduleSourceType,
+	anotherGameSourceType,
+};
+
+export const sourceTypesArray = [
+	archiveSourceType,
+	scheduleSourceType,
+	anotherGameSourceType,
+];

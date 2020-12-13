@@ -2,19 +2,25 @@
 	<section>
 		<v-row>
 			<v-col cols="6">
-				<ExtSystemSelectBlock />
+				<ExtSystemSelectForm />
 			</v-col>
 		</v-row>
-		<GameList />
+
+		<h4 v-if="!this.currentExtSystem">Внешняя система не выбрана</h4>
+		<GameTable v-else />
 	</section>
 </template>
 
 <script>
-import GameList from '../components/game/GameList';
-import ExtSystemSelectBlock from '../components/ext-system/ExtSystemSelectBlock';
+import { mapGetters } from 'vuex';
+import GameTable from '../components/game/GameTable';
+import ExtSystemSelectForm from '../components/ext-system/ExtSystemSelectForm';
 
 export default {
 	name: 'GamesPage',
-	components: { GameList, ExtSystemSelectBlock },
+	components: { GameTable, ExtSystemSelectForm },
+	computed: {
+		...mapGetters(['currentExtSystem']),
+	},
 };
 </script>

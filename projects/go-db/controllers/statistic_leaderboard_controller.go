@@ -65,7 +65,10 @@ func (controller *StatisticLeaderboardController) GetStatistics(ctx echo.Context
 		gameIDs = append(gameIDs, game.GameID)
 	}
 
-	resp := controller.LeaderboardService.GetLeaderboard(gameIDs, from, to, qp.Limit.Value)
+	body, err := controller.LeaderboardService.GetLeaderboard(gameIDs, from, to, qp.Limit.Value)
+	if err != nil {
+		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
+	}
 
-	return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(resp))
+	return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(body))
 }

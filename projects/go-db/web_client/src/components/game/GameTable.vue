@@ -31,7 +31,7 @@
 import { mapGetters } from 'vuex';
 
 export default {
-	name: 'GameList',
+	name: 'GameTable',
 	computed: {
 		...mapGetters(['games']),
 	},

@@ -37,10 +37,10 @@ func (service *AnswerService) GetScreenshotResults(
 		if res_len < consts.RequiredAnswerCountToFinishScreenshot {
 			dtoo.Result = "inProcess"
 		} else {
-			if r.UsersAnswer == "-1" {
+			if string(r.UsersAnswer) == "-1" { // TODO: refactor
 				dtoo.Result = "undefined"
 			} else {
-				if r.Value == r.UsersAnswer {
+				if r.Value == string(r.UsersAnswer) { // TODO: refactor
 					dtoo.Result = "right"
 				} else {
 					dtoo.Result = "wrong"
@@ -59,7 +59,7 @@ func (service *AnswerService) GetScreenshotResults(
 func (service *AnswerService) GetUserStatistics(
 	userID string, gameIDs []string, from, to time.Time,
 ) ([]bo.StatisticAnswersDateSlicedBO, error) {
-	userAnswers := make([]dao.UserAnswerDAO, 0, 1024)
+	userAnswers := make([]dao.AnswerScreenshotRetrieveDAO, 0, 1024)
 
 	for _, gameID := range gameIDs {
 		oneRes, err := service.AnswerRepo.SelectListByUserAndGame(userID, gameID, from, to)
@@ -95,12 +95,14 @@ func (service *AnswerService) GetUsersAndScreenshotCountByGame(
 	return service.AnswerRepo.SelectAnsweredScreenshotsByGame(gameID)
 }
 
-func (service *AnswerService) ABC(gameID string, from, to time.Time) ([]dao.AnswerStatLeadDAO, error) {
+func (service *AnswerService) ABC(gameID string, from, to time.Time) ([]dao.AnswerScreenshotRetrieveDAO, error) {
 	return service.AnswerRepo.SelectListTODO(gameID, from, to)
 }
 
-func countRes(userAnswers []dao.UserAnswerDAO, start, end time.Time) []bo.StatisticAnswersDateSlicedBO {
+func countRes(userAnswers []dao.AnswerScreenshotRetrieveDAO, start, end time.Time) []bo.StatisticAnswersDateSlicedBO {
 	results := make([]bo.StatisticAnswersDateSlicedBO, 0, len(userAnswers))
+
+	fmt.Printf("val: %+v\n", userAnswers)
 
 	currentDay := start
 	for currentDay.Before(end) {
@@ -118,14 +120,14 @@ func countRes(userAnswers []dao.UserAnswerDAO, start, end time.Time) []bo.Statis
 				}
 				if curIdx == -1 {
 					stat := bo.StatisticAnswersBO{MatchWithExpert: -1}
-					stat.Increase(userAnswer.Value, userAnswer.ExpertAnswer, userAnswer.UsersAnswer)
+					stat.Increase(userAnswer.Value, string(userAnswer.ExpertAnswer), string(userAnswer.UsersAnswer))
 					results = append(results, bo.StatisticAnswersDateSlicedBO{
 						Date:       currentDay,
 						Statistics: stat,
 					})
 				} else {
 					results[curIdx].Statistics.Increase(
-						userAnswer.Value, userAnswer.ExpertAnswer, userAnswer.UsersAnswer,
+						userAnswer.Value, string(userAnswer.ExpertAnswer), string(userAnswer.UsersAnswer),
 					)
 				}
 			}
