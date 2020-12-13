@@ -2,7 +2,7 @@
 	<section>
 		<v-row>
 			<v-col cols="6">
-				<ExtSystemSelectBlock />
+				<ExtSystemSelectForm />
 			</v-col>
 		</v-row>
 		<GameList />
@@ -11,10 +11,10 @@
 
 <script>
 import GameList from '../components/game/GameList';
-import ExtSystemSelectBlock from '../components/ext-system/ExtSystemSelectBlock';
+import ExtSystemSelectForm from '../components/ext-system/ExtSystemSelectForm';
 
 export default {
 	name: 'GamesPage',
-	components: { GameList, ExtSystemSelectBlock },
+	components: { GameList, ExtSystemSelectForm },
 };
 </script>
