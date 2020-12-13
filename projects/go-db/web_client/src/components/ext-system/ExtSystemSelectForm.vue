@@ -2,7 +2,7 @@
 	<ExtSystemSelect
 		v-model="selectedExtSystem"
 		:items="extSystems"
-		@input="onInput"
+		@change="onChange"
 	/>
 </template>
 
@@ -21,7 +21,7 @@ export default {
 	},
 	methods: {
 		...mapActions(['getExtSystemList', 'setCurrentExtSystem']),
-		onInput(selectedExtSystem) {
+		onChange(selectedExtSystem) {
 			this.setCurrentExtSystem(selectedExtSystem);
 		},
 	},

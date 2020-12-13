@@ -1,11 +1,12 @@
 <template>
 	<section>
-		<v-combobox
+		<v-select
 			label="Внешняя система"
 			:value="selected"
 			:items="items"
 			item-value="extSystemId"
-			@input="onInput"
+			@change="onChange"
+			clearable
 			outlined
 		>
 			<template v-slot:selection="{ item }">
@@ -18,10 +19,9 @@
 						{{ item.description }}
 						<i>({{ item.postResultsUrl }})</i>
 					</div>
-					<v-divider></v-divider>
 				</v-col>
 			</template>
-		</v-combobox>
+		</v-select>
 	</section>
 </template>
 
@@ -40,8 +40,9 @@ export default {
 		},
 	},
 	methods: {
-		onInput(selected) {
-			this.$emit('input', { ...selected });
+		onChange(selected) {
+			const value = this.items.find(item => item.extSystemId === selected);
+			this.$emit('change', value);
 		},
 	},
 };

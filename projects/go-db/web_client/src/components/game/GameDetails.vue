@@ -37,7 +37,7 @@
 			</v-col>
 
 			<v-col cols="4">
-				<h3>Add source</h3>
+				<h3>Добавить источник</h3>
 
 				<v-select
 					v-model="selectedSourceType"
@@ -51,11 +51,11 @@
 				</div>
 
 				<div v-if="selectedSourceType === sourceTypes[1].value">
-					Schedule
+					Расписание
 				</div>
 
 				<div v-if="selectedSourceType === sourceTypes[2].value">
-					Other game
+					Другая игра
 				</div>
 			</v-col>
 		</v-row>
@@ -97,5 +97,6 @@ export default {
 <style scoped>
 h3 {
 	padding-bottom: 20px;
+/*	TODO: use vue class pt-16 ? */
 }
 </style>
