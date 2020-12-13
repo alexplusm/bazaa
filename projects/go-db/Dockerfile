@@ -1,6 +1,6 @@
 FROM golang:1.15-alpine
 
-# INFO: for server
+# INFO: for production on server
 #ENV http_proxy http://10.200.81.56:3128/
 
 # The latest alpine images don't have some tools like (`git` and `bash`).

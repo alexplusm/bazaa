@@ -39,6 +39,9 @@ https://eax.me/golang-pgx/
 * testing
 https://eax.me/golang-dockertest/
 
+* docker-compose
+https://levelup.gitconnected.com/dockerized-crud-restful-api-with-go-gorm-jwt-postgresql-mysql-and-testing-61d731430bd8
+
 ## todos
 
 * if I change package code and dont run "go build" what happens? "go run main.go"

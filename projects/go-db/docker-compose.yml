@@ -62,7 +62,6 @@ services:
     restart: unless-stopped
     networks:
       - fullstack_net
-    # todo: redis volume
 
   pgadmin:
     image: dpage/pgadmin4:4.29
@@ -87,5 +86,3 @@ volumes:
 networks:
   fullstack_net:
     driver: bridge
-
-# https://levelup.gitconnected.com/dockerized-crud-restful-api-with-go-gorm-jwt-postgresql-mysql-and-testing-61d731430bd8
