@@ -28,20 +28,18 @@
 <script>
 export default {
 	name: 'ExtSystemSelect',
-	model: {
-		prop: 'selected',
-		event: 'input',
-	},
 	props: {
-		selected: Object||null,
+		selected: Object || null,
 		items: {
 			type: Array,
-			default: () => []
+			default: () => [],
 		},
 	},
 	methods: {
 		onChange(selected) {
-			const value = this.items.find(item => item.extSystemId === selected);
+			const value = this.items.find(
+				(item) => item.extSystemId === selected
+			);
 			this.$emit('change', value);
 		},
 	},
