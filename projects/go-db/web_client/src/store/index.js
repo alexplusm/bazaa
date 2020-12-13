@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { api } from '../api';
+import { login } from '../domain/storage-domain'
 
 Vue.use(Vuex);
 
@@ -16,6 +17,7 @@ export const store = new Vuex.Store({
 	},
 	mutations: {
 		authorize(state) {
+			login();
 			state.auth.authorized = true;
 		},
 		setExtSystemList(state, extSystems) {
@@ -32,6 +34,9 @@ export const store = new Vuex.Store({
 		},
 	},
 	actions: {
+		authorize({commit}) {
+			commit('authorize');
+		},
 		getExtSystemList({ commit }) {
 			return api.extSystem
 				.list()
