@@ -88,8 +88,14 @@ func registerRoutes(e *echo.Echo) error {
 	e.GET("api/v1/game", gameController.List)
 	e.GET("api/v1/game/:"+consts.GameIDUrlParam, gameController.Details)
 
-	// TODO: ["application/json", "multipart/form-data"]
-	e.PUT("api/v1/game/:"+consts.GameIDUrlParam, gameController.Update)
+	// TODO: ["multipart/form-data"]
+	e.PUT("api/v1/game/:"+consts.GameIDUrlParam+"/archives", gameController.AttachArchives)
+
+	// TODO: ["application/json"]
+	e.PUT("api/v1/game/:"+consts.GameIDUrlParam+"/schedules", gameController.AttachSchedules)
+
+	// TODO: ["application/json"]
+	e.PUT("api/v1/game/:"+consts.GameIDUrlParam+"/game-results", gameController.AttachGameResults)
 
 	// TODO: ["application/json"]
 	e.POST("api/v1/game/prepare", gamePrepareController.PrepareGame)

@@ -112,8 +112,7 @@ func (controller *GameController) List(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(resp))
 }
 
-// TODO: FormDataContentType
-func (controller *GameController) AttachArchive(ctx echo.Context) error {
+func (controller *GameController) AttachArchives(ctx echo.Context) error {
 	gameID := ctx.Param(consts.GameIDUrlParam)
 
 	form, err := ctx.MultipartForm()
@@ -171,7 +170,6 @@ func (controller *GameController) AttachSchedules(ctx echo.Context) error {
 			httputils.BuildErrorResponse(http.StatusOK, "game not found"),
 		)
 	}
-
 	if !game.NotStarted() {
 		log.Info("game update controller: ", "game started: ", gameID)
 		return ctx.JSON(
@@ -195,6 +193,17 @@ func (controller *GameController) AttachSchedules(ctx echo.Context) error {
 func (controller *GameController) AttachGameResults(ctx echo.Context) error {
 	gameID := ctx.Param(consts.GameIDUrlParam)
 
+	requestBody := dto.AttachGameResultsRequestBody{}
+	if err := ctx.Bind(requestBody); err != nil {
+		log.Error(logutils.GetStructName(controller), "AttachGameResults:", err)
+		return ctx.JSON(
+			http.StatusOK, httputils.BuildBadRequestErrorResponse(),
+		)
+	}
+
+	attachGameParams := bo.AttachGameParams{}
+	attachGameParams.FromDTO(requestBody)
+
 	game, err := controller.GameService.Retrieve(gameID)
 	if err != nil {
 		log.Error(logutils.GetStructName(controller), "AttachGameResults:", err)
@@ -203,9 +212,8 @@ func (controller *GameController) AttachGameResults(ctx echo.Context) error {
 			httputils.BuildErrorResponse(http.StatusOK, "game not found"),
 		)
 	}
-
 	if !game.NotStarted() {
-		log.Error(logutils.GetStructName(controller), "AttachGameResults:", "game started: ", gameID)
+		log.Error(logutils.GetStructName(controller), "AttachGameResults: game started", game)
 		return ctx.JSON(
 			http.StatusOK,
 			httputils.BuildErrorResponse(http.StatusOK, "game started"),
