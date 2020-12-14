@@ -21,7 +21,7 @@ type AttachSourceToGameService struct {
 	FileService    interfaces.IFileService
 }
 
-func (service *AttachSourceToGameService) AttachZipArchiveToGame(
+func (service *AttachSourceToGameService) AttachArchives(
 	gameID string, archives []*multipart.FileHeader,
 ) error {
 	filenames, err := service.FileService.CopyFiles(archives, consts.MediaTempDir)
@@ -56,8 +56,13 @@ func (service *AttachSourceToGameService) AttachZipArchiveToGame(
 	return nil
 }
 
-func (service *AttachSourceToGameService) AttachSchedulesToGame(gameID string) error {
+func (service *AttachSourceToGameService) AttachSchedules(gameID string) error {
 	fmt.Println("Schedules attaching coming soon ... : gameID =", gameID)
+	return nil
+}
+
+func (service *AttachSourceToGameService) AttachGameResults(params bo.AttachGameParams) error {
+
 	return nil
 }
 

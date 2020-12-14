@@ -147,7 +147,7 @@ func (controller *GameController) AttachArchives(ctx echo.Context) error {
 		)
 	}
 
-	err = controller.AttachSourceToGameService.AttachZipArchiveToGame(gameID, archives)
+	err = controller.AttachSourceToGameService.AttachArchives(gameID, archives)
 	if err != nil {
 		log.Error("game update controller: ", err)
 		return ctx.JSON(
@@ -178,7 +178,7 @@ func (controller *GameController) AttachSchedules(ctx echo.Context) error {
 		)
 	}
 
-	err = controller.AttachSourceToGameService.AttachSchedulesToGame(gameID)
+	err = controller.AttachSourceToGameService.AttachSchedules(gameID)
 	if err != nil {
 		log.Error("game update controller: ", err)
 		return ctx.JSON(
