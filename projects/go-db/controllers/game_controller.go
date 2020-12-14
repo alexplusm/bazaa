@@ -11,6 +11,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/logutils"
 )
 
 type GameController struct {
@@ -196,7 +197,7 @@ func (controller *GameController) AttachGameResults(ctx echo.Context) error {
 
 	game, err := controller.GameService.Retrieve(gameID)
 	if err != nil {
-		log.Error("game update controller: ", err)
+		log.Error(logutils.GetStructName(controller), "AttachGameResults:", err)
 		return ctx.JSON(
 			http.StatusOK,
 			httputils.BuildErrorResponse(http.StatusOK, "game not found"),
@@ -204,7 +205,7 @@ func (controller *GameController) AttachGameResults(ctx echo.Context) error {
 	}
 
 	if !game.NotStarted() {
-		log.Info("game update controller: ", "game started: ", gameID)
+		log.Error(logutils.GetStructName(controller), "AttachGameResults:", "game started: ", gameID)
 		return ctx.JSON(
 			http.StatusOK,
 			httputils.BuildErrorResponse(http.StatusOK, "game started"),
