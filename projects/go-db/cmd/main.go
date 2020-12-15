@@ -41,8 +41,11 @@ func main() {
 	e.Use(middleware.Logger())
 
 	e.Use(middleware.BasicAuth(func(username, password string, ctx echo.Context) (bool, error) {
-		if subtle.ConstantTimeCompare([]byte(username), []byte("joe")) == 1 &&
-			subtle.ConstantTimeCompare([]byte(password), []byte("secret")) == 1 {
+		us := []byte(os.Getenv("SERVER_ADMIN_USERNAME"))
+		pass := []byte(os.Getenv("SERVER_ADMIN_PASSWORD"))
+
+		if subtle.ConstantTimeCompare([]byte(username), us) == 1 &&
+			subtle.ConstantTimeCompare([]byte(password), pass) == 1 {
 			return true, nil
 		}
 		return false, ctx.JSON(http.StatusUnauthorized, nil)

@@ -2,7 +2,7 @@
 FROM node:15.2-alpine3.10 as build-stage
 
 # INFO: for production on server
-#ENV https_proxy http://10.200.81.56:3128/
+ENV https_proxy http://10.200.81.56:3128/
 
 LABEL maintainer="Alex Mogilevskiy <dark.qvark@gmail.com>"
 
