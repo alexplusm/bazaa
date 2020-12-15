@@ -9,9 +9,11 @@ const processResponse = (response) => {
 	throw new Error('resp error');
 };
 
-const extSystemList = () => {
+const extSystemList = ({ username, password }) => {
+	const auth = { username, password };
+
 	return axios
-		.get('/api/v1/ext_system')
+		.get('/api/v1/ext_system', { auth })
 		.then(({ data }) => data)
 		.then((data) => {
 			if (!data.success) {
@@ -21,30 +23,42 @@ const extSystemList = () => {
 		});
 };
 
-const extSystemCreate = (extSystem) => {
-	return axios.post('/api/v1/ext_system', extSystem).then((data) => data);
+const extSystemCreate = (extSystem, { username, password }) => {
+	const auth = { username, password };
+	return axios
+		.post('/api/v1/ext_system', extSystem, { auth })
+		.then((data) => data);
 };
 
-const gameList = (extSystemId) => {
+const gameList = (extSystemId, { username, password }) => {
 	const params = { extSystemId };
+	const auth = { username, password };
 
-	return axios.get('/api/v1/game', { params }).then(processResponse);
+	return axios.get('/api/v1/game', { params, auth }).then(processResponse);
 };
 
-const gameDetails = (gameId, extSystemId) => {
+const gameDetails = (gameId, extSystemId, { username, password }) => {
 	const params = { extSystemId };
+	const auth = { username, password };
 
 	return axios
-		.get('/api/v1/game/' + gameId, { params })
+		.get('/api/v1/game/' + gameId, { params, auth })
 		.then(processResponse);
 };
 
-const gameCreate = (game) => {
-	return axios.post('/api/v1/game/', game).then(processResponse);
+const gameCreate = (game, { username, password }) => {
+	const auth = { username, password };
+	return axios.post('/api/v1/game', game, { auth }).then(processResponse);
 };
 
-const gameUpdateWithArchive = (gameId, file, onUploadProgress) => {
-	const config = { onUploadProgress };
+const gameUpdateWithArchive = (
+	gameId,
+	file,
+	onUploadProgress,
+	{ username, password }
+) => {
+	const auth = { username, password };
+	const config = { onUploadProgress, auth };
 	const formData = new FormData();
 	formData.append('archives', file);
 
@@ -55,19 +69,20 @@ const checkCredentials = (credentials) => {
 	const auth = {
 		username: credentials.username,
 		password: credentials.password,
-	}
+	};
 
-	return axios.get('/api/v1/check/alive', {auth})
+	return axios
+		.get('/api/v1/check/alive', { auth })
 		.then(() => true)
-		.catch(err => {
+		.catch((err) => {
 			if (err.response.status === 401) {
 				return false;
 			} else {
-				console.error("auth error: ", err);
+				console.error('auth error: ', err);
 				return false;
 			}
 		});
-}
+};
 
 export const api = {
 	extSystem: {
@@ -81,6 +96,6 @@ export const api = {
 		updateWithFile: gameUpdateWithArchive,
 	},
 	auth: {
-		check: checkCredentials
-	}
+		check: checkCredentials,
+	},
 };

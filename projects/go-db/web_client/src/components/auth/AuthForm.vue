@@ -19,12 +19,7 @@
 			outlined
 		></v-text-field>
 
-		<v-alert
-			v-if="!!form.error"
-			dense
-			outlined
-			type="error"
-		>
+		<v-alert v-if="!!form.error" dense outlined type="error">
 			{{ form.error }}
 		</v-alert>
 
@@ -65,14 +60,14 @@ export default {
 
 			this.loading = true;
 			this.authorize(this.form)
-				.then(value => {
+				.then((value) => {
 					if (value) {
 						this.$router.push('home');
 					} else {
 						this.form.error = 'Неверные логин и пароль';
 					}
 				})
-				.finally(() => this.loading = false);
+				.finally(() => (this.loading = false));
 		},
 	},
 };
