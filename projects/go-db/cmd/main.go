@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/subtle"
 	"fmt"
 	"os"
 
@@ -37,8 +38,16 @@ func main() {
 
 	e := echo.New()
 	e.Use(middleware.Logger())
+
+	e.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
+		if subtle.ConstantTimeCompare([]byte(username), []byte("joe")) == 1 &&
+			subtle.ConstantTimeCompare([]byte(password), []byte("secret")) == 1 {
+			return true, nil
+		}
+		return false, nil
+	}))
+
 	e.Pre(middleware.RemoveTrailingSlash())
-	// TODO: https://echo.labstack.com/middleware/logger
 	e.HTTPErrorHandler = func(err error, ctx echo.Context) {
 		log.Error(errorPrefix, err)
 	}
