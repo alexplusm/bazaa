@@ -21,7 +21,7 @@ type IGameService interface {
 type IAttachSourceToGameService interface {
 	AttachArchives(gameID string, archives []*multipart.FileHeader) error
 	AttachSchedules(gameID string) error
-	AttachGameResults(params bo.AttachGameParams) error
+	AttachGameResults(gameID string, params bo.AttachGameParams) error
 }
 
 type IExtSystemService interface {

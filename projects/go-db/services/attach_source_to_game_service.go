@@ -12,6 +12,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/fileutils"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/logutils"
 )
 
 type AttachSourceToGameService struct {
@@ -61,7 +62,22 @@ func (service *AttachSourceToGameService) AttachSchedules(gameID string) error {
 	return nil
 }
 
-func (service *AttachSourceToGameService) AttachGameResults(params bo.AttachGameParams) error {
+func (service *AttachSourceToGameService) AttachGameResults(gameID string, params bo.AttachGameParams) error {
+	screenshots, err := service.ScreenshotRepo.SelectListByGameID(params.SourceGameID)
+	if err != nil {
+		return fmt.Errorf("%v AttachGameResults: %v", logutils.GetStructName(service), err)
+	}
+
+	filteredScreenshots := make([]dao.ScreenshotDAOFull, 0, len(screenshots))
+	for _, screenshot := range screenshots {
+		if screenshot.UsersAnswer == params.Answer {
+			filteredScreenshots = append(filteredScreenshots, screenshot)
+		}
+	}
+
+	log.Info("kekau")
+
+	//service.ScreenshotRepo.InsertList()
 
 	return nil
 }

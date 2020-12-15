@@ -91,7 +91,6 @@ func (repo *ScreenshotRepo) InsertList(screenshots []dao.ScreenshotDAO) error {
 	defer conn.Release()
 
 	for _, screenshot := range screenshots {
-		// TODO: in goroutine?
 		err := insertScreenshot(conn, screenshot)
 		if err != nil {
 			// TODO:log error
@@ -111,7 +110,6 @@ func (repo *ScreenshotRepo) InsertListWithExpertAnswer(screenshots []dao.Screens
 	defer conn.Release()
 
 	for _, screenshot := range screenshots {
-		// TODO: in goroutine?
 		err := insertScreenshotWithExpertAnswer(conn, screenshot)
 		if err != nil {
 			// TODO:log error
@@ -151,6 +149,7 @@ func insertScreenshotWithExpertAnswer(conn *pgxpool.Conn, s dao.ScreenshotWithEx
 	return nil
 }
 
+// TODO: rename UpdateScreenshotUsersAnswer -> UpdateUsersAnswer
 func (repo *ScreenshotRepo) UpdateScreenshotUsersAnswer(screenshotID, usersAnswer string) error {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())

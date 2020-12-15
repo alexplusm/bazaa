@@ -1,5 +1,7 @@
 package dao
 
+// TODO: refactor !!!
+
 type ScreenshotDAO struct {
 	Filename string
 	GameID   string
