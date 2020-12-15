@@ -1,13 +1,14 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { api } from '../api';
-import { login } from '../domain/storage-domain'
 
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
 	state: {
 		auth: {
+			username: null,
+			password: null,
 			authorized: false,
 		},
 		extSystems: [],
@@ -16,8 +17,9 @@ export const store = new Vuex.Store({
 		games: [],
 	},
 	mutations: {
-		authorize(state) {
-			login();
+		authorize(state, credentials) {
+			state.auth.username = credentials.username;
+			state.auth.password = credentials.password;
 			state.auth.authorized = true;
 		},
 		setExtSystemList(state, extSystems) {
@@ -34,9 +36,14 @@ export const store = new Vuex.Store({
 		},
 	},
 	actions: {
-		authorize(_, credentials) {
-			// if OK -> mutate
+		authorize({commit}, credentials) {
 			return api.auth.check(credentials)
+				.then(result => {
+					if (result) {
+						commit('authorize', credentials);
+					}
+					return result;
+				});
 		},
 		getExtSystemList({ commit }) {
 			return api.extSystem
