@@ -12,6 +12,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/fileutils"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/logutils"
 )
 
 type AttachSourceToGameService struct {
@@ -21,7 +22,7 @@ type AttachSourceToGameService struct {
 	FileService    interfaces.IFileService
 }
 
-func (service *AttachSourceToGameService) AttachZipArchiveToGame(
+func (service *AttachSourceToGameService) AttachArchives(
 	gameID string, archives []*multipart.FileHeader,
 ) error {
 	filenames, err := service.FileService.CopyFiles(archives, consts.MediaTempDir)
@@ -56,8 +57,28 @@ func (service *AttachSourceToGameService) AttachZipArchiveToGame(
 	return nil
 }
 
-func (service *AttachSourceToGameService) AttachSchedulesToGame(gameID string) error {
+func (service *AttachSourceToGameService) AttachSchedules(gameID string) error {
 	fmt.Println("Schedules attaching coming soon ... : gameID =", gameID)
+	return nil
+}
+
+func (service *AttachSourceToGameService) AttachGameResults(gameID string, params bo.AttachGameParams) error {
+	screenshots, err := service.ScreenshotRepo.SelectListByGameID(params.SourceGameID)
+	if err != nil {
+		return fmt.Errorf("%v AttachGameResults: %v", logutils.GetStructName(service), err)
+	}
+
+	filteredScreenshots := make([]dao.ScreenshotDAOFull, 0, len(screenshots))
+	for _, screenshot := range screenshots {
+		if screenshot.UsersAnswer == params.Answer {
+			filteredScreenshots = append(filteredScreenshots, screenshot)
+		}
+	}
+
+	log.Info("kekau")
+
+	//service.ScreenshotRepo.InsertList()
+
 	return nil
 }
 

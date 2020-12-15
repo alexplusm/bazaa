@@ -2,7 +2,7 @@
 	<v-form v-model="valid">
 		<v-text-field
 			label="Логин"
-			v-model="form.login"
+			v-model="form.username"
 			:rules="fieldRules"
 			required
 			outlined
@@ -19,6 +19,10 @@
 			outlined
 		></v-text-field>
 
+		<v-alert v-if="!!form.error" dense outlined type="error">
+			{{ form.error }}
+		</v-alert>
+
 		<v-row justify="center">
 			<v-progress-circular v-if="loading" indeterminate color="primary">
 			</v-progress-circular>
@@ -30,12 +34,8 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
+import { mapActions } from 'vuex';
 import { fieldRequiredFunc } from '../../utils/form-utils';
-import { timeout } from '../../utils/test';
-
-const requiredLogin = 'AzUseRadm';
-const requiredPass = 'Qca05Bz_3';
 
 export default {
 	name: 'AuthForm',
@@ -43,37 +43,31 @@ export default {
 		valid: false,
 		loading: false,
 		form: {
-			login: '',
-			password: '',
+			username: null,
+			password: null,
+			error: null,
 		},
 		showPassword: false,
 		fieldRules: [fieldRequiredFunc],
 	}),
 	methods: {
-		...mapMutations(['authorize']),
-		clearForm() {
-			this.form.login = '';
-			this.form.password = '';
-		},
+		...mapActions(['authorize']),
 		submit() {
 			if (!this.valid) {
 				return;
 			}
+			this.form.error = null;
 
 			this.loading = true;
-			timeout(1500).then(() => {
-				this.loading = false;
-
-				if (
-					this.form.login === requiredLogin &&
-					this.form.password === requiredPass
-				) {
-					this.authorize();
-					this.$router.push('home');
-				} else {
-					this.clearForm();
-				}
-			});
+			this.authorize(this.form)
+				.then((value) => {
+					if (value) {
+						this.$router.push('home');
+					} else {
+						this.form.error = 'Неверные логин и пароль';
+					}
+				})
+				.finally(() => (this.loading = false));
 		},
 	},
 };

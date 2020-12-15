@@ -11,6 +11,7 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dto"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/httputils"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/logutils"
 )
 
 type GameController struct {
@@ -111,64 +112,113 @@ func (controller *GameController) List(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, httputils.BuildSuccessResponse(resp))
 }
 
-func (controller *GameController) Update(ctx echo.Context) error {
+func (controller *GameController) AttachArchives(ctx echo.Context) error {
 	gameID := ctx.Param(consts.GameIDUrlParam)
 
-	switch httputils.ParseContentType(ctx) {
-	case consts.FormDataContentType:
-		form, err := ctx.MultipartForm()
-		if err != nil {
-			log.Error("game update controller: ", err)
-			return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
-		}
+	form, err := ctx.MultipartForm()
+	if err != nil {
+		log.Error("game update controller: ", err)
+		return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
+	}
 
-		game, err := controller.GameService.Retrieve(gameID)
-		if err != nil {
-			log.Error("game update controller: ", err)
-			return ctx.JSON(
-				http.StatusOK,
-				httputils.BuildErrorResponse(http.StatusOK, "game not found"),
-			)
-		}
+	game, err := controller.GameService.Retrieve(gameID)
+	if err != nil {
+		log.Error("game update controller: ", err)
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildErrorResponse(http.StatusOK, "game not found"),
+		)
+	}
 
-		if !game.NotStarted() {
-			log.Info("game update controller: ", "game started: ", gameID)
-			return ctx.JSON(
-				http.StatusOK,
-				httputils.BuildErrorResponse(http.StatusOK, "game started"),
-			)
-		}
+	if !game.NotStarted() {
+		log.Info("game update controller: ", "game started: ", gameID)
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildErrorResponse(http.StatusOK, "game started"),
+		)
+	}
 
-		archives := form.File["archives"]
+	archives := form.File["archives"]
 
-		if len(archives) == 0 {
-			return ctx.JSON(
-				http.StatusOK,
-				httputils.BuildBadRequestErrorResponseWithMgs("archive required"),
-			)
-		}
+	if len(archives) == 0 {
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildBadRequestErrorResponseWithMgs("archive required"),
+		)
+	}
 
-		err = controller.AttachSourceToGameService.AttachZipArchiveToGame(gameID, archives)
-		if err != nil {
-			log.Error("game update controller: ", err)
-			return ctx.JSON(
-				http.StatusOK,
-				httputils.BuildBadRequestErrorResponse(),
-			)
-		}
+	err = controller.AttachSourceToGameService.AttachArchives(gameID, archives)
+	if err != nil {
+		log.Error("game update controller: ", err)
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildBadRequestErrorResponse(),
+		)
+	}
 
-		// TODO: return gameID?
-		return ctx.JSON(http.StatusOK, httputils.BuildSuccessWithoutBodyResponse())
-	case consts.ApplicationContentJSON:
-		err := controller.AttachSourceToGameService.AttachSchedulesToGame(gameID)
-		if err != nil {
-			log.Error("game update controller: ", err)
-			return ctx.JSON(
-				http.StatusOK,
-				httputils.BuildBadRequestErrorResponse(),
-			)
-		}
+	return ctx.JSON(http.StatusOK, httputils.BuildSuccessWithoutBodyResponse())
+}
+
+func (controller *GameController) AttachSchedules(ctx echo.Context) error {
+	gameID := ctx.Param(consts.GameIDUrlParam)
+
+	game, err := controller.GameService.Retrieve(gameID)
+	if err != nil {
+		log.Error("game update controller: ", err)
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildErrorResponse(http.StatusOK, "game not found"),
+		)
+	}
+	if !game.NotStarted() {
+		log.Info("game update controller: ", "game started: ", gameID)
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildErrorResponse(http.StatusOK, "game started"),
+		)
+	}
+
+	err = controller.AttachSourceToGameService.AttachSchedules(gameID)
+	if err != nil {
+		log.Error("game update controller: ", err)
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildBadRequestErrorResponse(),
+		)
 	}
 
 	return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
+}
+
+func (controller *GameController) AttachGameResults(ctx echo.Context) error {
+	gameID := ctx.Param(consts.GameIDUrlParam)
+
+	requestBody := dto.AttachGameResultsRequestBody{}
+	if err := ctx.Bind(requestBody); err != nil {
+		log.Error(logutils.GetStructName(controller), "AttachGameResults:", err)
+		return ctx.JSON(
+			http.StatusOK, httputils.BuildBadRequestErrorResponse(),
+		)
+	}
+
+	attachGameParams := bo.AttachGameParams{}
+	attachGameParams.FromDTO(requestBody)
+
+	game, err := controller.GameService.Retrieve(gameID)
+	if err != nil {
+		log.Error(logutils.GetStructName(controller), "AttachGameResults:", err)
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildErrorResponse(http.StatusOK, "game not found"),
+		)
+	}
+	if !game.NotStarted() {
+		log.Error(logutils.GetStructName(controller), "AttachGameResults: game started", game)
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildErrorResponse(http.StatusOK, "game started"),
+		)
+	}
+
+	return nil
 }

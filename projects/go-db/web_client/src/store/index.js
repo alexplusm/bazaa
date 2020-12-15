@@ -1,13 +1,14 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { api } from '../api';
-import { login } from '../domain/storage-domain'
 
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
 	state: {
 		auth: {
+			username: null,
+			password: null,
 			authorized: false,
 		},
 		extSystems: [],
@@ -16,8 +17,9 @@ export const store = new Vuex.Store({
 		games: [],
 	},
 	mutations: {
-		authorize(state) {
-			login();
+		authorize(state, credentials) {
+			state.auth.username = credentials.username;
+			state.auth.password = credentials.password;
 			state.auth.authorized = true;
 		},
 		setExtSystemList(state, extSystems) {
@@ -34,16 +36,21 @@ export const store = new Vuex.Store({
 		},
 	},
 	actions: {
-		authorize({commit}) {
-			commit('authorize');
+		authorize({ commit }, credentials) {
+			return api.auth.check(credentials).then((result) => {
+				if (result) {
+					commit('authorize', credentials);
+				}
+				return result;
+			});
 		},
-		getExtSystemList({ commit }) {
+		getExtSystemList({ commit, state }) {
 			return api.extSystem
-				.list()
+				.list(state.auth)
 				.then((data) => commit('setExtSystemList', data.extSystems));
 		},
-		createExtSystem(context, extSystem) {
-			return api.extSystem.create(extSystem);
+		createExtSystem({ state }, extSystem) {
+			return api.extSystem.create(extSystem, state.auth);
 		},
 		setCurrentExtSystem({ commit, dispatch }, extSystem) {
 			commit('setCurrentExtSystem', extSystem);
@@ -54,7 +61,7 @@ export const store = new Vuex.Store({
 
 			if (currentExtSystem && currentExtSystem.extSystemId) {
 				return api.game
-					.list(state.currentExtSystem.extSystemId)
+					.list(state.currentExtSystem.extSystemId, state.auth)
 					.then((data) => commit('setGames', data.games));
 			}
 		},
@@ -63,20 +70,20 @@ export const store = new Vuex.Store({
 
 			if (currentExtSystem && currentExtSystem.extSystemId) {
 				return api.game
-					.details(gameId, currentExtSystem.extSystemId)
+					.details(gameId, currentExtSystem.extSystemId, state.auth)
 					.then((data) => commit('setCurrentGame', data));
 			}
 		},
 		updateGameWithArchive(
-			{ dispatch },
+			{ dispatch, state },
 			{ gameId, file, progressCallback }
 		) {
 			return api.game
-				.updateWithFile(gameId, file, progressCallback)
+				.updateWithFile(gameId, file, progressCallback, state.auth)
 				.finally(() => dispatch('getGameDetails', gameId));
 		},
-		createGame(_, game) {
-			return api.game.create(game);
+		createGame({ state }, game) {
+			return api.game.create(game, state.auth);
 		},
 	},
 	getters: {

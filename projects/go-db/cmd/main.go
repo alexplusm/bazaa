@@ -1,7 +1,9 @@
 package main
 
 import (
+	"crypto/subtle"
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/labstack/echo"
@@ -37,8 +39,16 @@ func main() {
 
 	e := echo.New()
 	e.Use(middleware.Logger())
+
+	e.Use(middleware.BasicAuth(func(username, password string, ctx echo.Context) (bool, error) {
+		if subtle.ConstantTimeCompare([]byte(username), []byte("joe")) == 1 &&
+			subtle.ConstantTimeCompare([]byte(password), []byte("secret")) == 1 {
+			return true, nil
+		}
+		return false, ctx.JSON(http.StatusUnauthorized, nil)
+	}))
+
 	e.Pre(middleware.RemoveTrailingSlash())
-	// TODO: https://echo.labstack.com/middleware/logger
 	e.HTTPErrorHandler = func(err error, ctx echo.Context) {
 		log.Error(errorPrefix, err)
 	}
@@ -80,22 +90,30 @@ func registerRoutes(e *echo.Echo) error {
 
 	// TODO:later
 	// Create middleware for each route with whitelist of ContentTypes:
-	// ["application/json", "multipart/form-data"] | ["application/json"]
+	// ["multipart/form-data"] | ["application/json"]
 
 	// TODO: ["application/json"]
 	e.POST("api/v1/game", gameController.Create)
 
 	e.GET("api/v1/game", gameController.List)
+
 	e.GET("api/v1/game/:"+consts.GameIDUrlParam, gameController.Details)
 
-	// TODO: ["application/json", "multipart/form-data"]
-	e.PUT("api/v1/game/:"+consts.GameIDUrlParam, gameController.Update)
+	// TODO: ["multipart/form-data"]
+	e.PUT("api/v1/game/:"+consts.GameIDUrlParam+"/archives", gameController.AttachArchives)
+
+	// TODO: ["application/json"]
+	e.PUT("api/v1/game/:"+consts.GameIDUrlParam+"/schedules", gameController.AttachSchedules)
+
+	// TODO: ["application/json"]
+	e.PUT("api/v1/game/:"+consts.GameIDUrlParam+"/game-results", gameController.AttachGameResults)
 
 	// TODO: ["application/json"]
 	e.POST("api/v1/game/prepare", gamePrepareController.PrepareGame)
 
 	// TODO: ["application/json"]
 	e.POST("api/v1/ext_system", extSystemController.Create)
+
 	e.GET("api/v1/ext_system", extSystemController.List)
 
 	e.GET("api/v1/game/:"+consts.GameIDUrlParam+"/screenshot", screenshotController.Retrieve)
@@ -108,11 +126,12 @@ func registerRoutes(e *echo.Echo) error {
 	e.GET("/api/v1/game/:"+consts.GameIDUrlParam+"/screenshot/:"+consts.ScreenshotIDUrlParam+"/result", screenshotResultsController.GetResult)
 
 	e.GET("api/v1/statistics/user/:"+consts.UserIDUrlParam, statisticsUserController.GetStatistics)
+
 	e.GET("api/v1/statistics/users/leaderboard", statisticsLeaderboardController.GetStatistics)
+
 	e.GET("api/v1/statistics/games", statisticsGameController.GetStatistics)
 
-	// TODO: for test
-	e.GET("api/check/alive", controllers.ItsAlive)
+	e.GET("api/v1/check/alive", controllers.ItsAlive)
 
 	return nil
 }
