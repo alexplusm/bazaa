@@ -220,5 +220,11 @@ func (controller *GameController) AttachGameResults(ctx echo.Context) error {
 		)
 	}
 
+	// TODO
+	err = controller.AttachSourceToGameService.AttachGameResults(game.GameID, attachGameParams)
+	if err != nil {
+		//	TODO: ...
+	}
+
 	return nil
 }

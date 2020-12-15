@@ -38,17 +38,20 @@ func main() {
 	initDirs()
 
 	e := echo.New()
+
 	e.Use(middleware.Logger())
 
 	e.Use(middleware.BasicAuth(func(username, password string, ctx echo.Context) (bool, error) {
-		us := []byte(os.Getenv("SERVER_ADMIN_USERNAME"))
-		pass := []byte(os.Getenv("SERVER_ADMIN_PASSWORD"))
+		// TODO: func !
+		usernameAdm := []byte(os.Getenv("SERVER_ADMIN_USERNAME"))
+		passwordAdm := []byte(os.Getenv("SERVER_ADMIN_PASSWORD"))
 
-		if subtle.ConstantTimeCompare([]byte(username), us) == 1 &&
-			subtle.ConstantTimeCompare([]byte(password), pass) == 1 {
+		if subtle.ConstantTimeCompare([]byte(username), usernameAdm) == 1 &&
+			subtle.ConstantTimeCompare([]byte(password), passwordAdm) == 1 {
 			return true, nil
 		}
-		return false, ctx.JSON(http.StatusUnauthorized, nil)
+
+		return false, ctx.JSON(http.StatusUnauthorized, nil) // TODO: body
 	}))
 
 	e.Pre(middleware.RemoveTrailingSlash())
@@ -70,6 +73,9 @@ func initDirs() {
 		fileutils.CreateDirIfNotExists(dir)
 	}
 }
+
+// TODO
+//func registerMiddlewares() {}
 
 func registerRoutes(e *echo.Echo) error {
 	injector, err := infrastructures.Injector()

@@ -3,6 +3,7 @@ package services
 import (
 	"fmt"
 	"mime/multipart"
+	"strings"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -35,7 +36,20 @@ func (service *AttachSourceToGameService) AttachArchives(
 		return fmt.Errorf("attach zip archive: %v", err)
 	}
 
-	source := dao.SourceInsertDAO{Type: consts.ArchiveSourceType, CreatedAt: time.Now().Unix(), GameID: gameID}
+	// TODO: Source Service
+	// TODO: another func
+	archivesFilename := make([]string, 0, len(archives))
+	for _, archive := range archives {
+		archivesFilename = append(archivesFilename, archive.Filename)
+	}
+	value := strings.Join(archivesFilename, ",")
+
+	source := dao.SourceInsertDAO{
+		SourceBaseDAO: dao.SourceBaseDAO{
+			Type: consts.ArchiveSourceType, CreatedAt: time.Now().Unix(), GameID: gameID, Value: value,
+		},
+	}
+
 	sourceID, err := service.SourceRepo.InsertOne(source)
 	if err != nil {
 		return fmt.Errorf("attach zip archive: %v", err)
@@ -63,21 +77,58 @@ func (service *AttachSourceToGameService) AttachSchedules(gameID string) error {
 }
 
 func (service *AttachSourceToGameService) AttachGameResults(gameID string, params bo.AttachGameParams) error {
+	// TODO: sourceService.method
+	sources, err := service.SourceRepo.SelectListByGame(gameID)
+	if err != nil {
+		return fmt.Errorf("%v AttachGameResults: %v", logutils.GetStructName(service), err)
+	}
+
+	exist := false
+	for _, source := range sources {
+		if source.Value == params.SourceGameID {
+			exist = true
+		}
+	}
+
+	if exist {
+		// TODO: kek
+		return fmt.Errorf("source exist")
+	}
+	// TODO: sourceService.method
+
+	source := dao.SourceInsertDAO{
+		SourceBaseDAO: dao.SourceBaseDAO{
+			Type: consts.ArchiveSourceType, CreatedAt: time.Now().Unix(), GameID: gameID, Value: params.SourceGameID,
+		},
+	}
+
+	sourceID, err := service.SourceRepo.InsertOne(source)
+	if err != nil {
+		return fmt.Errorf("TOODOOO: %v", err)
+	}
+
 	screenshots, err := service.ScreenshotRepo.SelectListByGameID(params.SourceGameID)
 	if err != nil {
 		return fmt.Errorf("%v AttachGameResults: %v", logutils.GetStructName(service), err)
 	}
 
-	filteredScreenshots := make([]dao.ScreenshotDAOFull, 0, len(screenshots))
+	newScreenshots := make([]dao.ScreenshotDAO, 0, len(screenshots))
+
 	for _, screenshot := range screenshots {
-		if screenshot.UsersAnswer == params.Answer {
-			filteredScreenshots = append(filteredScreenshots, screenshot)
+		if string(screenshot.UsersAnswer) == params.Answer {
+			ddao := dao.ScreenshotDAO{
+				Filename: screenshot.Filename,
+				GameID:   screenshot.GameID,
+				SourceID: sourceID,
+			}
+			newScreenshots = append(newScreenshots, ddao)
 		}
 	}
 
-	log.Info("kekau")
-
-	//service.ScreenshotRepo.InsertList()
+	err = service.ScreenshotRepo.InsertList(newScreenshots)
+	if err != nil {
+		return fmt.Errorf("%v AttachGameResults: %v", logutils.GetStructName(service), err)
+	}
 
 	return nil
 }

@@ -6,19 +6,24 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 )
 
-type SourceInsertDAO struct {
+type SourceBaseDAO struct {
+	GameID    string
 	Type      int
 	CreatedAt int64
-	GameID    string
+	Value     string
+}
+
+type SourceInsertDAO struct {
+	SourceBaseDAO
 }
 
 type SourceRetrieveDAO struct {
-	SourceID  string
-	CreatedAt int64
-	Type      int
+	SourceID string
+	SourceBaseDAO
 }
 
 func (s *SourceRetrieveDAO) ToBO() bo.SourceBO {
+	// Value
 	return bo.SourceBO{
 		SourceID:  s.SourceID,
 		CreatedAt: time.Unix(s.CreatedAt, 0),
