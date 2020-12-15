@@ -89,12 +89,13 @@ func registerRoutes(e *echo.Echo) error {
 
 	// TODO:later
 	// Create middleware for each route with whitelist of ContentTypes:
-	// ["application/json", "multipart/form-data"] | ["application/json"]
+	// ["multipart/form-data"] | ["application/json"]
 
 	// TODO: ["application/json"]
 	e.POST("api/v1/game", gameController.Create)
 
 	e.GET("api/v1/game", gameController.List)
+
 	e.GET("api/v1/game/:"+consts.GameIDUrlParam, gameController.Details)
 
 	// TODO: ["multipart/form-data"]
@@ -111,6 +112,7 @@ func registerRoutes(e *echo.Echo) error {
 
 	// TODO: ["application/json"]
 	e.POST("api/v1/ext_system", extSystemController.Create)
+
 	e.GET("api/v1/ext_system", extSystemController.List)
 
 	e.GET("api/v1/game/:"+consts.GameIDUrlParam+"/screenshot", screenshotController.Retrieve)
@@ -123,11 +125,12 @@ func registerRoutes(e *echo.Echo) error {
 	e.GET("/api/v1/game/:"+consts.GameIDUrlParam+"/screenshot/:"+consts.ScreenshotIDUrlParam+"/result", screenshotResultsController.GetResult)
 
 	e.GET("api/v1/statistics/user/:"+consts.UserIDUrlParam, statisticsUserController.GetStatistics)
+
 	e.GET("api/v1/statistics/users/leaderboard", statisticsLeaderboardController.GetStatistics)
+
 	e.GET("api/v1/statistics/games", statisticsGameController.GetStatistics)
 
-	// TODO: for test
-	e.GET("api/check/alive", controllers.ItsAlive)
+	e.GET("api/v1/check/alive", controllers.ItsAlive)
 
 	return nil
 }
