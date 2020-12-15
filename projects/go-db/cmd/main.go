@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/subtle"
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/labstack/echo"
@@ -39,12 +40,12 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
 
-	e.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
+	e.Use(middleware.BasicAuth(func(username, password string, ctx echo.Context) (bool, error) {
 		if subtle.ConstantTimeCompare([]byte(username), []byte("joe")) == 1 &&
 			subtle.ConstantTimeCompare([]byte(password), []byte("secret")) == 1 {
 			return true, nil
 		}
-		return false, nil
+		return false, ctx.JSON(http.StatusUnauthorized, nil)
 	}))
 
 	e.Pre(middleware.RemoveTrailingSlash())

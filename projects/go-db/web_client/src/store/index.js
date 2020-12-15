@@ -34,8 +34,9 @@ export const store = new Vuex.Store({
 		},
 	},
 	actions: {
-		authorize({commit}) {
-			commit('authorize');
+		authorize(_, credentials) {
+			// if OK -> mutate
+			return api.auth.check(credentials)
 		},
 		getExtSystemList({ commit }) {
 			return api.extSystem
