@@ -3,17 +3,16 @@ package main
 import (
 	"crypto/subtle"
 	"fmt"
-	"net/http"
 	"os"
 
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/controllers"
 	"github.com/Alexplusm/bazaa/projects/go-db/infrastructures"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/fileutils"
+	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 /*
@@ -39,24 +38,12 @@ func main() {
 
 	e := echo.New()
 
-	e.Use(middleware.Logger())
+	registerMiddlewares(e)
 
-	e.Use(middleware.BasicAuth(func(username, password string, ctx echo.Context) (bool, error) {
-		// TODO: func !
-		usernameAdm := []byte(os.Getenv("SERVER_ADMIN_USERNAME"))
-		passwordAdm := []byte(os.Getenv("SERVER_ADMIN_PASSWORD"))
-
-		if subtle.ConstantTimeCompare([]byte(username), usernameAdm) == 1 &&
-			subtle.ConstantTimeCompare([]byte(password), passwordAdm) == 1 {
-			return true, nil
-		}
-
-		return false, ctx.JSON(http.StatusUnauthorized, nil) // TODO: body
-	}))
-
-	e.Pre(middleware.RemoveTrailingSlash())
 	e.HTTPErrorHandler = func(err error, ctx echo.Context) {
-		log.Error(errorPrefix, err)
+		log.Error(errorPrefix, err) // TODO: remove log errors from controllers??????????? : пока что нет
+
+		e.DefaultHTTPErrorHandler(err, ctx)
 	}
 
 	err = registerRoutes(e)
@@ -74,8 +61,24 @@ func initDirs() {
 	}
 }
 
-// TODO
-//func registerMiddlewares() {}
+func registerMiddlewares(e *echo.Echo) {
+	e.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
+		// TODO: to struct and init once
+		usernameAdm := []byte(os.Getenv("SERVER_ADMIN_USERNAME"))
+		passwordAdm := []byte(os.Getenv("SERVER_ADMIN_PASSWORD"))
+
+		// Be careful to use constant time comparison to prevent timing attacks
+		if subtle.ConstantTimeCompare([]byte(username), usernameAdm) == 1 &&
+			subtle.ConstantTimeCompare([]byte(password), passwordAdm) == 1 {
+			return true, nil
+		}
+		return false, nil
+	}))
+
+	e.Use(middleware.Logger())
+
+	e.Pre(middleware.RemoveTrailingSlash())
+}
 
 func registerRoutes(e *echo.Echo) error {
 	injector, err := infrastructures.Injector()
