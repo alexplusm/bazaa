@@ -36,14 +36,14 @@ function progressCallback(progressEvent) {
 }
 
 export default {
-	name: 'GameAttachArchive',
+	name: 'GameAttachArchives',
 	data: () => ({
 		archive: null,
 		loading: false,
 		progress: 0,
 	}),
 	methods: {
-		...mapActions(['updateGameWithArchive']),
+		...mapActions(['attachArchivesToGame']),
 		upload() {
 			const { id } = this.$route.params;
 			const skip = this.loading || !this.archive || !id;
@@ -57,7 +57,7 @@ export default {
 			};
 
 			this.loading = true;
-			this.updateGameWithArchive(payload)
+			this.attachArchivesToGame(payload)
 				.then(() => {
 					this.archive = null;
 				})

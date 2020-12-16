@@ -74,13 +74,12 @@ export const store = new Vuex.Store({
 					.then((data) => commit('setCurrentGame', data));
 			}
 		},
-		// todo: rename: attacheArchive
-		updateGameWithArchive(
+		attachArchivesToGame(
 			{ dispatch, state },
 			{ gameId, file, progressCallback }
 		) {
 			return api.game
-				.updateWithFile(gameId, file, progressCallback, state.auth)
+				.attachArchives(gameId, file, progressCallback, state.auth)
 				.finally(() => dispatch('getGameDetails', gameId));
 		},
 		attachAnotherGameResultsToGame({dispatch, state }, {gameId, formValue}) {

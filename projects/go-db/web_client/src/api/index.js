@@ -6,7 +6,7 @@ const processResponse = (response) => {
 	if (data.success) {
 		return data.data;
 	}
-	throw new Error('resp error');
+	throw new Error('response error');
 };
 
 const extSystemList = ({ username, password }) => {
@@ -42,7 +42,7 @@ const gameDetails = (gameId, extSystemId, { username, password }) => {
 	const auth = { username, password };
 
 	return axios
-		.get('/api/v1/game/' + gameId, { params, auth })
+		.get(`/api/v1/game/${gameId}`, { params, auth })
 		.then(processResponse);
 };
 
@@ -51,8 +51,7 @@ const gameCreate = (game, { username, password }) => {
 	return axios.post('/api/v1/game', game, { auth }).then(processResponse);
 };
 
-// todo: rename
-const gameUpdateWithArchive = (
+const gameAttachArchives = (
 	gameId,
 	file,
 	onUploadProgress,
@@ -63,13 +62,12 @@ const gameUpdateWithArchive = (
 	const formData = new FormData();
 	formData.append('archives', file);
 
-	// todo: update url and method
-	return axios.put('/api/v1/game/' + gameId, formData, config);
+	return axios.post(`/api/v1/game/${gameId}/archives`, formData, config);
 };
 
 const gameAttachAnotherGameResults = (gameId, formValue, { username, password }) => {
 	const auth = { username, password };
-	return axios.post('/api/v1/game/' + gameId + '/game-results', formValue, {auth})
+	return axios.post(`/api/v1/game/${gameId}/game-results`, formValue, {auth})
 		.then(resp => resp.data)
 		.then(data => {
 			const errorResult = {
@@ -94,6 +92,10 @@ const gameAttachAnotherGameResults = (gameId, formValue, { username, password })
 			errorResult.errorMessage = 'Не обработанная ошибка';
 			return errorResult;
 		});
+}
+
+const gameAttachSchedules = (gameId) => {
+	return axios.post(`/api/v1/game/${gameId}/schedules`, {});
 }
 
 const checkCredentials = (credentials) => {
@@ -124,8 +126,9 @@ export const api = {
 		list: gameList,
 		details: gameDetails,
 		create: gameCreate,
-		updateWithFile: gameUpdateWithArchive,
+		attachArchives: gameAttachArchives,
 		attachAnotherGameResults: gameAttachAnotherGameResults,
+		attachSchedules: gameAttachSchedules,
 	},
 	auth: {
 		check: checkCredentials,
