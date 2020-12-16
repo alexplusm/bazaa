@@ -51,6 +51,7 @@ const gameCreate = (game, { username, password }) => {
 	return axios.post('/api/v1/game', game, { auth }).then(processResponse);
 };
 
+// todo: rename
 const gameUpdateWithArchive = (
 	gameId,
 	file,
@@ -62,8 +63,38 @@ const gameUpdateWithArchive = (
 	const formData = new FormData();
 	formData.append('archives', file);
 
+	// todo: update url and method
 	return axios.put('/api/v1/game/' + gameId, formData, config);
 };
+
+const gameAttachAnotherGameResults = (gameId, formValue, { username, password }) => {
+	const auth = { username, password };
+	return axios.post('/api/v1/game/' + gameId + '/game-results', formValue, {auth})
+		.then(resp => resp.data)
+		.then(data => {
+			const errorResult = {
+				hasError: false,
+				errorMessage: null
+			};
+
+			if (data.success) {
+				return errorResult;
+			}
+
+			errorResult.hasError = true;
+
+			console.log("RESPONSE DATA: ", data);
+
+			// TODO: consts with error msgs
+			if (data.error.message === 'bad request: game has source with same sourceGameId') {
+				errorResult.errorMessage = 'Уже существует источник из результатов выбранной игры';
+				return errorResult;
+			}
+
+			errorResult.errorMessage = 'Не обработанная ошибка';
+			return errorResult;
+		});
+}
 
 const checkCredentials = (credentials) => {
 	const auth = {
@@ -94,6 +125,7 @@ export const api = {
 		details: gameDetails,
 		create: gameCreate,
 		updateWithFile: gameUpdateWithArchive,
+		attachAnotherGameResults: gameAttachAnotherGameResults,
 	},
 	auth: {
 		check: checkCredentials,

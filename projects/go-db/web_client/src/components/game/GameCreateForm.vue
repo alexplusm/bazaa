@@ -9,7 +9,7 @@
 				outlined
 			></v-text-field>
 
-			<ExtSystemSelect :items="extSystems" v-model="form.extSystem" />
+			<ExtSystemSelect v-model="form.extSystem" :items="extSystems" />
 
 			<v-text-field
 				label="Вопрос"
@@ -167,7 +167,7 @@ export default {
 			'createGame',
 		]),
 		clearForm() {
-			// TODO: clear Form
+
 		},
 		submit() {
 			const options = this.form.options
@@ -187,8 +187,6 @@ export default {
 			if (res.error != null) return;
 
 			const dto = createGameToDTO({ ...this.form });
-
-			console.log('123', dto);
 
 			this.createGame(dto)
 				.then(() => this.clearForm())

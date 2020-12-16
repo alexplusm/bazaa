@@ -30,6 +30,7 @@ export default {
 	name: 'ExtSystemSelect',
 	model: {
 		prop: 'selected',
+		event: 'change',
 	},
 	props: {
 		selected: Object || null,

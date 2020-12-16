@@ -230,7 +230,7 @@ func (controller *GameController) AttachGameResults(ctx echo.Context) error {
 	if exist {
 		return ctx.JSON(
 			http.StatusOK,
-			httputils.BuildBadRequestErrorResponseWithMgs("game has some source game results"), // TODO: message
+			httputils.BuildBadRequestErrorResponseWithMgs("game has source with same sourceGameId"),
 		)
 	}
 
