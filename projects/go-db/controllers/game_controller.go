@@ -195,7 +195,7 @@ func (controller *GameController) AttachGameResults(ctx echo.Context) error {
 	gameID := ctx.Param(consts.GameIDUrlParam)
 
 	requestBody := dto.AttachGameResultsRequestBody{}
-	if err := ctx.Bind(requestBody); err != nil {
+	if err := ctx.Bind(&requestBody); err != nil {
 		log.Error(logutils.GetStructName(controller), "AttachGameResults:", err)
 		return ctx.JSON(
 			http.StatusOK, httputils.BuildBadRequestErrorResponse(),
@@ -213,6 +213,7 @@ func (controller *GameController) AttachGameResults(ctx echo.Context) error {
 			httputils.BuildErrorResponse(http.StatusOK, "game not found"),
 		)
 	}
+
 	if !game.NotStarted() {
 		log.Error(logutils.GetStructName(controller), "AttachGameResults: game started", game)
 		return ctx.JSON(
@@ -221,19 +222,22 @@ func (controller *GameController) AttachGameResults(ctx echo.Context) error {
 		)
 	}
 
-	// CHECK EXISTANCE SOURCE
 	exist, err := controller.SourceService.GameHasSomeSourceGameId(game.GameID, attachGameParams.SourceGameID)
 	if err != nil {
-		// iternalSystemError
+		log.Error(logutils.GetStructName(controller), "AttachGameResults:", err)
+		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
 	}
 	if exist {
-		//return Game Has some source
+		return ctx.JSON(
+			http.StatusOK,
+			httputils.BuildBadRequestErrorResponseWithMgs("game has some source game results"), // TODO: message
+		)
 	}
 
-	// TODO
 	err = controller.AttachSourceToGameService.AttachGameResults(game.GameID, attachGameParams)
 	if err != nil {
-		//	TODO: ...
+		log.Error(logutils.GetStructName(controller), "AttachGameResults:", err)
+		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
 	}
 
 	return nil

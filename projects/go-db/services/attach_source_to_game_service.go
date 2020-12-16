@@ -77,29 +77,9 @@ func (service *AttachSourceToGameService) AttachSchedules(gameID string) error {
 }
 
 func (service *AttachSourceToGameService) AttachGameResults(gameID string, params bo.AttachGameParams) error {
-	// todo: remove
-	//// TODO: sourceService.method
-	//sources, err := service.SourceRepo.SelectListByGame(gameID)
-	//if err != nil {
-	//	return fmt.Errorf("%v AttachGameResults: %v", logutils.GetStructName(service), err)
-	//}
-	//
-	//exist := false
-	//for _, source := range sources {
-	//	if source.Value == params.SourceGameID {
-	//		exist = true
-	//	}
-	//}
-	//
-	//if exist {
-	//	// TODO: kek
-	//	return fmt.Errorf("source exist")
-	//}
-	//// TODO: sourceService.method
-
 	source := dao.SourceInsertDAO{
 		SourceBaseDAO: dao.SourceBaseDAO{
-			Type: consts.ArchiveSourceType, CreatedAt: time.Now().Unix(), GameID: gameID, Value: params.SourceGameID,
+			Type: consts.AnotherGameResultSourceType, CreatedAt: time.Now().Unix(), GameID: gameID, Value: params.SourceGameID,
 		},
 	}
 
@@ -119,7 +99,7 @@ func (service *AttachSourceToGameService) AttachGameResults(gameID string, param
 		if string(screenshot.UsersAnswer) == params.Answer {
 			ddao := dao.ScreenshotDAO{
 				Filename: screenshot.Filename,
-				GameID:   screenshot.GameID,
+				GameID:   gameID,
 				SourceID: sourceID,
 			}
 			newScreenshots = append(newScreenshots, ddao)

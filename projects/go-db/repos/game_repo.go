@@ -26,8 +26,8 @@ INSERT INTO games ("ext_system_id", "name", "start_date", "end_date", "answer_ty
 VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING "game_id";
 `
-	selectGameWithSameIDStatement = `
-SELECT "ext_system_id", "name", "start_date", "end_date", "answer_type", "question", "options_csv"
+	selectGameByIdStatement = `
+SELECT "game_id", "ext_system_id", "name", "start_date", "end_date", "answer_type", "question", "options_csv"
 FROM games
 WHERE "game_id" = ($1);
 `
@@ -89,10 +89,10 @@ func (repo *GameRepo) SelectOne(gameID string) (dao.GameDAO, error) {
 	defer conn.Release()
 
 	g := new(dao.GameDAO)
-	row := conn.QueryRow(context.Background(), selectGameWithSameIDStatement, gameID)
-	var options []byte
+	row := conn.QueryRow(context.Background(), selectGameByIdStatement, gameID)
+	var options []byte // TODO: DAO model refactor
 	err = row.Scan(
-		&g.ExtSystemID, &g.Name, &g.StartDate,
+		&g.GameID, &g.ExtSystemID, &g.Name, &g.StartDate,
 		&g.EndDate, &g.AnswerType, &g.Question, &options,
 	)
 	g.Options = string(options)
