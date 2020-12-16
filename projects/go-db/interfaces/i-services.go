@@ -78,6 +78,7 @@ type IStatisticGameService interface {
 
 type ISourceService interface {
 	ListByGame(gameID string) ([]bo.SourceBO, error)
+	GameHasSomeSourceGameId(gameId, sourceGameId string) (bool, error)
 }
 
 type IActiveUsersService interface {

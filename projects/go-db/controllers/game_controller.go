@@ -169,6 +169,7 @@ func (controller *GameController) AttachSchedules(ctx echo.Context) error {
 			http.StatusOK,
 			httputils.BuildErrorResponse(http.StatusOK, "game not found"),
 		)
+		// TODO: возвращать ошибку с payload и в httpErrorHandler обрабатывать и отправлять запрос!
 	}
 	if !game.NotStarted() {
 		log.Info("game update controller: ", "game started: ", gameID)
@@ -220,6 +221,15 @@ func (controller *GameController) AttachGameResults(ctx echo.Context) error {
 		)
 	}
 
+	// CHECK EXISTANCE SOURCE
+	exist, err := controller.SourceService.GameHasSomeSourceGameId(game.GameID, attachGameParams.SourceGameID)
+	if err != nil {
+		// iternalSystemError
+	}
+	if exist {
+		//return Game Has some source
+	}
+
 	// TODO
 	err = controller.AttachSourceToGameService.AttachGameResults(game.GameID, attachGameParams)
 	if err != nil {
@@ -228,3 +238,7 @@ func (controller *GameController) AttachGameResults(ctx echo.Context) error {
 
 	return nil
 }
+
+// TODO: !!!
+// на форме !!!
+// START_DATE, END_DATE, SCHEDULES_ID

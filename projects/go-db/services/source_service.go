@@ -5,14 +5,15 @@ import (
 
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/logutils"
 )
 
 type SourceService struct {
 	SourceRepo interfaces.ISourceRepo
 }
 
-func (repo *SourceService) ListByGame(gameID string) ([]bo.SourceBO, error) {
-	listDAO, err := repo.SourceRepo.SelectListByGame(gameID)
+func (service *SourceService) ListByGame(gameID string) ([]bo.SourceBO, error) {
+	listDAO, err := service.SourceRepo.SelectListByGame(gameID)
 	if err != nil {
 		return nil, fmt.Errorf("source list by game: %v", err)
 	}
@@ -23,4 +24,22 @@ func (repo *SourceService) ListByGame(gameID string) ([]bo.SourceBO, error) {
 	}
 
 	return list, nil
+}
+
+// TODO
+// Work only for sourceGames with type == Category !!!
+func (service *SourceService) GameHasSomeSourceGameId(gameId, sourceGameId string) (bool, error) {
+	// TODO: service.ListByGame | refactor bo.SourceBO
+	sources, err := service.SourceRepo.SelectListByGame(gameId)
+	if err != nil {
+		return false, fmt.Errorf("%v GameHasSomeSourceGameId %v", logutils.GetStructName(service), err)
+	}
+
+	for _, source := range sources {
+		if source.Value == sourceGameId {
+			return true, nil
+		}
+	}
+
+	return false, nil
 }

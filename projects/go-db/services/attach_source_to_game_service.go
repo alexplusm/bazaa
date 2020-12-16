@@ -77,24 +77,25 @@ func (service *AttachSourceToGameService) AttachSchedules(gameID string) error {
 }
 
 func (service *AttachSourceToGameService) AttachGameResults(gameID string, params bo.AttachGameParams) error {
-	// TODO: sourceService.method
-	sources, err := service.SourceRepo.SelectListByGame(gameID)
-	if err != nil {
-		return fmt.Errorf("%v AttachGameResults: %v", logutils.GetStructName(service), err)
-	}
-
-	exist := false
-	for _, source := range sources {
-		if source.Value == params.SourceGameID {
-			exist = true
-		}
-	}
-
-	if exist {
-		// TODO: kek
-		return fmt.Errorf("source exist")
-	}
-	// TODO: sourceService.method
+	// todo: remove
+	//// TODO: sourceService.method
+	//sources, err := service.SourceRepo.SelectListByGame(gameID)
+	//if err != nil {
+	//	return fmt.Errorf("%v AttachGameResults: %v", logutils.GetStructName(service), err)
+	//}
+	//
+	//exist := false
+	//for _, source := range sources {
+	//	if source.Value == params.SourceGameID {
+	//		exist = true
+	//	}
+	//}
+	//
+	//if exist {
+	//	// TODO: kek
+	//	return fmt.Errorf("source exist")
+	//}
+	//// TODO: sourceService.method
 
 	source := dao.SourceInsertDAO{
 		SourceBaseDAO: dao.SourceBaseDAO{

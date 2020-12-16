@@ -15,7 +15,7 @@ type SourceRepo struct {
 const (
 	insertSourceStatement = `
 INSERT INTO sources ("game_id", "type", "created_at", "value")
-VALUES ($1, $2, $3)
+VALUES ($1, $2, $3, $4)
 RETURNING "source_id"
 `
 	selectSourcesByGameStatement = `
