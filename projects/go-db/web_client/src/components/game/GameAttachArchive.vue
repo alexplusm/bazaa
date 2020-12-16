@@ -36,7 +36,7 @@ function progressCallback(progressEvent) {
 }
 
 export default {
-	name: 'GameUploadArchive',
+	name: 'GameAttachArchive',
 	data: () => ({
 		archive: null,
 		loading: false,

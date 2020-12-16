@@ -10,7 +10,7 @@
 		></v-select>
 
 		<div v-if="selectedSourceType === sourceTypes[0].value">
-			<GameUploadArchive />
+			<GameAttachArchive />
 		</div>
 
 		<div v-if="selectedSourceType === sourceTypes[1].value">Расписание</div>
@@ -23,11 +23,11 @@
 
 <script>
 import { sourceTypesMap, sourceTypesArray } from '../../domain/consts';
-import GameUploadArchive from './GameUploadArchive';
+import GameAttachArchive from './GameAttachArchive';
 
 export default {
 	name: 'GameAddSources',
-	components: { GameUploadArchive },
+	components: { GameAttachArchive },
 	data: () => ({
 		selectedSourceType: sourceTypesMap.archiveSourceType.value,
 		sourceTypes: sourceTypesArray,
