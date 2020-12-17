@@ -1,6 +1,7 @@
 package interfaces
 
 import (
+	"archive/zip"
 	"mime/multipart"
 	"time"
 
@@ -101,5 +102,5 @@ type IImageService interface {
 
 type IFileService interface {
 	SaveFiles(files []*multipart.FileHeader, copyPath string) ([]string, error)
-	UnzipArchives(archivesPath []string, dstPath string) ([]bo.ImageParsingResult, error)
+	UnzipArchives(archivesPath []string, dstPath string) ([]zip.File, error)
 }

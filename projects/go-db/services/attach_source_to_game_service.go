@@ -1,8 +1,10 @@
 package services
 
 import (
+	"archive/zip"
 	"fmt"
 	"mime/multipart"
+	"path/filepath"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
@@ -30,7 +32,7 @@ func (service *AttachSourceToGameService) AttachArchives(
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
-	images, err := service.FileService.UnzipArchives(archivesPaths, consts.MediaRoot)
+	filesss, err := service.FileService.UnzipArchives(archivesPaths, consts.MediaRoot)
 	if err != nil {
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
@@ -43,7 +45,11 @@ func (service *AttachSourceToGameService) AttachArchives(
 	}
 
 	// TODO: refactor
-	a, b := split(images, gameID, sourceID)
+	newImg := bussinesProc(filesss)
+
+	fmt.Println(newImg)
+
+	a, b := split(newImg, gameID, sourceID)
 
 	err = service.ScreenshotRepo.InsertList(a)
 	if err != nil {
@@ -147,4 +153,28 @@ func getStr(archives []*multipart.FileHeader) string {
 	}
 
 	return strings.Join(archivesFilename, ",")
+}
+
+func bussinesProc(files []zip.File) []bo.ImageParsingResult {
+	results := make([]bo.ImageParsingResult, 0, len(files))
+
+	for _, file := range files {
+		fname := file.FileInfo().Name()
+		withViolation := strings.HasSuffix(file.Name, filepath.Join(withViolationDir, fname))
+		noViolation := strings.HasSuffix(file.Name, filepath.Join(noViolationDir, fname))
+
+		var result bo.ImageParsingResult
+
+		if withViolation {
+			result = bo.ImageParsingResult{Filename: fname, Category: WithViolationCategory}
+		} else if noViolation {
+			result = bo.ImageParsingResult{Filename: fname, Category: NoViolationCategory}
+		} else {
+			result = bo.ImageParsingResult{Filename: fname, Category: UndefinedCategory}
+		}
+
+		results = append(results, result)
+	}
+
+	return results
 }
