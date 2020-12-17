@@ -38,6 +38,8 @@ func (service *AttachSourceToGameService) AttachArchives(
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
+	files = service.ImageFilterService.Filter(files)
+
 	value := getStr(archives)
 
 	sourceID, err := service.SourceService.Create(gameID, value, consts.ArchiveSourceType)
@@ -45,13 +47,8 @@ func (service *AttachSourceToGameService) AttachArchives(
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
-	// TODO: filter
-	service.ImageFilterService.Filter()
-
 	// TODO: refactor
 	newImg := bussinesProc(files)
-
-	//fmt.Println(newImg)
 
 	a, b := split(newImg, gameID, sourceID)
 
