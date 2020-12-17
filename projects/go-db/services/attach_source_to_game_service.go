@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"mime/multipart"
 	"strings"
-	"time"
 
 	log "github.com/sirupsen/logrus"
 
@@ -18,9 +17,8 @@ import (
 
 type AttachSourceToGameService struct {
 	GameRepo       interfaces.IGameRepo
-	SourceRepo     interfaces.ISourceRepo // TODO: sourceService
-	SourceService  interfaces.ISourceService
 	ScreenshotRepo interfaces.IScreenshotRepo
+	SourceService  interfaces.ISourceService
 	FileService    interfaces.IFileService
 }
 
@@ -37,22 +35,16 @@ func (service *AttachSourceToGameService) AttachArchives(
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
-	// ----------
-	// TODO: Source Service
-	// TODO: another func
-	archivesFilename := make([]string, 0, len(archives))
-	for _, archive := range archives {
-		archivesFilename = append(archivesFilename, archive.Filename)
-	}
-	value := strings.Join(archivesFilename, ",")
+	value := getStr(archives)
 
 	sourceID, err := service.SourceService.Create(gameID, value, consts.ArchiveSourceType)
-
 	if err != nil {
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
+	// TODO: refactor
 	a, b := split(images, gameID, sourceID)
+
 	err = service.ScreenshotRepo.InsertList(a)
 	if err != nil {
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
@@ -74,14 +66,8 @@ func (service *AttachSourceToGameService) AttachSchedules(gameID string) error {
 }
 
 func (service *AttachSourceToGameService) AttachGameResults(gameID string, params bo.AttachGameParams) error {
-	source := dao.SourceInsertDAO{
-		SourceBaseDAO: dao.SourceBaseDAO{
-			Type: consts.AnotherGameResultSourceType, CreatedAt: time.Now().Unix(), GameID: gameID, Value: params.SourceGameID,
-		},
-	}
-
-	// TODO: use sourceService
-	sourceID, err := service.SourceRepo.InsertOne(source)
+	// TODO: test
+	sourceID, err := service.SourceService.Create(gameID, params.SourceGameID, consts.AnotherGameResultSourceType)
 	if err != nil {
 		return fmt.Errorf("TOODOOO: %v", err)
 	}
@@ -150,4 +136,15 @@ func split(
 	}
 
 	return imagesWithoutExpertAnswer, imagesWithExpertAnswer
+}
+
+// TODO: rename | replace in another package ?
+func getStr(archives []*multipart.FileHeader) string {
+	archivesFilename := make([]string, 0, len(archives))
+
+	for _, archive := range archives {
+		archivesFilename = append(archivesFilename, archive.Filename)
+	}
+
+	return strings.Join(archivesFilename, ",")
 }
