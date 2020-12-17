@@ -47,7 +47,7 @@ func (service *AttachSourceToGameService) AttachArchives(
 	// TODO: refactor
 	newImg := bussinesProc(filesss)
 
-	fmt.Println(newImg)
+	//fmt.Println(newImg)
 
 	a, b := split(newImg, gameID, sourceID)
 

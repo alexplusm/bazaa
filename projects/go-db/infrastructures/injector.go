@@ -36,6 +36,7 @@ type IInjector interface {
 
 	// TODO: TEST
 	InjectImageService() services.ImageService
+	InjectCheckFaces() services.ValidateFacesService
 }
 
 type kernel struct {
@@ -295,4 +296,8 @@ func (k *kernel) InjectScreenshotUserAnswerService() services.ScreenshotUserAnsw
 		AnswerRepo:     answerRepo,
 		ScreenshotRepo: screenshotRepo,
 	}
+}
+
+func (k *kernel) InjectCheckFaces() services.ValidateFacesService {
+	return services.ValidateFacesService{}
 }

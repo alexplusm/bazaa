@@ -4,6 +4,7 @@ import (
 	"crypto/subtle"
 	"fmt"
 	"os"
+	"path"
 
 	log "github.com/sirupsen/logrus"
 
@@ -57,6 +58,15 @@ func main() {
 	name := "2-DVN_SVAO_5360_1-09_08_2020_13_00_30.jpg"
 	p := consts.MediaRoot + "/" + name
 	s.CropImage(p)
+
+	// ---
+
+	fileName := "0-DVN_b_SVAO_541_1-04_08_2020_13_00_30.jpg"
+	filePath := path.Join(consts.MediaRoot, fileName)
+
+	serv := injector.InjectCheckFaces()
+	ok, err := serv.Validate(filePath)
+	fmt.Println(ok, err)
 
 	// --- test zone
 
