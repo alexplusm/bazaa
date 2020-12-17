@@ -36,7 +36,7 @@ type IInjector interface {
 
 	// TODO: TEST
 	InjectImageService() services.ImageService
-	InjectCheckFaces() services.ValidateFacesService
+	InjectValidateFacesService() services.ValidateFacesService
 }
 
 type kernel struct {
@@ -233,12 +233,14 @@ func (k *kernel) InjectAttachSourceToGameService() services.AttachSourceToGameSe
 	screenshotRepo := &repos.ScreenshotRepo{DBConn: handler}
 	fileService := k.InjectFileService()
 	sourceService := k.InjectSourceService()
+	imageFilterService := k.InjectImageFilterService()
 
 	return services.AttachSourceToGameService{
-		GameRepo:       gameRepo,
-		ScreenshotRepo: screenshotRepo,
-		SourceService:  &sourceService,
-		FileService:    &fileService,
+		GameRepo:           gameRepo,
+		ScreenshotRepo:     screenshotRepo,
+		SourceService:      &sourceService,
+		FileService:        &fileService,
+		ImageFilterService: &imageFilterService,
 	}
 }
 
@@ -298,6 +300,16 @@ func (k *kernel) InjectScreenshotUserAnswerService() services.ScreenshotUserAnsw
 	}
 }
 
-func (k *kernel) InjectCheckFaces() services.ValidateFacesService {
+func (k *kernel) InjectValidateFacesService() services.ValidateFacesService {
 	return services.ValidateFacesService{}
+}
+
+func (k *kernel) InjectImageFilterService() services.ImageFilterService {
+	validateFacesService := k.InjectValidateFacesService()
+	imageService := k.InjectImageService()
+
+	return services.ImageFilterService{
+		ValidateFacesService: &validateFacesService,
+		ImageService:         &imageService,
+	}
 }

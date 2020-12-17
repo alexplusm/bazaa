@@ -104,3 +104,11 @@ type IFileService interface {
 	SaveFiles(files []*multipart.FileHeader, copyPath string) ([]string, error)
 	UnzipArchives(archivesPath []string, dstPath string) ([]zip.File, error)
 }
+
+type IImageFilterService interface {
+	Filter()
+}
+
+type IValidateFacesService interface {
+	Validate(filePath string) (bool, error)
+}

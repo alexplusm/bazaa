@@ -64,7 +64,7 @@ func main() {
 	fileName := "0-DVN_b_SVAO_541_1-04_08_2020_13_00_30.jpg"
 	filePath := path.Join(consts.MediaRoot, fileName)
 
-	serv := injector.InjectCheckFaces()
+	serv := injector.InjectValidateFacesService()
 	ok, err := serv.Validate(filePath)
 	fmt.Println(ok, err)
 

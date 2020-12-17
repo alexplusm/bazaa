@@ -18,10 +18,11 @@ import (
 )
 
 type AttachSourceToGameService struct {
-	GameRepo       interfaces.IGameRepo
-	ScreenshotRepo interfaces.IScreenshotRepo
-	SourceService  interfaces.ISourceService
-	FileService    interfaces.IFileService
+	GameRepo           interfaces.IGameRepo
+	ScreenshotRepo     interfaces.IScreenshotRepo
+	SourceService      interfaces.ISourceService
+	FileService        interfaces.IFileService
+	ImageFilterService interfaces.IImageFilterService
 }
 
 func (service *AttachSourceToGameService) AttachArchives(
@@ -43,6 +44,9 @@ func (service *AttachSourceToGameService) AttachArchives(
 	if err != nil {
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
+
+	// TODO: filter
+	service.ImageFilterService.Filter()
 
 	// TODO: refactor
 	newImg := bussinesProc(filesss)
