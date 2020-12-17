@@ -34,10 +34,10 @@ func (service *ImageService) BuildImageURL(imageName string) (string, error) {
 	return u.String(), nil
 }
 
-func (service *ImageService) CropImage(imagePath string) error {
-	img := gocv.IMRead(imagePath, gocv.IMReadColor)
+func (service *ImageService) Crop(filePath string) error {
+	img := gocv.IMRead(filePath, gocv.IMReadColor)
 	if img.Empty() {
-		return fmt.Errorf("image empty: %v", imagePath)
+		return fmt.Errorf("image empty: %v", filePath)
 	}
 
 	size := img.Size()
@@ -53,8 +53,8 @@ func (service *ImageService) CropImage(imagePath string) error {
 	croppedMat := img.Region(image.Rect(x0, y0, x1, y1))
 	resultMat := croppedMat.Clone()
 
-	gocv.IMWrite(imagePath, resultMat)
-	//gocv.IMWrite(imagePath, croppedMat) // TODO: !!!
+	gocv.IMWrite(filePath, resultMat)
+	//gocv.IMWrite(filePath, croppedMat) // TODO: !!!
 
 	return nil
 }

@@ -2,7 +2,6 @@ package infrastructures
 
 import (
 	"fmt"
-	"github.com/Alexplusm/bazaa/projects/go-db/services"
 	"sync"
 
 	"github.com/go-redis/redis/v8"
@@ -10,6 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/controllers"
+	"github.com/Alexplusm/bazaa/projects/go-db/services"
 )
 
 type IInjector interface {

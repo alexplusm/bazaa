@@ -33,7 +33,7 @@ func (service *AttachSourceToGameService) AttachArchives(
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
-	filesss, err := service.FileService.UnzipArchives(archivesPaths, consts.MediaRoot)
+	files, err := service.FileService.UnzipArchives(archivesPaths, consts.MediaRoot)
 	if err != nil {
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
@@ -49,7 +49,7 @@ func (service *AttachSourceToGameService) AttachArchives(
 	service.ImageFilterService.Filter()
 
 	// TODO: refactor
-	newImg := bussinesProc(filesss)
+	newImg := bussinesProc(files)
 
 	//fmt.Println(newImg)
 

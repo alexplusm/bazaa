@@ -98,6 +98,7 @@ type ILeaderboardService interface {
 
 type IImageService interface {
 	BuildImageURL(imageName string) (string, error)
+	Crop(filePath string) error
 }
 
 type IFileService interface {
@@ -106,7 +107,7 @@ type IFileService interface {
 }
 
 type IImageFilterService interface {
-	Filter()
+	Filter(files []zip.File) []zip.File
 }
 
 type IValidateFacesService interface {

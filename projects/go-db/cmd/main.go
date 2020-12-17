@@ -57,7 +57,7 @@ func main() {
 	s := injector.InjectImageService()
 	name := "2-DVN_SVAO_5360_1-09_08_2020_13_00_30.jpg"
 	p := consts.MediaRoot + "/" + name
-	s.CropImage(p)
+	s.Crop(p)
 
 	// ---
 
