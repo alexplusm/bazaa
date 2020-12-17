@@ -26,16 +26,17 @@ type AttachSourceToGameService struct {
 func (service *AttachSourceToGameService) AttachArchives(
 	gameID string, archives []*multipart.FileHeader,
 ) error {
-	filenames, err := service.FileService.SaveFiles(archives, consts.MediaTempDir)
+	archivesPaths, err := service.FileService.SaveFiles(archives, consts.MediaTempDir)
 	if err != nil {
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
-	images, err := service.FileService.UnzipImages(filenames)
+	images, err := service.FileService.UnzipArchives(archivesPaths, consts.MediaRoot)
 	if err != nil {
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
+	// ----------
 	// TODO: Source Service
 	// TODO: another func
 	archivesFilename := make([]string, 0, len(archives))
@@ -49,6 +50,7 @@ func (service *AttachSourceToGameService) AttachArchives(
 			Type: consts.ArchiveSourceType, CreatedAt: time.Now().Unix(), GameID: gameID, Value: value,
 		},
 	}
+	// ----------
 
 	sourceID, err := service.SourceRepo.InsertOne(source)
 	if err != nil {
@@ -66,7 +68,7 @@ func (service *AttachSourceToGameService) AttachArchives(
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
-	removeArchives(filenames)
+	removeArchives(archivesPaths)
 
 	return nil
 }
@@ -114,9 +116,9 @@ func (service *AttachSourceToGameService) AttachGameResults(gameID string, param
 	return nil
 }
 
-func removeArchives(filenames []string) {
-	for _, fn := range filenames {
-		err := fileutils.RemoveFile(consts.MediaTempDir, fn)
+func removeArchives(filesPaths []string) {
+	for _, fpath := range filesPaths {
+		err := fileutils.RemoveFile(fpath)
 		if err != nil {
 			log.Error("remove archive: ", err)
 		}

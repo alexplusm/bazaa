@@ -3,7 +3,6 @@ package fileutils
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
@@ -16,9 +15,8 @@ func CreateDirIfNotExists(path string) {
 	// TODO: return err -> main -> FATAL
 }
 
-func RemoveFile(dir, filename string) error {
-	fp := filepath.Join(dir, filename)
-	if err := os.Remove(fp); err != nil {
+func RemoveFile(fpath string) error {
+	if err := os.Remove(fpath); err != nil {
 		return fmt.Errorf("remove file: %v", err)
 	}
 	return nil

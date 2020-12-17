@@ -11,7 +11,6 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/fileutils"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/logutils"
@@ -44,27 +43,73 @@ func (service *FileService) SaveFile(file *multipart.FileHeader, dstPath string)
 		return "", fmt.Errorf("%v SaveFile: %v", logutils.GetStructName(service), err)
 	}
 
-	return filename, nil
+	return dstFilepath, nil
 }
 
 func (service *FileService) SaveFiles(files []*multipart.FileHeader, dstPath string) ([]string, error) {
-	filenames := make([]string, 0)
+	filesPaths := make([]string, 0)
 
 	for _, file := range files {
-		filename, err := service.SaveFile(file, dstPath)
+		fpath, err := service.SaveFile(file, dstPath)
 		if err != nil {
-			return filenames, err
+			return filesPaths, err
 		}
 
-		filenames = append(filenames, filename)
+		filesPaths = append(filesPaths, fpath)
 	}
 
-	return filenames, nil
+	return filesPaths, nil
 }
 
-func (service *FileService) UnzipImages(filenames []string) ([]bo.ImageParsingResult, error) {
-	return unzipFiles(consts.MediaTempDir, consts.MediaRoot, filenames)
+// TODO: return values || !!!
+func (service *FileService) UnzipArchives(
+	archivesPath []string, dstPath string,
+) ([]bo.ImageParsingResult, error) {
+	result := make([]bo.ImageParsingResult, 0, 500)
+
+	for _, archivePath := range archivesPath {
+		// TODO: method
+		res, err := unzip(archivePath, dstPath)
+		if err != nil {
+			return nil, fmt.Errorf("unzip files: %v", err)
+		}
+
+		result = append(result, res...)
+	}
+	log.Info("unzip archive: count files =", len(result))
+
+	return result, nil
 }
+
+// TODO: rename ::: todo: remove
+func (service *FileService) GetArchivesPaths(archivesNames []string, srcPath string) ([]string, error) {
+	dir, err := os.Open(srcPath)
+	if err != nil {
+		return nil, err // TODO: build error
+	}
+	filesInfo, err := dir.Readdir(-1)
+	if err != nil {
+		return nil, err // TODO: build error
+	}
+
+	archivesPaths := make([]string, 0, len(archivesNames))
+
+	for _, fileInfo := range filesInfo {
+		for _, archName := range archivesNames {
+			if archName == fileInfo.Name() {
+				archivesPaths = append(archivesPaths, filepath.Join(srcPath, fileInfo.Name()))
+				break
+			}
+		}
+	}
+
+	return archivesPaths, nil
+}
+
+// TODO: remove
+//func (service *FileService) UnzipImages(filenames []string) ([]bo.ImageParsingResult, error) {
+//	return unzipFiles(consts.MediaTempDir, consts.MediaRoot, filenames)
+//}
 
 // INFO: service files with this prefix appear after unpacking
 const serviceUnzipFilePrefix = "._"
@@ -103,32 +148,32 @@ const (
 	UndefinedCategory     = "undefined"
 )
 
-func unzipFiles(srcPath string, destPath string, filenames []string) ([]bo.ImageParsingResult, error) {
-	// TODO: unused filenames !!!
-	dir, err := os.Open(srcPath)
-	if err != nil {
-		return nil, err
-	}
-	// dir.
-	filesInfo, err := dir.Readdir(-1)
-	if err != nil {
-		return nil, err
-	}
-
-	result := make([]bo.ImageParsingResult, 0, 500)
-
-	for _, fileInfo := range filesInfo {
-		res, err := unzip(filepath.Join(srcPath, fileInfo.Name()), destPath)
-		result = append(result, res...)
-
-		if err != nil {
-			return nil, fmt.Errorf("unzip files: %v", err)
-		}
-	}
-	log.Info("unzip archive: count files =", len(result))
-
-	return result, nil
-}
+//func unzipFiles(srcPath string, destPath string, filenames []string) ([]bo.ImageParsingResult, error) {
+//	// TODO: unused filenames !!!
+//	dir, err := os.Open(srcPath)
+//	if err != nil {
+//		return nil, err
+//	}
+//	// dir.
+//	filesInfo, err := dir.Readdir(-1)
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	result := make([]bo.ImageParsingResult, 0, 500)
+//
+//	for _, fileInfo := range filesInfo {
+//		res, err := unzip(filepath.Join(srcPath, fileInfo.Name()), destPath)
+//		result = append(result, res...)
+//
+//		if err != nil {
+//			return nil, fmt.Errorf("unzip files: %v", err)
+//		}
+//	}
+//	log.Info("unzip archive: count files =", len(result))
+//
+//	return result, nil
+//}
 
 func unzip(src string, destination string) ([]bo.ImageParsingResult, error) {
 	/*

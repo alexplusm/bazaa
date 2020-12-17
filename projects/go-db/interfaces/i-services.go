@@ -100,5 +100,5 @@ type IImageService interface {
 
 type IFileService interface {
 	SaveFiles(files []*multipart.FileHeader, copyPath string) ([]string, error)
-	UnzipImages(filenames []string) ([]bo.ImageParsingResult, error)
+	UnzipArchives(archivesPath []string, dstPath string) ([]bo.ImageParsingResult, error)
 }
