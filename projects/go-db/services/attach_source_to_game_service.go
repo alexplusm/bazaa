@@ -18,7 +18,7 @@ import (
 
 type AttachSourceToGameService struct {
 	GameRepo       interfaces.IGameRepo
-	SourceRepo     interfaces.ISourceRepo
+	SourceRepo     interfaces.ISourceRepo // TODO: sourceService
 	ScreenshotRepo interfaces.IScreenshotRepo
 	FileService    interfaces.IFileService
 }
@@ -26,14 +26,14 @@ type AttachSourceToGameService struct {
 func (service *AttachSourceToGameService) AttachArchives(
 	gameID string, archives []*multipart.FileHeader,
 ) error {
-	filenames, err := service.FileService.CopyFiles(archives, consts.MediaTempDir)
+	filenames, err := service.FileService.SaveFiles(archives, consts.MediaTempDir)
 	if err != nil {
-		return fmt.Errorf("attach zip archive: %v", err)
+		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
 	images, err := service.FileService.UnzipImages(filenames)
 	if err != nil {
-		return fmt.Errorf("attach zip archive: %v", err)
+		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
 	// TODO: Source Service
@@ -52,18 +52,18 @@ func (service *AttachSourceToGameService) AttachArchives(
 
 	sourceID, err := service.SourceRepo.InsertOne(source)
 	if err != nil {
-		return fmt.Errorf("attach zip archive: %v", err)
+		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
 	a, b := split(images, gameID, sourceID)
 	err = service.ScreenshotRepo.InsertList(a)
 	if err != nil {
-		return fmt.Errorf("attach zip archive: %v", err)
+		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
 	err = service.ScreenshotRepo.InsertListWithExpertAnswer(b)
 	if err != nil {
-		return fmt.Errorf("attach zip archive: %v", err)
+		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
 	removeArchives(filenames)

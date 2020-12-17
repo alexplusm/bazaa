@@ -99,6 +99,6 @@ type IImageService interface {
 }
 
 type IFileService interface {
-	CopyFiles(files []*multipart.FileHeader, copyPath string) ([]string, error)
+	SaveFiles(files []*multipart.FileHeader, copyPath string) ([]string, error)
 	UnzipImages(filenames []string) ([]bo.ImageParsingResult, error)
 }

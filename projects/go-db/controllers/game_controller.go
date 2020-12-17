@@ -117,13 +117,13 @@ func (controller *GameController) AttachArchives(ctx echo.Context) error {
 
 	form, err := ctx.MultipartForm()
 	if err != nil {
-		log.Error("game update controller: ", err)
+		log.Error(logutils.GetStructName(controller), "AttachArchives: ", err)
 		return ctx.JSON(http.StatusOK, httputils.BuildBadRequestErrorResponse())
 	}
 
 	game, err := controller.GameService.Retrieve(gameID)
 	if err != nil {
-		log.Error("game update controller: ", err)
+		log.Error(logutils.GetStructName(controller), "AttachArchives: ", err)
 		return ctx.JSON(
 			http.StatusOK,
 			httputils.BuildErrorResponse(http.StatusOK, "game not found"),
@@ -131,7 +131,7 @@ func (controller *GameController) AttachArchives(ctx echo.Context) error {
 	}
 
 	if !game.NotStarted() {
-		log.Info("game update controller: ", "game started: ", gameID)
+		log.Info(logutils.GetStructName(controller), "AttachArchives: ", "game started: ", gameID)
 		return ctx.JSON(
 			http.StatusOK,
 			httputils.BuildErrorResponse(http.StatusOK, "game started"),
@@ -149,7 +149,7 @@ func (controller *GameController) AttachArchives(ctx echo.Context) error {
 
 	err = controller.AttachSourceToGameService.AttachArchives(gameID, archives)
 	if err != nil {
-		log.Error("game update controller: ", err)
+		log.Error(logutils.GetStructName(controller), "AttachArchives: ", err)
 		return ctx.JSON(
 			http.StatusOK,
 			httputils.BuildBadRequestErrorResponse(),
@@ -240,7 +240,7 @@ func (controller *GameController) AttachGameResults(ctx echo.Context) error {
 		return ctx.JSON(http.StatusOK, httputils.BuildInternalServerErrorResponse())
 	}
 
-	return nil
+	return ctx.JSON(http.StatusOK, httputils.BuildSuccessWithoutBodyResponse())
 }
 
 // TODO: !!!

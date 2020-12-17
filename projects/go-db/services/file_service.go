@@ -14,42 +14,49 @@ import (
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/fileutils"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/logutils"
 )
 
 type FileService struct{}
 
-func (service *FileService) CopyFiles(files []*multipart.FileHeader, copyPath string) ([]string, error) {
+func (service *FileService) SaveFile(file *multipart.FileHeader, dstPath string) (string, error) {
+	src, err := file.Open()
+	if err != nil {
+		return "", fmt.Errorf("%v SaveFile: %v", logutils.GetStructName(service), err)
+	}
+
+	filename := filepath.Base(file.Filename)
+	dstFilepath := filepath.Join(dstPath, filename)
+
+	dst, err := os.Create(dstFilepath)
+	if err != nil {
+		return "", fmt.Errorf("%v SaveFile: %v", logutils.GetStructName(service), err)
+	}
+
+	if _, err := io.Copy(dst, src); err != nil {
+		return "", fmt.Errorf("%v SaveFile: %v", logutils.GetStructName(service), err)
+	}
+
+	if err = src.Close(); err != nil {
+		return "", fmt.Errorf("%v SaveFile: %v", logutils.GetStructName(service), err)
+	}
+	if err = dst.Close(); err != nil {
+		return "", fmt.Errorf("%v SaveFile: %v", logutils.GetStructName(service), err)
+	}
+
+	return filename, nil
+}
+
+func (service *FileService) SaveFiles(files []*multipart.FileHeader, dstPath string) ([]string, error) {
 	filenames := make([]string, 0)
 
 	for _, file := range files {
-		// Source
-		src, err := file.Open()
+		filename, err := service.SaveFile(file, dstPath)
 		if err != nil {
 			return filenames, err
 		}
 
-		filename := filepath.Base(file.Filename)
-		fp := filepath.Join(copyPath, filename)
-
-		// Destination
-		dst, err := os.Create(fp)
-		if err != nil {
-			return filenames, err
-		}
-
-		// Copy
-		if _, err := io.Copy(dst, src); err != nil {
-			return filenames, err
-		}
 		filenames = append(filenames, filename)
-
-		if err = src.Close(); err != nil {
-			return filenames, err
-		}
-		if err = dst.Close(); err != nil {
-			return filenames, err
-		}
-
 	}
 
 	return filenames, nil
@@ -102,6 +109,7 @@ func unzipFiles(srcPath string, destPath string, filenames []string) ([]bo.Image
 	if err != nil {
 		return nil, err
 	}
+	// dir.
 	filesInfo, err := dir.Readdir(-1)
 	if err != nil {
 		return nil, err
