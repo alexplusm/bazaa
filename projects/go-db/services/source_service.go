@@ -2,14 +2,26 @@ package services
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
+	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/logutils"
 )
 
 type SourceService struct {
 	SourceRepo interfaces.ISourceRepo
+}
+
+func (service *SourceService) Create(gameId, value string, sourceType int) (string, error) {
+	source := dao.SourceInsertDAO{
+		SourceBaseDAO: dao.SourceBaseDAO{
+			GameID: gameId, Type: sourceType, CreatedAt: time.Now().Unix(), Value: value,
+		},
+	}
+
+	return service.SourceRepo.InsertOne(source)
 }
 
 func (service *SourceService) ListByGame(gameID string) ([]bo.SourceBO, error) {

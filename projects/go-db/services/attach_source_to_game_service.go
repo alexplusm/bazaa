@@ -19,6 +19,7 @@ import (
 type AttachSourceToGameService struct {
 	GameRepo       interfaces.IGameRepo
 	SourceRepo     interfaces.ISourceRepo // TODO: sourceService
+	SourceService  interfaces.ISourceService
 	ScreenshotRepo interfaces.IScreenshotRepo
 	FileService    interfaces.IFileService
 }
@@ -45,14 +46,8 @@ func (service *AttachSourceToGameService) AttachArchives(
 	}
 	value := strings.Join(archivesFilename, ",")
 
-	source := dao.SourceInsertDAO{
-		SourceBaseDAO: dao.SourceBaseDAO{
-			Type: consts.ArchiveSourceType, CreatedAt: time.Now().Unix(), GameID: gameID, Value: value,
-		},
-	}
-	// ----------
+	sourceID, err := service.SourceService.Create(gameID, value, consts.ArchiveSourceType)
 
-	sourceID, err := service.SourceRepo.InsertOne(source)
 	if err != nil {
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
@@ -85,6 +80,7 @@ func (service *AttachSourceToGameService) AttachGameResults(gameID string, param
 		},
 	}
 
+	// TODO: use sourceService
 	sourceID, err := service.SourceRepo.InsertOne(source)
 	if err != nil {
 		return fmt.Errorf("TOODOOO: %v", err)

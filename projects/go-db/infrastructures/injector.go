@@ -229,14 +229,16 @@ func (k *kernel) InjectAnswerService() services.AnswerService {
 func (k *kernel) InjectAttachSourceToGameService() services.AttachSourceToGameService {
 	handler := &PSQLHandler{k.pool}
 	gameRepo := &repos.GameRepo{DBConn: handler}
-	sourceRepo := &repos.SourceRepo{DBConn: handler}
+	sourceRepo := &repos.SourceRepo{DBConn: handler} // TODO: remove
 	screenshotRepo := &repos.ScreenshotRepo{DBConn: handler}
 	fileService := k.InjectFileService()
+	sourceService := k.InjectSourceService()
 
 	return services.AttachSourceToGameService{
 		GameRepo:       gameRepo,
 		ScreenshotRepo: screenshotRepo,
-		SourceRepo:     sourceRepo,
+		SourceRepo:     sourceRepo, // TODO: remove
+		SourceService:  &sourceService,
 		FileService:    &fileService,
 	}
 }
