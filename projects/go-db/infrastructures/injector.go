@@ -33,6 +33,9 @@ type IInjector interface {
 
 	// INFO: services
 	InjectGameCacheService() services.GameCacheService
+
+	// TODO: TEST
+	InjectImageService() services.ImageService
 }
 
 type kernel struct {
