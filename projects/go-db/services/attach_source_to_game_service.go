@@ -7,8 +7,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
-
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/bo"
@@ -48,7 +46,7 @@ func (service *AttachSourceToGameService) AttachArchives(
 	}
 
 	// TODO: refactor
-	newImg := bussinesProc(files)
+	newImg := parseImageCategory(files)
 
 	a, b := split(newImg, gameID, sourceID)
 
@@ -62,7 +60,7 @@ func (service *AttachSourceToGameService) AttachArchives(
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
-	removeArchives(archivesPaths)
+	fileutils.RemoveFiles(archivesPaths)
 
 	return nil
 }
@@ -73,10 +71,9 @@ func (service *AttachSourceToGameService) AttachSchedules(gameID string) error {
 }
 
 func (service *AttachSourceToGameService) AttachGameResults(gameID string, params bo.AttachGameParams) error {
-	// TODO: test
 	sourceID, err := service.SourceService.Create(gameID, params.SourceGameID, consts.AnotherGameResultSourceType)
 	if err != nil {
-		return fmt.Errorf("TOODOOO: %v", err)
+		return fmt.Errorf("%v AttachGameResults: %v", logutils.GetStructName(service), err)
 	}
 
 	screenshots, err := service.ScreenshotRepo.SelectListByGameID(params.SourceGameID)
@@ -105,15 +102,7 @@ func (service *AttachSourceToGameService) AttachGameResults(gameID string, param
 	return nil
 }
 
-func removeArchives(filesPaths []string) {
-	for _, fpath := range filesPaths {
-		err := fileutils.RemoveFile(fpath)
-		if err != nil {
-			log.Error("remove archive: ", err)
-		}
-	}
-}
-
+// todo: не интересно - желательно удалить
 func split(
 	images []bo.ImageParsingResult, gameID, sourceID string,
 ) ([]dao.ScreenshotDAO, []dao.ScreenshotWithExpertAnswerDAO) {
@@ -127,7 +116,7 @@ func split(
 		if !mmap[image.Filename] {
 			mmap[image.Filename] = true
 			if image.Category == UndefinedCategory {
-				screen := dao.ScreenshotDAO{image.Filename, gameID, sourceID}
+				screen := dao.ScreenshotDAO{Filename: image.Filename, GameID: gameID, SourceID: sourceID}
 
 				imagesWithoutExpertAnswer = append(imagesWithoutExpertAnswer, screen)
 			} else {
@@ -156,7 +145,7 @@ func getStr(archives []*multipart.FileHeader) string {
 	return strings.Join(archivesFilename, ",")
 }
 
-func bussinesProc(files []zip.File) []bo.ImageParsingResult {
+func parseImageCategory(files []zip.File) []bo.ImageParsingResult {
 	results := make([]bo.ImageParsingResult, 0, len(files))
 
 	for _, file := range files {

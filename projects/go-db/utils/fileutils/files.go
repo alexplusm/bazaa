@@ -8,15 +8,21 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func CreateDirIfNotExists(path string) {
-	if err := os.MkdirAll(path, 0777); err != nil {
-		log.Error("create dir: ", err)
-	}
-	// TODO: return err -> main -> FATAL
+func CreateDirIfNotExists(path string) error {
+	return os.MkdirAll(path, 0777)
 }
 
-func RemoveFile(fpath string) error {
-	if err := os.Remove(fpath); err != nil {
+func RemoveFiles(filePaths []string) {
+	for _, filePath := range filePaths {
+		err := RemoveFile(filePath)
+		if err != nil {
+			log.Error("remove files: ", err)
+		}
+	}
+}
+
+func RemoveFile(filePath string) error {
+	if err := os.Remove(filePath); err != nil {
 		return fmt.Errorf("remove file: %v", err)
 	}
 	return nil

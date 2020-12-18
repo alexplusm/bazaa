@@ -22,34 +22,32 @@ import (
 *		https://medium.com/cuddle-ai/building-microservice-using-golang-echo-framework-ff10ba06d508
  */
 
-const (
-	errorPrefix = "main: "
-)
-
 func main() {
 	setupLogger()
 
 	injector, err := infrastructures.Injector()
 	if err != nil {
-		log.Fatal(errorPrefix, err)
+		log.Fatal("main: ", err)
 	}
 	defer injector.CloseStoragesConnections()
 
-	initDirs()
+	if err := initDirs(); err != nil {
+		log.Fatal("main: ", err)
+	}
 
 	e := echo.New()
 
 	registerMiddlewares(e)
 
 	e.HTTPErrorHandler = func(err error, ctx echo.Context) {
-		log.Error(errorPrefix, err) // TODO: remove log errors from controllers??????????? : пока что нет
+		log.Error("main: ", err) // TODO: remove log errors from controllers??????????? : пока что нет
 
 		e.DefaultHTTPErrorHandler(err, ctx)
 	}
 
 	err = registerRoutes(e)
 	if err != nil {
-		log.Fatal(errorPrefix, err)
+		log.Fatal("main: ", err)
 	}
 
 	// --- test zone
@@ -73,11 +71,14 @@ func main() {
 	log.Fatal(e.Start(":" + os.Getenv("SERVER_PORT_INNER")))
 }
 
-func initDirs() {
+func initDirs() error {
 	dirs := []string{consts.MediaRoot, consts.MediaTempDir}
 	for _, dir := range dirs {
-		fileutils.CreateDirIfNotExists(dir)
+		if err := fileutils.CreateDirIfNotExists(dir); err != nil {
+			return fmt.Errorf("init dirs: %v", err)
+		}
 	}
+	return nil
 }
 
 func registerMiddlewares(e *echo.Echo) {
