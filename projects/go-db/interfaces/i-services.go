@@ -113,3 +113,8 @@ type IImageFilterService interface {
 type IValidateFacesService interface {
 	Validate(filePath string) (bool, error)
 }
+
+type ICacheKeyService interface {
+	GetActiveUserKey(gameId, userId string) string
+	GetActiveUserKeyPattern(gameId string) string
+}

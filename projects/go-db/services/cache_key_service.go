@@ -1,5 +1,8 @@
 package services
 
+// TODO: redis key generator service !!!
+//		and use this keys for communicate this redis
+
 const (
 	extSystemIDKey   = "extSystemID"
 	screenshotsKey   = "--screenshots"
@@ -9,7 +12,7 @@ const (
 	// INFO: количество служебных полей: "url"
 	nonAnswerFieldsCount = 1
 
-	// INFO: дефолтное значение ответа
+	// INFO: default answer value
 	initAnswerValue = "null"
 )
 
@@ -19,4 +22,15 @@ func init() {
 	serviceKeyMap = make(map[string]bool)
 
 	serviceKeyMap[screenshotURLKey] = true
+}
+
+type CacheKeyService struct {
+}
+
+func (service *CacheKeyService) GetActiveUserKey(gameId, userId string) string {
+	return "++" + gameId + ":" + userId
+}
+
+func (service *CacheKeyService) GetActiveUserKeyPattern(gameId string) string {
+	return "++" + gameId + ":" + "*"
 }

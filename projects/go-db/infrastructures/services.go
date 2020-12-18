@@ -95,8 +95,12 @@ func (k *kernel) InjectScreenshotService() services.ScreenshotService {
 
 func (k *kernel) InjectActiveUsersService() services.ActiveUsersService {
 	redisHandler := &RedisHandler{k.redisClient}
+	cacheKeyService := k.InjectCacheKeyService()
 
-	return services.ActiveUsersService{RedisClient: redisHandler}
+	return services.ActiveUsersService{
+		RedisClient:     redisHandler,
+		CacheKeyService: &cacheKeyService,
+	}
 }
 
 func (k *kernel) InjectStatisticGameService() services.StatisticGameService {
@@ -140,4 +144,8 @@ func (k *kernel) InjectImageFilterService() services.ImageFilterService {
 		ValidateFacesService: &validateFacesService,
 		ImageService:         &imageService,
 	}
+}
+
+func (k *kernel) InjectCacheKeyService() services.CacheKeyService {
+	return services.CacheKeyService{}
 }
