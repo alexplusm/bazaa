@@ -1,5 +1,9 @@
 package services
 
+import (
+	"strings"
+)
+
 // TODO: redis key generator service !!!
 //		and use this keys for communicate this redis
 
@@ -33,4 +37,16 @@ func (service *CacheKeyService) GetActiveUserKey(gameId, userId string) string {
 
 func (service *CacheKeyService) GetActiveUserKeyPattern(gameId string) string {
 	return "++" + gameId + ":" + "*"
+}
+
+func (service *CacheKeyService) GetScreenshotListKey(gameId string) string {
+	return screenshotsKey + ":" + gameId
+}
+
+func buildScreenshotsListKey(gameID string) string {
+	return strings.Join([]string{screenshotsKey, gameID}, ":")
+}
+
+func buildGameKey(gameID string) string {
+	return strings.Join([]string{gameKey, gameID}, ":")
 }

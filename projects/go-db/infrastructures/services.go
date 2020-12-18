@@ -117,8 +117,9 @@ func (k *kernel) InjectStatisticGameService() services.StatisticGameService {
 
 func (k *kernel) InjectScreenshotCacheService() services.ScreenshotCacheService {
 	redisHandler := &RedisHandler{k.redisClient}
+	cacheKeyService := k.InjectCacheKeyService()
 
-	return services.ScreenshotCacheService{RedisClient: redisHandler}
+	return services.ScreenshotCacheService{RedisClient: redisHandler, CacheKeyService: &cacheKeyService}
 }
 
 func (k *kernel) InjectScreenshotUserAnswerService() services.ScreenshotUserAnswerService {

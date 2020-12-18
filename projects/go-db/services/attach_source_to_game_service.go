@@ -81,13 +81,13 @@ func (service *AttachSourceToGameService) AttachGameResults(gameID string, param
 	newScreenshots := make([]dao.ScreenshotCreateDAO, 0, len(screenshots))
 
 	for _, screenshot := range screenshots {
-		if string(screenshot.UsersAnswer) == params.Answer {
-			ddao := dao.ScreenshotCreateDAO{
+		if screenshot.UsersAnswer == params.Answer {
+			newScreenshot := dao.ScreenshotCreateDAO{
 				Filename: screenshot.Filename,
 				GameID:   gameID,
 				SourceID: sourceID,
 			}
-			newScreenshots = append(newScreenshots, ddao)
+			newScreenshots = append(newScreenshots, newScreenshot)
 		}
 	}
 
@@ -136,18 +136,17 @@ func parseImageCategory(files []zip.File) []bo.ImageParsingResult {
 	results := make([]bo.ImageParsingResult, 0, len(files))
 
 	for _, file := range files {
-		fname := file.FileInfo().Name()
-		withViolation := strings.HasSuffix(file.Name, filepath.Join(withViolationDir, fname))
-		noViolation := strings.HasSuffix(file.Name, filepath.Join(noViolationDir, fname))
+		fileName := file.FileInfo().Name()
+		withViolation := strings.HasSuffix(file.Name, filepath.Join(withViolationDir, fileName))
+		noViolation := strings.HasSuffix(file.Name, filepath.Join(noViolationDir, fileName))
 
-		var result bo.ImageParsingResult
+		result := bo.ImageParsingResult{Filename: fileName, Category: UndefinedCategory}
 
 		if withViolation {
-			result = bo.ImageParsingResult{Filename: fname, Category: WithViolationCategory}
-		} else if noViolation {
-			result = bo.ImageParsingResult{Filename: fname, Category: NoViolationCategory}
-		} else {
-			result = bo.ImageParsingResult{Filename: fname, Category: UndefinedCategory}
+			result.Category = WithViolationCategory
+		}
+		if noViolation {
+			result.Category = NoViolationCategory
 		}
 
 		results = append(results, result)

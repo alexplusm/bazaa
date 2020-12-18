@@ -18,7 +18,7 @@ func (service *DurationService) GetDurationByGame(from, to string, game bo.GameB
 	if from != "" {
 		parsedFrom, err := timeutils.FromTimestampToTime(from)
 		if err != nil {
-			return fromResult, toResult, fmt.Errorf("get duration by game: ", err)
+			return fromResult, toResult, fmt.Errorf("get duration by game: %v", err)
 		} else {
 			fromResult = parsedFrom
 		}
@@ -26,7 +26,7 @@ func (service *DurationService) GetDurationByGame(from, to string, game bo.GameB
 	if to != "" {
 		parsedTo, err := timeutils.FromTimestampToTime(to)
 		if err != nil {
-			return fromResult, toResult, fmt.Errorf("get duration by game: ", err)
+			return fromResult, toResult, fmt.Errorf("get duration by game: %v", err)
 		} else {
 			toResult = parsedTo
 		}

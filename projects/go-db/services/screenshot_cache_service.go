@@ -15,8 +15,9 @@ import (
 
 // TODO: rename RedisClient in all controllers
 type ScreenshotCacheService struct {
-	mutex       sync.Mutex
-	RedisClient interfaces.IRedisHandler
+	mutex           sync.Mutex
+	RedisClient     interfaces.IRedisHandler
+	CacheKeyService interfaces.ICacheKeyService
 }
 
 func (service *ScreenshotCacheService) GetScreenshot(
@@ -26,7 +27,8 @@ func (service *ScreenshotCacheService) GetScreenshot(
 	ctx := context.Background()
 	conn := service.RedisClient.GetConn()
 
-	listLength, _ := conn.LLen(ctx, buildScreenshotsListKey(gameID)).Result()
+	key := service.CacheKeyService.GetScreenshotListKey(gameID)
+	listLength, _ := conn.LLen(ctx, key).Result()
 
 	id, hasID := findScreenshot(conn, 0, listLength, gameID)
 	if !hasID {
@@ -72,21 +74,18 @@ func (service *ScreenshotCacheService) ScreenshotExist(screenshotID string) bool
 	return res
 }
 
-// ---- tx: 1
 func (service *ScreenshotCacheService) SetUserAnswerToScreenshot(
 	userID, screenshotID, answer string,
 ) {
 	ctx := context.Background()
 	conn := service.RedisClient.GetConn()
 
-	// TODO: research: HSet, HMSet, HSetNX
 	err := conn.HSet(ctx, screenshotID, userID, answer).Err()
 	if err != nil {
 		fmt.Println(err) // TODO: process error
 	}
 }
 
-// ---- tx: 2
 func (service *ScreenshotCacheService) GetUsersAnswers(screenshotID string) []bo.UserAnswerCacheBO {
 	// TODO: process error in func
 	ctx := context.Background()
@@ -111,7 +110,6 @@ func (service *ScreenshotCacheService) GetUsersAnswers(screenshotID string) []bo
 	return answers
 }
 
-// TODO: rename methods: SetUserAnswerToScreenshot | SetUserAnswer
 func (service *ScreenshotCacheService) SetUserAnswer(
 	userID, screenshotID, answer string,
 ) ([]bo.UserAnswerCacheBO, error) {
@@ -131,6 +129,9 @@ func findScreenshot(conn *redis.Client, index, maxIndex int64, gameID string) (s
 	}
 	ctx := context.Background()
 
+	// TODO: make as method of ScreenshotCacheService
+	// check recursion
+	// buildScreenshotsListKey -> use CacheKeyService
 	id, _ := conn.LIndex(ctx, buildScreenshotsListKey(gameID), index).Result()
 	keys, _ := conn.HKeys(ctx, id).Result()
 	// TODO: consts.RequiredAnswerCountToFinishScreenshot+nonAnswerFieldsCount -> in variable

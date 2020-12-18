@@ -117,4 +117,5 @@ type IValidateFacesService interface {
 type ICacheKeyService interface {
 	GetActiveUserKey(gameId, userId string) string
 	GetActiveUserKeyPattern(gameId string) string
+	GetScreenshotListKey(gameId string) string
 }

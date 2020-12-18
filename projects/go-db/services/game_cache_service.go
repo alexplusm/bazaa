@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
@@ -80,14 +79,6 @@ func (service *GameCacheService) insertScreenshots(gameID string) error {
 	return nil // TODO: process err in func
 }
 
-func buildScreenshotsListKey(gameID string) string {
-	return strings.Join([]string{screenshotsKey, gameID}, ":")
-}
-
-func buildGameKey(gameID string) string {
-	return strings.Join([]string{gameKey, gameID}, ":")
-}
-
 func mergeScreenshotsWithCache(cache []string, screenshots []dao.ScreenshotRetrieveDAO) []dao.ScreenshotRetrieveDAO {
 	screenshotCachedMap := make(map[string]bool)
 	newScreenshots := make([]dao.ScreenshotRetrieveDAO, 0, len(screenshots))
@@ -110,7 +101,7 @@ func convertToInterfaces(screenshots []dao.ScreenshotRetrieveDAO) ([]interface{}
 	resultMap := make(map[string]interface{})
 	for _, screenshot := range screenshots {
 		resultList = append(resultList, screenshot.ScreenshotID)
-		resultMap[screenshot.ScreenshotID] = buildFileURL(screenshot.Filename)
+		resultMap[screenshot.ScreenshotID] = buildFileURL(screenshot.Filename) // USE BUILD IMAGE URL SERVICE
 	}
 
 	return resultList, resultMap
