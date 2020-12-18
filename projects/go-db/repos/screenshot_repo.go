@@ -17,10 +17,6 @@ type ScreenshotRepo struct {
 
 const (
 	insertScreenshotStatement = `
-INSERT INTO screenshots ("game_id", "source_id", "filename")
-VALUES ($1, $2, $3);
-`
-	insertScreenshotWithExpertAnswerStatement = `
 INSERT INTO screenshots ("game_id", "source_id", "filename", "expert_answer")
 VALUES ($1, $2, $3, $4);
 `
@@ -101,44 +97,10 @@ func (repo *ScreenshotRepo) InsertList(screenshots []dao.ScreenshotDAO) error {
 	return nil
 }
 
-func (repo *ScreenshotRepo) InsertListWithExpertAnswer(screenshots []dao.ScreenshotWithExpertAnswerDAO) error {
-	p := repo.DBConn.GetPool()
-	conn, err := p.Acquire(context.Background())
-	if err != nil {
-		return fmt.Errorf("insert screenshots with expert answer: acquire connection: %v", err)
-	}
-	defer conn.Release()
-
-	for _, screenshot := range screenshots {
-		err := insertScreenshotWithExpertAnswer(conn, screenshot)
-		if err != nil {
-			// TODO:log error
-			fmt.Println("Error: ", err)
-			continue
-		}
-	}
-
-	return nil
-}
-
 func insertScreenshot(conn *pgxpool.Conn, s dao.ScreenshotDAO) error {
 	row, err := conn.Query(
 		context.Background(),
 		insertScreenshotStatement,
-		s.GameID, s.SourceID, s.Filename,
-	)
-	if err != nil {
-		return fmt.Errorf("insert screenshot: %v", err)
-	}
-	row.Close()
-
-	return nil
-}
-
-func insertScreenshotWithExpertAnswer(conn *pgxpool.Conn, s dao.ScreenshotWithExpertAnswerDAO) error {
-	row, err := conn.Query(
-		context.Background(),
-		insertScreenshotWithExpertAnswerStatement,
 		s.GameID, s.SourceID, s.Filename, s.ExpertAnswer,
 	)
 	if err != nil {

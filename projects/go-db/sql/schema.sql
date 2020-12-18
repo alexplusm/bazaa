@@ -66,8 +66,8 @@ CREATE TABLE IF NOT EXISTS screenshots (
 	-- INFO: в этом поле будет лежать ответ эксперта, который мы получаем:
         -- либо при загрузке zip архива, из файловой структуры
         -- либо в ответе внешней системы, которая проверила "screenshot" и дала экспертный ответ
-	"expert_answer"         VARCHAR     DEFAULT NULL,
-	"users_answer"          VARCHAR     DEFAULT NULL,
+	"expert_answer"         VARCHAR     DEFAULT '',
+	"users_answer"          VARCHAR     DEFAULT '',
 
 	PRIMARY KEY ("screenshot_id"),
 

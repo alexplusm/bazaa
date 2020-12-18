@@ -38,6 +38,8 @@ func (service *AttachSourceToGameService) AttachArchives(
 
 	files = service.ImageFilterService.Filter(files)
 
+	// TODO: remove filtered screenshots
+
 	value := getStr(archives)
 
 	sourceID, err := service.SourceService.Create(gameID, value, consts.ArchiveSourceType)
@@ -48,14 +50,9 @@ func (service *AttachSourceToGameService) AttachArchives(
 	// TODO: refactor
 	newImg := parseImageCategory(files)
 
-	a, b := split(newImg, gameID, sourceID)
+	screenshotDAOS := setExpertAnswer(newImg, gameID, sourceID)
 
-	err = service.ScreenshotRepo.InsertList(a)
-	if err != nil {
-		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
-	}
-
-	err = service.ScreenshotRepo.InsertListWithExpertAnswer(b)
+	err = service.ScreenshotRepo.InsertList(screenshotDAOS)
 	if err != nil {
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
@@ -103,35 +100,36 @@ func (service *AttachSourceToGameService) AttachGameResults(gameID string, param
 }
 
 // todo: не интересно - желательно удалить
-func split(
-	images []bo.ImageParsingResult, gameID, sourceID string,
-) ([]dao.ScreenshotDAO, []dao.ScreenshotWithExpertAnswerDAO) {
-	mmap := make(map[string]bool)
-	imagesWithoutExpertAnswer := make([]dao.ScreenshotDAO, 0, len(images))
-	imagesWithExpertAnswer := make([]dao.ScreenshotWithExpertAnswerDAO, 0, len(images))
+func setExpertAnswer(images []bo.ImageParsingResult, gameID, sourceID string) []dao.ScreenshotDAO {
+	// INFO: Когда загружаем несколько архивов могут быть одинаковые файлы
+	imageExistMap := make(map[string]bool)
+	screenshots := make([]dao.ScreenshotDAO, 0, len(images))
 
-	// INFO: Когда загружаем несколько архивов могут быть попасться одинаковые файлы
-	// -> обрабатываем эту ситуацию
+	// TODO: const
+	var defaultExpertAnswer = ""
+
 	for _, image := range images {
-		if !mmap[image.Filename] {
-			mmap[image.Filename] = true
-			if image.Category == UndefinedCategory {
-				screen := dao.ScreenshotDAO{Filename: image.Filename, GameID: gameID, SourceID: sourceID}
+		if !imageExistMap[image.Filename] {
+			imageExistMap[image.Filename] = true
 
-				imagesWithoutExpertAnswer = append(imagesWithoutExpertAnswer, screen)
-			} else {
-				screen := dao.ScreenshotWithExpertAnswerDAO{
-					ScreenshotDAO: dao.ScreenshotDAO{
-						Filename: image.Filename, GameID: gameID, SourceID: sourceID,
-					},
-					ExpertAnswer: image.Category,
-				}
-				imagesWithExpertAnswer = append(imagesWithExpertAnswer, screen)
+			expertAnswer := defaultExpertAnswer
+
+			if image.Category != UndefinedCategory {
+				expertAnswer = image.Category
 			}
+
+			screenshot := dao.ScreenshotDAO{
+				GameID:       gameID,
+				SourceID:     sourceID,
+				Filename:     image.Filename,
+				ExpertAnswer: expertAnswer,
+			}
+
+			screenshots = append(screenshots, screenshot)
 		}
 	}
 
-	return imagesWithoutExpertAnswer, imagesWithExpertAnswer
+	return screenshots
 }
 
 // TODO: rename | replace in another package ?
