@@ -2,6 +2,7 @@ package fileutils
 
 import (
 	"fmt"
+	"mime/multipart"
 	"os"
 	"strings"
 
@@ -26,6 +27,16 @@ func RemoveFile(filePath string) error {
 		return fmt.Errorf("remove file: %v", err)
 	}
 	return nil
+}
+
+func GetFileNames(files []*multipart.FileHeader) []string {
+	fileNames := make([]string, 0, len(files))
+
+	for _, file := range files {
+		fileNames = append(fileNames, file.Filename)
+	}
+
+	return fileNames
 }
 
 func GetExtension(filename string) string {

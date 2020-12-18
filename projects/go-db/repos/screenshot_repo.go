@@ -9,6 +9,7 @@ import (
 
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
 	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
+	"github.com/Alexplusm/bazaa/projects/go-db/utils/logutils"
 )
 
 type ScreenshotRepo struct {
@@ -45,37 +46,30 @@ func (repo *ScreenshotRepo) SelectListByGameID(gameID string) ([]dao.ScreenshotR
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
-		return nil, fmt.Errorf("select screenshots: acquire connection: %v", err)
+		return nil, fmt.Errorf("%v SelectListByGameID: acquire connection: %v", logutils.GetStructName(repo), err)
 	}
 	defer conn.Release()
 
 	row, err := conn.Query(context.Background(), selectScreenshotsByGameID, gameID)
 	if err != nil {
-		fmt.Println(err)
+		return nil, fmt.Errorf("%v SelectListByGameID %v", logutils.GetStructName(repo), err)
 	}
 
-	var screenshotID, sourceID, filename string
-	var expertAnswer, usersAnswer []byte
-	results := make([]dao.ScreenshotRetrieveDAO, 0, 100)
+	result := make([]dao.ScreenshotRetrieveDAO, 0, 512)
 
 	for row.Next() {
-		err := row.Scan(&screenshotID, &sourceID, &filename, &expertAnswer, &usersAnswer)
+		s := dao.ScreenshotRetrieveDAO{GameID: gameID}
+
+		err := row.Scan(&s.ScreenshotID, &s.SourceID, &s.Filename, &s.ExpertAnswer, &s.UsersAnswer)
 		if err != nil {
-			log.Error("select screenshots by game id: ", err)
+			log.Error(logutils.GetStructName(repo), "SelectListByGameID: ", err)
 			continue
 		}
-		obj := dao.ScreenshotRetrieveDAO{
-			ScreenshotID: screenshotID,
-			SourceID:     sourceID,
-			GameID:       gameID,
-			Filename:     filename,
-			ExpertAnswer: string(expertAnswer),
-			UsersAnswer:  string(usersAnswer),
-		}
-		results = append(results, obj)
+
+		result = append(result, s)
 	}
 
-	return results, nil
+	return result, nil
 }
 
 func (repo *ScreenshotRepo) InsertList(screenshots []dao.ScreenshotCreateDAO) error {

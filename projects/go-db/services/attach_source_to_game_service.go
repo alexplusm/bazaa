@@ -38,11 +38,11 @@ func (service *AttachSourceToGameService) AttachArchives(
 
 	files = service.ImageFilterService.Filter(files)
 
-	// TODO: remove filtered screenshots
+	// TODO: remove filtered screenshots (or not ? )
 
-	value := getStr(archives)
+	sourceValue := strings.Join(fileutils.GetFileNames(archives), ",")
 
-	sourceID, err := service.SourceService.Create(gameID, value, consts.ArchiveSourceType)
+	sourceID, err := service.SourceService.Create(gameID, sourceValue, consts.ArchiveSourceType)
 	if err != nil {
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
@@ -130,17 +130,6 @@ func setExpertAnswer(images []bo.ImageParsingResult, gameID, sourceID string) []
 	}
 
 	return screenshots
-}
-
-// TODO: rename | replace in another package ?
-func getStr(archives []*multipart.FileHeader) string {
-	archivesFilename := make([]string, 0, len(archives))
-
-	for _, archive := range archives {
-		archivesFilename = append(archivesFilename, archive.Filename)
-	}
-
-	return strings.Join(archivesFilename, ",")
 }
 
 func parseImageCategory(files []zip.File) []bo.ImageParsingResult {
