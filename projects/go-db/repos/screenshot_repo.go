@@ -41,7 +41,7 @@ WHERE screenshots.game_id = ($1)
 `
 )
 
-func (repo *ScreenshotRepo) SelectListByGameID(gameID string) ([]dao.ScreenshotDAOFull, error) {
+func (repo *ScreenshotRepo) SelectListByGameID(gameID string) ([]dao.ScreenshotRetrieveDAO, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -56,7 +56,7 @@ func (repo *ScreenshotRepo) SelectListByGameID(gameID string) ([]dao.ScreenshotD
 
 	var screenshotID, sourceID, filename string
 	var expertAnswer, usersAnswer []byte
-	results := make([]dao.ScreenshotDAOFull, 0, 100)
+	results := make([]dao.ScreenshotRetrieveDAO, 0, 100)
 
 	for row.Next() {
 		err := row.Scan(&screenshotID, &sourceID, &filename, &expertAnswer, &usersAnswer)
@@ -64,7 +64,7 @@ func (repo *ScreenshotRepo) SelectListByGameID(gameID string) ([]dao.ScreenshotD
 			log.Error("select screenshots by game id: ", err)
 			continue
 		}
-		obj := dao.ScreenshotDAOFull{
+		obj := dao.ScreenshotRetrieveDAO{
 			ScreenshotID: screenshotID,
 			SourceID:     sourceID,
 			GameID:       gameID,
@@ -78,7 +78,7 @@ func (repo *ScreenshotRepo) SelectListByGameID(gameID string) ([]dao.ScreenshotD
 	return results, nil
 }
 
-func (repo *ScreenshotRepo) InsertList(screenshots []dao.ScreenshotDAO) error {
+func (repo *ScreenshotRepo) InsertList(screenshots []dao.ScreenshotCreateDAO) error {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -97,7 +97,7 @@ func (repo *ScreenshotRepo) InsertList(screenshots []dao.ScreenshotDAO) error {
 	return nil
 }
 
-func insertScreenshot(conn *pgxpool.Conn, s dao.ScreenshotDAO) error {
+func insertScreenshot(conn *pgxpool.Conn, s dao.ScreenshotCreateDAO) error {
 	row, err := conn.Query(
 		context.Background(),
 		insertScreenshotStatement,
@@ -111,8 +111,7 @@ func insertScreenshot(conn *pgxpool.Conn, s dao.ScreenshotDAO) error {
 	return nil
 }
 
-// TODO: rename UpdateScreenshotUsersAnswer -> UpdateUsersAnswer
-func (repo *ScreenshotRepo) UpdateScreenshotUsersAnswer(screenshotID, usersAnswer string) error {
+func (repo *ScreenshotRepo) UpdateUsersAnswer(screenshotID, usersAnswer string) error {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
@@ -150,7 +149,7 @@ func (repo *ScreenshotRepo) Exist(screenshotID string) (bool, error) {
 	return count != 0, nil
 }
 
-func (repo *ScreenshotRepo) ScreenshotCountByGame(gameID string) (int, error) {
+func (repo *ScreenshotRepo) CountByGame(gameID string) (int, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {

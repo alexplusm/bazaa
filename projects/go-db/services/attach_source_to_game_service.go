@@ -50,9 +50,9 @@ func (service *AttachSourceToGameService) AttachArchives(
 	// TODO: refactor
 	newImg := parseImageCategory(files)
 
-	screenshotDAOS := setExpertAnswer(newImg, gameID, sourceID)
+	screenshotDAOs := setExpertAnswer(newImg, gameID, sourceID)
 
-	err = service.ScreenshotRepo.InsertList(screenshotDAOS)
+	err = service.ScreenshotRepo.InsertList(screenshotDAOs)
 	if err != nil {
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
@@ -78,11 +78,11 @@ func (service *AttachSourceToGameService) AttachGameResults(gameID string, param
 		return fmt.Errorf("%v AttachGameResults: %v", logutils.GetStructName(service), err)
 	}
 
-	newScreenshots := make([]dao.ScreenshotDAO, 0, len(screenshots))
+	newScreenshots := make([]dao.ScreenshotCreateDAO, 0, len(screenshots))
 
 	for _, screenshot := range screenshots {
 		if string(screenshot.UsersAnswer) == params.Answer {
-			ddao := dao.ScreenshotDAO{
+			ddao := dao.ScreenshotCreateDAO{
 				Filename: screenshot.Filename,
 				GameID:   gameID,
 				SourceID: sourceID,
@@ -100,10 +100,10 @@ func (service *AttachSourceToGameService) AttachGameResults(gameID string, param
 }
 
 // todo: не интересно - желательно удалить
-func setExpertAnswer(images []bo.ImageParsingResult, gameID, sourceID string) []dao.ScreenshotDAO {
+func setExpertAnswer(images []bo.ImageParsingResult, gameID, sourceID string) []dao.ScreenshotCreateDAO {
 	// INFO: Когда загружаем несколько архивов могут быть одинаковые файлы
 	imageExistMap := make(map[string]bool)
-	screenshots := make([]dao.ScreenshotDAO, 0, len(images))
+	screenshots := make([]dao.ScreenshotCreateDAO, 0, len(images))
 
 	// TODO: const
 	var defaultExpertAnswer = ""
@@ -118,7 +118,7 @@ func setExpertAnswer(images []bo.ImageParsingResult, gameID, sourceID string) []
 				expertAnswer = image.Category
 			}
 
-			screenshot := dao.ScreenshotDAO{
+			screenshot := dao.ScreenshotCreateDAO{
 				GameID:       gameID,
 				SourceID:     sourceID,
 				Filename:     image.Filename,

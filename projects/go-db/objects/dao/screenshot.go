@@ -1,9 +1,6 @@
 package dao
 
-// TODO: refactor !!!
-
-// TODO: rename CREATE
-type ScreenshotDAO struct {
+type ScreenshotCreateDAO struct {
 	Filename string
 	GameID   string
 	SourceID string
@@ -11,8 +8,7 @@ type ScreenshotDAO struct {
 	ExpertAnswer string
 }
 
-// RETRIEVE
-type ScreenshotDAOFull struct {
+type ScreenshotRetrieveDAO struct {
 	ScreenshotID string
 	GameID       string
 	SourceID     string
@@ -20,6 +16,8 @@ type ScreenshotDAOFull struct {
 	ExpertAnswer string
 	UsersAnswer  string
 }
+
+// TODO: refactor !!!
 
 type ScreenshotURLDAO struct {
 	ScreenshotID string
