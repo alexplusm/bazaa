@@ -52,7 +52,7 @@ func (repo *ScreenshotRepo) SelectListByGameID(gameID string) ([]dao.ScreenshotR
 
 	row, err := conn.Query(context.Background(), selectScreenshotsByGameID, gameID)
 	if err != nil {
-		return nil, fmt.Errorf("%v SelectListByGameID %v", logutils.GetStructName(repo), err)
+		return nil, fmt.Errorf("%v SelectListByGameID: %v", logutils.GetStructName(repo), err)
 	}
 
 	result := make([]dao.ScreenshotRetrieveDAO, 0, 512)
@@ -76,31 +76,17 @@ func (repo *ScreenshotRepo) InsertList(screenshots []dao.ScreenshotCreateDAO) er
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
-		return fmt.Errorf("insert screenshots: acquire connection: %v", err)
+		return fmt.Errorf("%v InsertList: acquire connection: %v", logutils.GetStructName(repo), err)
 	}
 	defer conn.Release()
 
 	for _, screenshot := range screenshots {
-		err := insertScreenshot(conn, screenshot)
+		err := insertOne(conn, screenshot)
 		if err != nil {
-			// TODO:log error
+			log.Error(logutils.GetStructName(repo), "InsertList: ", err)
 			continue
 		}
 	}
-
-	return nil
-}
-
-func insertScreenshot(conn *pgxpool.Conn, s dao.ScreenshotCreateDAO) error {
-	row, err := conn.Query(
-		context.Background(),
-		insertScreenshotStatement,
-		s.GameID, s.SourceID, s.Filename, s.ExpertAnswer,
-	)
-	if err != nil {
-		return fmt.Errorf("insert screenshot: %v", err)
-	}
-	row.Close()
 
 	return nil
 }
@@ -109,7 +95,7 @@ func (repo *ScreenshotRepo) UpdateUsersAnswer(screenshotID, usersAnswer string) 
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
-		return fmt.Errorf("update screenshot users answer: acquire connection: %v", err)
+		return fmt.Errorf("%v UpdateUsersAnswer: acquire connection: %v", logutils.GetStructName(repo), err)
 	}
 	defer conn.Release()
 
@@ -118,9 +104,9 @@ func (repo *ScreenshotRepo) UpdateUsersAnswer(screenshotID, usersAnswer string) 
 		usersAnswer, screenshotID,
 	)
 	if err != nil {
-		return fmt.Errorf("update screenshot users answer: %v", err)
+		return fmt.Errorf("%v UpdateUsersAnswer: %v", logutils.GetStructName(repo), err)
 	}
-	defer row.Close()
+	row.Close()
 
 	return nil
 }
@@ -129,7 +115,7 @@ func (repo *ScreenshotRepo) Exist(screenshotID string) (bool, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
-		return false, fmt.Errorf("screenshot exist: acquire connection: %v", err)
+		return false, fmt.Errorf("%v Exist: acquire connection: %v", logutils.GetStructName(repo), err)
 	}
 	defer conn.Release()
 
@@ -137,7 +123,7 @@ func (repo *ScreenshotRepo) Exist(screenshotID string) (bool, error) {
 
 	row := conn.QueryRow(context.Background(), existScreenshotStatement, screenshotID)
 	if row.Scan(&count) != nil {
-		return false, fmt.Errorf("screenshot exist: %v", err)
+		return false, fmt.Errorf("%v Exist: %v", logutils.GetStructName(repo), err)
 	}
 
 	return count != 0, nil
@@ -147,7 +133,7 @@ func (repo *ScreenshotRepo) CountByGame(gameID string) (int, error) {
 	p := repo.DBConn.GetPool()
 	conn, err := p.Acquire(context.Background())
 	if err != nil {
-		return -1, fmt.Errorf("screenshot count by game: acquire connection: %v", err)
+		return -1, fmt.Errorf("%v CountByGame: acquire connection: %v", logutils.GetStructName(repo), err)
 	}
 	defer conn.Release()
 
@@ -155,8 +141,22 @@ func (repo *ScreenshotRepo) CountByGame(gameID string) (int, error) {
 
 	row := conn.QueryRow(context.Background(), selectScreenshotCountByUserStatement, gameID)
 	if row.Scan(&count) != nil {
-		return -1, fmt.Errorf("screenshot count by game: %v", err)
+		return -1, fmt.Errorf("%v CountByGame: %v", logutils.GetStructName(repo), err)
 	}
 
 	return int(count), nil
+}
+
+func insertOne(conn *pgxpool.Conn, s dao.ScreenshotCreateDAO) error {
+	row, err := conn.Query(
+		context.Background(),
+		insertScreenshotStatement,
+		s.GameID, s.SourceID, s.Filename, s.ExpertAnswer,
+	)
+	if err != nil {
+		return fmt.Errorf("insert one: %v", err)
+	}
+	row.Close()
+
+	return nil
 }
