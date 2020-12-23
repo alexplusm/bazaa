@@ -62,7 +62,7 @@ func getBase64ImageValue(filePath string) (string, error) {
 }
 
 func (service *ValidateFacesService) Validate(filePath string) (bool, error) {
-	fmt.Println("run VALIDATE: ", filePath)
+	//fmt.Println("run VALIDATE: ", filePath)
 	value, err := getBase64ImageValue(filePath)
 	if err != nil {
 		return false, nil
@@ -101,8 +101,8 @@ func sendRequest(body io.Reader) (*http.Response, error) {
 	username := os.Getenv("PARSIV_AUTH_USERNAME")
 	password := os.Getenv("PARSIV_AUTH_PASSWORD")
 
-	fmt.Println("username: ", username, "password: ", password)
-	fmt.Println("url: ", url)
+	//fmt.Println("username: ", username, "password: ", password)
+	//fmt.Println("url: ", url)
 
 	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
@@ -112,7 +112,7 @@ func sendRequest(body io.Reader) (*http.Response, error) {
 	req.SetBasicAuth(username, password)
 	req.Header.Set("Content-Type", "application/json")
 
-	fmt.Println("Authorization: ", req.Header.Get("Authorization"))
+	//fmt.Println("Authorization: ", req.Header.Get("Authorization"))
 
 	client := &http.Client{}
 
