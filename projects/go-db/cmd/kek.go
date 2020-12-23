@@ -11,6 +11,8 @@ import (
 	"os"
 )
 
+// TODO: remove !!!
+
 func main() {
 	serv := ValidateFacesService{}
 	img := "0-DVN_b_SVAO_541_1-04_08_2020_13_00_30.jpg"

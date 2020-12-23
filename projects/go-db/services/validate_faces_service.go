@@ -9,7 +9,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"time"
 )
 
 type ValidateFacesService struct {
@@ -63,12 +62,12 @@ func getBase64ImageValue(filePath string) (string, error) {
 }
 
 func (service *ValidateFacesService) Validate(filePath string) (bool, error) {
-	n1 := time.Now().UnixNano()
-	fmt.Println("filePath: ", filePath)
-	fmt.Println("start base64", n1)
+	//n1 := time.Now().UnixNano()
+	//fmt.Println("filePath: ", filePath)
+	//fmt.Println("start base64", n1)
 	value, err := getBase64ImageValue(filePath)
-	n2 := time.Now().UnixNano()
-	fmt.Println("end base64", n2, n2-n1, float64(n2-n1)/1000)
+	//n2 := time.Now().UnixNano()
+	//fmt.Println("end base64", n2, n2-n1, float64(n2-n1)/1000)
 	if err != nil {
 		return false, nil
 	}
@@ -78,7 +77,7 @@ func (service *ValidateFacesService) Validate(filePath string) (bool, error) {
 
 	kekBody := bytes.NewBuffer(requestBody)
 
-	fmt.Println("parsiv: ", filePath)
+	//fmt.Println("parsiv: ", filePath)
 
 	resp, err := sendRequest(kekBody)
 	//fmt.Printf("Resp: %+v\n", resp)
