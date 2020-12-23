@@ -115,7 +115,8 @@ func (service *ImageFilterService) faceFilter(files []zip.File) []zip.File {
 	jobs := make(chan string, len(files))
 	errors := make(chan error, len(files))
 
-	workerCount := len(files)
+	//workerCount := len(files)
+	workerCount := 1000
 
 	for w := 1; w <= workerCount; w++ {
 		go worker(w, &wg, &mx, jobs, filterMap, errors)
