@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -72,7 +73,9 @@ func (service *ValidateFacesService) Validate(filePath string) (bool, error) {
 	kekBody := bytes.NewBuffer(requestBody)
 
 	resp, err := sendRequest(kekBody)
-	//fmt.Println("ERROR: ", err)
+	if err != nil {
+		return false, fmt.Errorf("send request to PARSIV: %v", err)
+	}
 
 	respbody, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
