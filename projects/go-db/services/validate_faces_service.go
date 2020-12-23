@@ -75,7 +75,7 @@ func (service *ValidateFacesService) Validate(filePath string) (bool, error) {
 	resp, err := sendRequest(kekBody)
 	if err != nil {
 		fmt.Printf("Resp: %+v\n", resp)
-		return false, fmt.Errorf("send request to PARSIV: %v", err)
+		return false, fmt.Errorf(" ||| send request to PARSIV: %v", err)
 	}
 
 	respbody, _ := ioutil.ReadAll(resp.Body)
@@ -99,6 +99,8 @@ func sendRequest(body io.Reader) (*http.Response, error) {
 	url := os.Getenv("PARSIV_FACE_DETECT_URL")
 	username := os.Getenv("PARSIV_AUTH_USERNAME")
 	password := os.Getenv("PARSIV_AUTH_PASSWORD")
+
+	fmt.Println("username: ", username, "password: ", password)
 
 	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
