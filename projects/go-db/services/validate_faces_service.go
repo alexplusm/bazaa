@@ -62,6 +62,7 @@ func getBase64ImageValue(filePath string) (string, error) {
 }
 
 func (service *ValidateFacesService) Validate(filePath string) (bool, error) {
+	fmt.Println("run VALIDATE: ", filePath)
 	value, err := getBase64ImageValue(filePath)
 	if err != nil {
 		return false, nil
@@ -73,8 +74,8 @@ func (service *ValidateFacesService) Validate(filePath string) (bool, error) {
 	kekBody := bytes.NewBuffer(requestBody)
 
 	resp, err := sendRequest(kekBody)
+	fmt.Printf("Resp: %+v\n", resp)
 	if err != nil {
-		fmt.Printf("Resp: %+v\n", resp)
 		return false, fmt.Errorf(" ||| send request to PARSIV: %+v", err)
 	}
 
