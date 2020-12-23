@@ -74,6 +74,7 @@ func (service *ValidateFacesService) Validate(filePath string) (bool, error) {
 
 	resp, err := sendRequest(kekBody)
 	if err != nil {
+		fmt.Printf("Resp: %+v\n", resp)
 		return false, fmt.Errorf("send request to PARSIV: %v", err)
 	}
 
