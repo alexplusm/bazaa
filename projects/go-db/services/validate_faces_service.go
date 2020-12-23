@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"time"
 )
 
 type ValidateFacesService struct {
@@ -62,8 +63,12 @@ func getBase64ImageValue(filePath string) (string, error) {
 }
 
 func (service *ValidateFacesService) Validate(filePath string) (bool, error) {
-	//fmt.Println("run VALIDATE: ", filePath)
+	n1 := time.Now().UnixNano()
+	fmt.Println("filePath: ", filePath)
+	fmt.Println("start base64", n1)
 	value, err := getBase64ImageValue(filePath)
+	n2 := time.Now().UnixNano()
+	fmt.Println("end base64", n2, n2-n1, float64(n2-n1)/1000)
 	if err != nil {
 		return false, nil
 	}
