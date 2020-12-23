@@ -11,5 +11,5 @@ func (repo *ScreenshotService) Exist(screenshotID string) (bool, error) {
 }
 
 func (repo *ScreenshotService) ScreenshotCountByGame(gameID string) (int, error) {
-	return repo.ScreenshotRepo.ScreenshotCountByGame(gameID)
+	return repo.ScreenshotRepo.CountByGame(gameID)
 }

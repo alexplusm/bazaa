@@ -10,4 +10,5 @@ require (
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/sirupsen/logrus v1.7.0
+	gocv.io/x/gocv v0.25.0
 )

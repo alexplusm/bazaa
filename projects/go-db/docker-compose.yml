@@ -27,6 +27,7 @@ services:
       - '${APP_PORT_OUTER}:80'
     depends_on:
       - server
+      - web_client
     volumes:
       - media_root:/usr/share/nginx/media:ro
       - ./nginx/:/etc/nginx/conf.d:ro
@@ -39,6 +40,7 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    # TODO: need comment for local run - fix!
     networks:
       - fullstack_net
 

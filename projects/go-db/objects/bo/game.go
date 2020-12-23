@@ -65,12 +65,29 @@ func (g *GameBO) FromDTO(src dto.CreateGameRequestBody, validate *validator.Vali
 }
 
 func (g *GameBO) ToListItemDTO() dto.GameItemResponseBody {
+
+	// TODO: копипаста из ToDetailsDTO (refactor)
+	question := dto.QuestionDTO{
+		AnswerType: g.AnswerType,
+		Text:       g.Question,
+	}
+
+	if g.AnswerType == consts.CategoricalAnswerType {
+		optionsDTO := make([]dto.OptionDTO, 0, 10)
+		options := strings.Split(g.Options, ",")
+		for i, option := range options {
+			optionsDTO = append(optionsDTO, dto.OptionDTO{Option: i, Text: option})
+		}
+		question.Options = optionsDTO
+	}
+
 	return dto.GameItemResponseBody{
-		GameID: g.GameID,
-		Name:   g.Name,
-		Status: g.Status(),
-		From:   timeutils.FromTimeToStrTimestamp(g.StartDate),
-		To:     timeutils.FromTimeToStrTimestamp(g.EndDate),
+		GameID:   g.GameID,
+		Question: question,
+		Name:     g.Name,
+		Status:   g.Status(),
+		From:     timeutils.FromTimeToStrTimestamp(g.StartDate),
+		To:       timeutils.FromTimeToStrTimestamp(g.EndDate),
 	}
 }
 

@@ -28,7 +28,7 @@ func (g *GameDAO) FromBO(bo bo.GameBO) {
 }
 
 func (g *GameDAO) ToBO() bo.GameBO {
-	gameBO := new(bo.GameBO)
+	gameBO := bo.GameBO{}
 
 	gameBO.GameID = g.GameID
 	gameBO.ExtSystemID = g.ExtSystemID
@@ -37,7 +37,7 @@ func (g *GameDAO) ToBO() bo.GameBO {
 	gameBO.EndDate = time.Unix(g.EndDate, 0)
 	gameBO.AnswerType = g.AnswerType
 	gameBO.Question = g.Question
-	gameBO.Options = g.Options
+	gameBO.Options = g.Options // TODO: not required
 
-	return *gameBO
+	return gameBO
 }

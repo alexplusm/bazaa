@@ -1,6 +1,7 @@
 package interfaces
 
 import (
+	"archive/zip"
 	"mime/multipart"
 	"time"
 
@@ -77,7 +78,9 @@ type IStatisticGameService interface {
 }
 
 type ISourceService interface {
+	Create(gameId, value string, sourceType int) (string, error)
 	ListByGame(gameID string) ([]bo.SourceBO, error)
+	GameHasSomeSourceGameId(gameId, sourceGameId string) (bool, error)
 }
 
 type IActiveUsersService interface {
@@ -95,9 +98,24 @@ type ILeaderboardService interface {
 
 type IImageService interface {
 	BuildImageURL(imageName string) (string, error)
+	Crop(filePath string) error
 }
 
 type IFileService interface {
-	CopyFiles(files []*multipart.FileHeader, copyPath string) ([]string, error)
-	UnzipImages(filenames []string) ([]bo.ImageParsingResult, error)
+	SaveFiles(files []*multipart.FileHeader, copyPath string) ([]string, error)
+	UnzipArchives(archivesPath []string, dstPath string) ([]zip.File, error)
+}
+
+type IImageFilterService interface {
+	Filter(files []zip.File) []zip.File
+}
+
+type IValidateFacesService interface {
+	Validate(filePath string) (bool, error)
+}
+
+type ICacheKeyService interface {
+	GetActiveUserKey(gameId, userId string) string
+	GetActiveUserKeyPattern(gameId string) string
+	GetScreenshotListKey(gameId string) string
 }

@@ -3,17 +3,15 @@ package main
 import (
 	"crypto/subtle"
 	"fmt"
-	"net/http"
-	"os"
-
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
 	log "github.com/sirupsen/logrus"
+	"os"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/controllers"
 	"github.com/Alexplusm/bazaa/projects/go-db/infrastructures"
 	"github.com/Alexplusm/bazaa/projects/go-db/utils/fileutils"
+	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 /*
@@ -22,53 +20,82 @@ import (
 *		https://medium.com/cuddle-ai/building-microservice-using-golang-echo-framework-ff10ba06d508
  */
 
-const (
-	errorPrefix = "main: "
-)
-
 func main() {
 	setupLogger()
 
 	injector, err := infrastructures.Injector()
 	if err != nil {
-		log.Fatal(errorPrefix, err)
+		log.Fatal("main: ", err)
 	}
 	defer injector.CloseStoragesConnections()
 
-	initDirs()
+	if err := initDirs(); err != nil {
+		log.Fatal("main: ", err)
+	}
 
 	e := echo.New()
-	e.Use(middleware.Logger())
 
-	e.Use(middleware.BasicAuth(func(username, password string, ctx echo.Context) (bool, error) {
-		us := []byte(os.Getenv("SERVER_ADMIN_USERNAME"))
-		pass := []byte(os.Getenv("SERVER_ADMIN_PASSWORD"))
+	registerMiddlewares(e)
 
-		if subtle.ConstantTimeCompare([]byte(username), us) == 1 &&
-			subtle.ConstantTimeCompare([]byte(password), pass) == 1 {
-			return true, nil
-		}
-		return false, ctx.JSON(http.StatusUnauthorized, nil)
-	}))
-
-	e.Pre(middleware.RemoveTrailingSlash())
 	e.HTTPErrorHandler = func(err error, ctx echo.Context) {
-		log.Error(errorPrefix, err)
+		log.Error("main: ", err) // TODO: remove log errors from controllers??????????? : пока что нет
+
+		e.DefaultHTTPErrorHandler(err, ctx)
 	}
 
 	err = registerRoutes(e)
 	if err != nil {
-		log.Fatal(errorPrefix, err)
+		log.Fatal("main: ", err)
 	}
+
+	// --- test zone
+
+	s := injector.InjectImageService()
+	name := "2-DVN_SVAO_5360_1-09_08_2020_13_00_30.jpg"
+	p := consts.MediaRoot + "/" + name
+	s.Crop(p)
+
+	// ---
+
+	//fileName := "0-DVN_b_SVAO_541_1-04_08_2020_13_00_30.jpg"
+	//filePath := path.Join(consts.MediaRoot, fileName)
+	//
+	//serv := injector.InjectValidateFacesService()
+	//ok, err := serv.Validate(filePath)
+	//fmt.Println(ok, err)
+
+	// --- test zone
 
 	log.Fatal(e.Start(":" + os.Getenv("SERVER_PORT_INNER")))
 }
 
-func initDirs() {
+func initDirs() error {
 	dirs := []string{consts.MediaRoot, consts.MediaTempDir}
 	for _, dir := range dirs {
-		fileutils.CreateDirIfNotExists(dir)
+		if err := fileutils.CreateDirIfNotExists(dir); err != nil {
+			return fmt.Errorf("init dirs: %v", err)
+		}
 	}
+	return nil
+}
+
+func registerMiddlewares(e *echo.Echo) {
+	e.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
+		// TODO: to struct and init once
+		usernameAdm := []byte(os.Getenv("SERVER_ADMIN_USERNAME"))
+		passwordAdm := []byte(os.Getenv("SERVER_ADMIN_PASSWORD"))
+
+		// Be careful to use constant time comparison to prevent timing attacks
+		if subtle.ConstantTimeCompare([]byte(username), usernameAdm) == 1 &&
+			subtle.ConstantTimeCompare([]byte(password), passwordAdm) == 1 {
+			return true, nil
+		}
+		return false, nil
+	}))
+
+	e.Use(middleware.Logger())
+
+	e.Pre(middleware.RemoveTrailingSlash())
 }
 
 func registerRoutes(e *echo.Echo) error {
@@ -103,13 +130,13 @@ func registerRoutes(e *echo.Echo) error {
 	e.GET("api/v1/game/:"+consts.GameIDUrlParam, gameController.Details)
 
 	// TODO: ["multipart/form-data"]
-	e.PUT("api/v1/game/:"+consts.GameIDUrlParam+"/archives", gameController.AttachArchives)
+	e.POST("api/v1/game/:"+consts.GameIDUrlParam+"/archives", gameController.AttachArchives)
 
 	// TODO: ["application/json"]
-	e.PUT("api/v1/game/:"+consts.GameIDUrlParam+"/schedules", gameController.AttachSchedules)
+	e.POST("api/v1/game/:"+consts.GameIDUrlParam+"/schedules", gameController.AttachSchedules)
 
 	// TODO: ["application/json"]
-	e.PUT("api/v1/game/:"+consts.GameIDUrlParam+"/game-results", gameController.AttachGameResults)
+	e.POST("api/v1/game/:"+consts.GameIDUrlParam+"/game-results", gameController.AttachGameResults)
 
 	// TODO: ["application/json"]
 	e.POST("api/v1/game/prepare", gamePrepareController.PrepareGame)

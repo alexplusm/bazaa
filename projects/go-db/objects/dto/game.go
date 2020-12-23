@@ -23,11 +23,12 @@ type GameListResponseBody struct {
 }
 
 type GameItemResponseBody struct {
-	GameID string `json:"gameId"`
-	Name   string `json:"name"`
-	Status string `json:"status"`
-	From   string `json:"from"`
-	To     string `json:"to"`
+	GameID   string      `json:"gameId"`
+	Question QuestionDTO `json:"question"`
+	Name     string      `json:"name"`
+	Status   string      `json:"status"`
+	From     string      `json:"from"`
+	To       string      `json:"to"`
 }
 
 type OptionDTO struct {

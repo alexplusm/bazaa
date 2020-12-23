@@ -25,7 +25,9 @@ CREATE TABLE IF NOT EXISTS games (
 	"end_date"          BIGINT      NOT NULL,
 	"answer_type"       INTEGER     NOT NULL,
 	"question"          TEXT        NOT NULL,
-	"options_csv"       VARCHAR     DEFAULT NULL, -- INFO: обязательное поле только для answer_type == 2
+
+	-- INFO: обязательное поле только для answer_type == 2
+	"options_csv"       VARCHAR     DEFAULT NULL,
 
 	PRIMARY KEY ("game_id")
 );
@@ -41,8 +43,14 @@ CREATE TABLE IF NOT EXISTS ext_systems (
 CREATE TABLE IF NOT EXISTS sources (
     "source_id"     VARCHAR     DEFAULT uuid_generate_v4(),
     "game_id"       uuid        NOT NULL,
-    "source_type"   INTEGER     NOT NULL,
+    "type"          INTEGER     NOT NULL,
     "created_at"    BIGINT      NOT NULL,
+
+    -- INFO: зависит от типа источника:
+        -- 1 (архивы): массив имен архивов "[archive.zip]"
+        -- 2 (расписание): id расписания из HP
+        -- 3 (результат другой игры): id другой игры
+    "value"         VARCHAR     DEFAULT NULL,
 
     PRIMARY KEY ("source_id"),
 
@@ -58,8 +66,8 @@ CREATE TABLE IF NOT EXISTS screenshots (
 	-- INFO: в этом поле будет лежать ответ эксперта, который мы получаем:
         -- либо при загрузке zip архива, из файловой структуры
         -- либо в ответе внешней системы, которая проверила "screenshot" и дала экспертный ответ
-	"expert_answer"         VARCHAR     DEFAULT NULL,
-	"users_answer"          VARCHAR     DEFAULT NULL,
+	"expert_answer"         VARCHAR     DEFAULT '',
+	"users_answer"          VARCHAR     DEFAULT '',
 
 	PRIMARY KEY ("screenshot_id"),
 

@@ -100,8 +100,8 @@ def main():
 
     # complete_test_without_ext_sys("0af61dfe-302e-4e00-a3cf-90be4619c9a2")
 
-    game_id = "c13e1016-4a83-4e4a-8ccc-da4ae6ad2728"
-    ext_sys_id = "clean-city-1"
+    game_id = "510c1dfa-0981-40aa-88cb-e8309556d9ec"
+    ext_sys_id = "clean1"
     run_high_load(ext_sys_id, game_id)
 
     # ext_system_id = "ext-id-3"

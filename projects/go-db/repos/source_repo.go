@@ -14,18 +14,12 @@ type SourceRepo struct {
 
 const (
 	insertSourceStatement = `
-INSERT INTO sources ("game_id", "source_type", "created_at")
-VALUES ($1, $2, $3)
-RETURNING "source_id"
-`
-	// TODO: for schedule
-	insertSourceWithExistingIDStatement = `
-INSERT INTO sources ("game_id", "source_id", "source_type", "created_at")
+INSERT INTO sources ("game_id", "type", "created_at", "value")
 VALUES ($1, $2, $3, $4)
 RETURNING "source_id"
 `
-	selectSourcesByGamesStatement = `
-SELECT "source_id", "source_type", "created_at"
+	selectSourcesByGameStatement = `
+SELECT "source_id", "game_id", "type", "created_at", "value"
 FROM sources
 WHERE sources.game_id = ($1)
 `
@@ -42,7 +36,7 @@ func (repo *SourceRepo) InsertOne(source dao.SourceInsertDAO) (string, error) {
 	row := conn.QueryRow(
 		context.Background(),
 		insertSourceStatement,
-		source.GameID, source.Type, source.CreatedAt,
+		source.GameID, source.Type, source.CreatedAt, source.Value,
 	)
 
 	var sourceID string
@@ -64,7 +58,7 @@ func (repo *SourceRepo) SelectListByGame(gameID string) ([]dao.SourceRetrieveDAO
 	defer conn.Release()
 
 	rows, err := conn.Query(
-		context.Background(), selectSourcesByGamesStatement, gameID,
+		context.Background(), selectSourcesByGameStatement, gameID,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("select sources by game: %v", err)
@@ -75,7 +69,7 @@ func (repo *SourceRepo) SelectListByGame(gameID string) ([]dao.SourceRetrieveDAO
 
 	for rows.Next() {
 		s := dao.SourceRetrieveDAO{}
-		err = rows.Scan(&s.SourceID, &s.Type, &s.CreatedAt)
+		err = rows.Scan(&s.SourceID, &s.GameID, &s.Type, &s.CreatedAt, &s.Value)
 		if err != nil {
 			return nil, fmt.Errorf("select sources by game: %v", err)
 		}

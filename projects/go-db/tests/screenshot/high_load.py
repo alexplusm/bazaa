@@ -1,7 +1,7 @@
 import asyncio
 from random import random
 import aiohttp
-from aiohttp import ClientSession, ClientConnectorError
+from aiohttp import ClientSession, ClientConnectorError, BasicAuth
 import json
 import time
 
@@ -104,7 +104,10 @@ async def main(ext_system_id, game_id):
 
     t0 = time.time()
 
-    async with ClientSession() as session:
+    # TODO: FOR ENV's
+    auth = BasicAuth(login="AzUseRadm", password="8Uad7!p9)76GdpE4")
+
+    async with ClientSession(auth=auth) as session:
         tasks = []
         list_list_users = []
         inner_users = []

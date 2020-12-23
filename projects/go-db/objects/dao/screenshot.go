@@ -1,19 +1,14 @@
 package dao
 
-// TODO: refactor !!!
-
-type ScreenshotDAO struct {
+type ScreenshotCreateDAO struct {
 	Filename string
 	GameID   string
 	SourceID string
-}
-
-type ScreenshotWithExpertAnswerDAO struct {
-	ScreenshotDAO
+	// INFO: if ExpertAnswer == "" -> without expert answer
 	ExpertAnswer string
 }
 
-type ScreenshotDAOFull struct {
+type ScreenshotRetrieveDAO struct {
 	ScreenshotID string
 	GameID       string
 	SourceID     string
@@ -21,6 +16,8 @@ type ScreenshotDAOFull struct {
 	ExpertAnswer string
 	UsersAnswer  string
 }
+
+// TODO: refactor !!!
 
 type ScreenshotURLDAO struct {
 	ScreenshotID string

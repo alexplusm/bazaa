@@ -1,11 +1,11 @@
 package services
 
 import (
+	"archive/zip"
 	"fmt"
 	"mime/multipart"
-	"time"
-
-	log "github.com/sirupsen/logrus"
+	"path/filepath"
+	"strings"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/interfaces"
@@ -16,43 +16,48 @@ import (
 )
 
 type AttachSourceToGameService struct {
-	GameRepo       interfaces.IGameRepo
-	SourceRepo     interfaces.ISourceRepo
-	ScreenshotRepo interfaces.IScreenshotRepo
-	FileService    interfaces.IFileService
+	GameRepo           interfaces.IGameRepo
+	ScreenshotRepo     interfaces.IScreenshotRepo
+	SourceService      interfaces.ISourceService
+	FileService        interfaces.IFileService
+	ImageFilterService interfaces.IImageFilterService
 }
 
 func (service *AttachSourceToGameService) AttachArchives(
 	gameID string, archives []*multipart.FileHeader,
 ) error {
-	filenames, err := service.FileService.CopyFiles(archives, consts.MediaTempDir)
+	archivesPaths, err := service.FileService.SaveFiles(archives, consts.MediaTempDir)
 	if err != nil {
-		return fmt.Errorf("attach zip archive: %v", err)
+		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
-	images, err := service.FileService.UnzipImages(filenames)
+	files, err := service.FileService.UnzipArchives(archivesPaths, consts.MediaRoot)
 	if err != nil {
-		return fmt.Errorf("attach zip archive: %v", err)
+		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
-	source := dao.SourceInsertDAO{Type: consts.ArchiveSourceType, CreatedAt: time.Now().Unix(), GameID: gameID}
-	sourceID, err := service.SourceRepo.InsertOne(source)
+	files = service.ImageFilterService.Filter(files)
+
+	// TODO: remove filtered screenshots (or not ? )
+
+	sourceValue := strings.Join(fileutils.GetFileNames(archives), ",")
+
+	sourceID, err := service.SourceService.Create(gameID, sourceValue, consts.ArchiveSourceType)
 	if err != nil {
-		return fmt.Errorf("attach zip archive: %v", err)
+		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
-	a, b := split(images, gameID, sourceID)
-	err = service.ScreenshotRepo.InsertList(a)
+	// TODO: refactor
+	newImg := parseImageCategory(files)
+
+	screenshotDAOs := setExpertAnswer(newImg, gameID, sourceID)
+
+	err = service.ScreenshotRepo.InsertList(screenshotDAOs)
 	if err != nil {
-		return fmt.Errorf("attach zip archive: %v", err)
+		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
-	err = service.ScreenshotRepo.InsertListWithExpertAnswer(b)
-	if err != nil {
-		return fmt.Errorf("attach zip archive: %v", err)
-	}
-
-	removeArchives(filenames)
+	fileutils.RemoveFiles(archivesPaths)
 
 	return nil
 }
@@ -63,61 +68,89 @@ func (service *AttachSourceToGameService) AttachSchedules(gameID string) error {
 }
 
 func (service *AttachSourceToGameService) AttachGameResults(gameID string, params bo.AttachGameParams) error {
+	sourceID, err := service.SourceService.Create(gameID, params.SourceGameID, consts.AnotherGameResultSourceType)
+	if err != nil {
+		return fmt.Errorf("%v AttachGameResults: %v", logutils.GetStructName(service), err)
+	}
+
 	screenshots, err := service.ScreenshotRepo.SelectListByGameID(params.SourceGameID)
 	if err != nil {
 		return fmt.Errorf("%v AttachGameResults: %v", logutils.GetStructName(service), err)
 	}
 
-	filteredScreenshots := make([]dao.ScreenshotDAOFull, 0, len(screenshots))
+	newScreenshots := make([]dao.ScreenshotCreateDAO, 0, len(screenshots))
+
 	for _, screenshot := range screenshots {
 		if screenshot.UsersAnswer == params.Answer {
-			filteredScreenshots = append(filteredScreenshots, screenshot)
+			newScreenshot := dao.ScreenshotCreateDAO{
+				Filename: screenshot.Filename,
+				GameID:   gameID,
+				SourceID: sourceID,
+			}
+			newScreenshots = append(newScreenshots, newScreenshot)
 		}
 	}
 
-	log.Info("kekau")
-
-	//service.ScreenshotRepo.InsertList()
+	err = service.ScreenshotRepo.InsertList(newScreenshots)
+	if err != nil {
+		return fmt.Errorf("%v AttachGameResults: %v", logutils.GetStructName(service), err)
+	}
 
 	return nil
 }
 
-func removeArchives(filenames []string) {
-	for _, fn := range filenames {
-		err := fileutils.RemoveFile(consts.MediaTempDir, fn)
-		if err != nil {
-			log.Error("remove archive: ", err)
+// todo: не интересно - желательно удалить
+func setExpertAnswer(images []bo.ImageParsingResult, gameID, sourceID string) []dao.ScreenshotCreateDAO {
+	// INFO: Когда загружаем несколько архивов могут быть одинаковые файлы
+	imageExistMap := make(map[string]bool)
+	screenshots := make([]dao.ScreenshotCreateDAO, 0, len(images))
+
+	// TODO: const
+	var defaultExpertAnswer = ""
+
+	for _, image := range images {
+		if !imageExistMap[image.Filename] {
+			imageExistMap[image.Filename] = true
+
+			expertAnswer := defaultExpertAnswer
+
+			if image.Category != UndefinedCategory {
+				expertAnswer = image.Category
+			}
+
+			screenshot := dao.ScreenshotCreateDAO{
+				GameID:       gameID,
+				SourceID:     sourceID,
+				Filename:     image.Filename,
+				ExpertAnswer: expertAnswer,
+			}
+
+			screenshots = append(screenshots, screenshot)
 		}
 	}
+
+	return screenshots
 }
 
-func split(
-	images []bo.ImageParsingResult, gameID, sourceID string,
-) ([]dao.ScreenshotDAO, []dao.ScreenshotWithExpertAnswerDAO) {
-	mmap := make(map[string]bool)
-	imagesWithoutExpertAnswer := make([]dao.ScreenshotDAO, 0, len(images))
-	imagesWithExpertAnswer := make([]dao.ScreenshotWithExpertAnswerDAO, 0, len(images))
+func parseImageCategory(files []zip.File) []bo.ImageParsingResult {
+	results := make([]bo.ImageParsingResult, 0, len(files))
 
-	// INFO: Когда загружаем несколько архивов могут быть попасться одинаковые файлы
-	// -> обрабатываем эту ситуацию
-	for _, image := range images {
-		if !mmap[image.Filename] {
-			mmap[image.Filename] = true
-			if image.Category == UndefinedCategory {
-				screen := dao.ScreenshotDAO{image.Filename, gameID, sourceID}
+	for _, file := range files {
+		fileName := file.FileInfo().Name()
+		withViolation := strings.HasSuffix(file.Name, filepath.Join(withViolationDir, fileName))
+		noViolation := strings.HasSuffix(file.Name, filepath.Join(noViolationDir, fileName))
 
-				imagesWithoutExpertAnswer = append(imagesWithoutExpertAnswer, screen)
-			} else {
-				screen := dao.ScreenshotWithExpertAnswerDAO{
-					ScreenshotDAO: dao.ScreenshotDAO{
-						Filename: image.Filename, GameID: gameID, SourceID: sourceID,
-					},
-					ExpertAnswer: image.Category,
-				}
-				imagesWithExpertAnswer = append(imagesWithExpertAnswer, screen)
-			}
+		result := bo.ImageParsingResult{Filename: fileName, Category: UndefinedCategory}
+
+		if withViolation {
+			result.Category = WithViolationCategory
 		}
+		if noViolation {
+			result.Category = NoViolationCategory
+		}
+
+		results = append(results, result)
 	}
 
-	return imagesWithoutExpertAnswer, imagesWithExpertAnswer
+	return results
 }

@@ -107,7 +107,7 @@ func (service *ScreenshotUserAnswerService) SaveUsersAnswers(
 			usersAnswer = key
 		}
 	}
-	err := service.ScreenshotRepo.UpdateScreenshotUsersAnswer(screenshotID, usersAnswer)
+	err := service.ScreenshotRepo.UpdateUsersAnswer(screenshotID, usersAnswer)
 	if err != nil {
 		log.Error("save users answer: ", err)
 	}

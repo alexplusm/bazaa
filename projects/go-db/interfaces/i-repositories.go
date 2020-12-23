@@ -1,8 +1,9 @@
 package interfaces
 
 import (
-	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 	"time"
+
+	"github.com/Alexplusm/bazaa/projects/go-db/objects/dao"
 )
 
 type IGameRepo interface {
@@ -24,12 +25,11 @@ type ISourceRepo interface {
 }
 
 type IScreenshotRepo interface {
-	SelectListByGameID(gameID string) ([]dao.ScreenshotDAOFull, error)
-	InsertList(screenshots []dao.ScreenshotDAO) error
-	InsertListWithExpertAnswer(screenshots []dao.ScreenshotWithExpertAnswerDAO) error
-	UpdateScreenshotUsersAnswer(screenshotID, usersAnswer string) error
+	InsertList(screenshots []dao.ScreenshotCreateDAO) error
+	SelectListByGameID(gameID string) ([]dao.ScreenshotRetrieveDAO, error)
 	Exist(screenshotID string) (bool, error)
-	ScreenshotCountByGame(gameID string) (int, error)
+	UpdateUsersAnswer(screenshotID, usersAnswer string) error
+	CountByGame(gameID string) (int, error)
 }
 
 type IAnswerRepo interface {
