@@ -101,6 +101,7 @@ func sendRequest(body io.Reader) (*http.Response, error) {
 	password := os.Getenv("PARSIV_AUTH_PASSWORD")
 
 	fmt.Println("username: ", username, "password: ", password)
+	fmt.Println("url: ", url)
 
 	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
@@ -109,6 +110,8 @@ func sendRequest(body io.Reader) (*http.Response, error) {
 
 	req.SetBasicAuth(username, password)
 	req.Header.Set("Content-Type", "application/json")
+
+	fmt.Println("Authorization: ", req.Header.Get("Authorization"))
 
 	client := &http.Client{}
 
