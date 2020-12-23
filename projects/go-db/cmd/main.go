@@ -3,10 +3,8 @@ package main
 import (
 	"crypto/subtle"
 	"fmt"
-	"os"
-	"path"
-
 	log "github.com/sirupsen/logrus"
+	"os"
 
 	"github.com/Alexplusm/bazaa/projects/go-db/consts"
 	"github.com/Alexplusm/bazaa/projects/go-db/controllers"
@@ -59,12 +57,12 @@ func main() {
 
 	// ---
 
-	fileName := "0-DVN_b_SVAO_541_1-04_08_2020_13_00_30.jpg"
-	filePath := path.Join(consts.MediaRoot, fileName)
-
-	serv := injector.InjectValidateFacesService()
-	ok, err := serv.Validate(filePath)
-	fmt.Println(ok, err)
+	//fileName := "0-DVN_b_SVAO_541_1-04_08_2020_13_00_30.jpg"
+	//filePath := path.Join(consts.MediaRoot, fileName)
+	//
+	//serv := injector.InjectValidateFacesService()
+	//ok, err := serv.Validate(filePath)
+	//fmt.Println(ok, err)
 
 	// --- test zone
 

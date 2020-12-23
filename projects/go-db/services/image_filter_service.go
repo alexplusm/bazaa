@@ -2,7 +2,9 @@ package services
 
 import (
 	"archive/zip"
+	"fmt"
 	"path"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 
@@ -18,8 +20,23 @@ type ImageFilterService struct {
 func (service *ImageFilterService) Filter(files []zip.File) []zip.File {
 	filteredFiles := make([]zip.File, 0, len(files))
 
+	n := time.Now().Unix()
+
+	fmt.Println("!!!!!!!!", n, "len before: ", len(files))
+
 	filteredFiles = service.faceFilter(files)
+
+	faceTime := time.Now().Unix()
+	fmt.Println("FACE TIME: ", faceTime, " | ", faceTime-n)
+
 	filteredFiles = service.cropFilter(filteredFiles)
+
+	cropTime := time.Now().Unix()
+	fmt.Println("CROP TIME: ", cropTime, " | ", cropTime-faceTime)
+
+	fmt.Println("TOTAL TIME: ", cropTime-n)
+
+	fmt.Println("len after: ", len(filteredFiles))
 
 	return filteredFiles
 }

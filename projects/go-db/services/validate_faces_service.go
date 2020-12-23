@@ -2,84 +2,109 @@ package services
 
 import (
 	"bytes"
-	"fmt"
+	"encoding/base64"
+	"encoding/json"
 	"io"
 	"io/ioutil"
-	"mime/multipart"
 	"net/http"
 	"os"
-	"path/filepath"
 )
 
 type ValidateFacesService struct {
 }
 
-/*
-	source: https://gist.github.com/andrewmilson/19185aab2347f6ad29f5
-*/
+type item struct {
+	Photo string `json:"photo,omitempty"`
+}
+
+type DetectFaceRequestBody struct {
+	Faces []item `json:"faces"`
+}
+
+type ResponseItem struct {
+	Source int `json:"source"`
+	Error  struct {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+	} `json:"error"`
+}
+
+type DetectFaceResponseBody []ResponseItem
+
+// TODO: model object and use this func for method?
+func buildDTO(value string) DetectFaceRequestBody {
+	i := item{value}
+	faces := []item{i}
+
+	return DetectFaceRequestBody{Faces: faces}
+}
+
+func getBase64ImageValue(filePath string) (string, error) {
+	buf := new(bytes.Buffer)
+
+	fileBytes, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return "", err // TODO: proc
+	}
+
+	encoder := base64.NewEncoder(base64.StdEncoding, buf)
+	_, err = encoder.Write(fileBytes)
+	if err != nil {
+		return "", err // TODO: proc
+	}
+	err = encoder.Close()
+	if err != nil {
+		return "", err // TODO: proc
+	}
+
+	return buf.String(), nil
+}
 
 func (service *ValidateFacesService) Validate(filePath string) (bool, error) {
-	body, contentTypeValue, err := service.prepareBody(filePath)
+	value, err := getBase64ImageValue(filePath)
 	if err != nil {
-		return false, err
+		return false, nil
 	}
 
-	resp, err := service.sendRequest(body, contentTypeValue)
-	if err != nil {
-		return false, fmt.Errorf(" Validate: %v", err)
+	detectFaceRequestBody := buildDTO(value)
+	requestBody, err := json.Marshal(detectFaceRequestBody)
+
+	kekBody := bytes.NewBuffer(requestBody)
+
+	resp, err := sendRequest(kekBody)
+	//fmt.Println("ERROR: ", err)
+
+	respbody, _ := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+
+	var responseBb DetectFaceResponseBody
+	err = json.Unmarshal(respbody, &responseBb)
+
+	if resp.StatusCode != http.StatusOK {
+		// TODO: log error
+		return false, nil
 	}
 
-	respBody, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return false, err
+	if responseBb[0].Error.Code == -3000 {
+		return true, nil
 	}
-	if err := resp.Body.Close(); err != nil {
-		return false, err
-	}
-
-	// TODO: processResponseBody
-	fmt.Println(resp.Status, resp.Body)
-	fmt.Println(string(respBody))
-
-	return true, nil
+	return false, nil
 }
 
-func (service *ValidateFacesService) prepareBody(filePath string) (io.Reader, string, error) {
-	file, err := os.Open(filePath)
+func sendRequest(body io.Reader) (*http.Response, error) {
+	url := os.Getenv("PARSIV_FACE_DETECT_URL")
+	username := os.Getenv("PARSIV_AUTH_USERNAME")
+	password := os.Getenv("PARSIV_AUTH_PASSWORD")
+
+	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
-		return nil, "", err
+		return nil, nil
 	}
 
-	body := &bytes.Buffer{}
-	writer := multipart.NewWriter(body)
-	part, err := writer.CreateFormFile("photo", filepath.Base(file.Name()))
-	if err != nil {
-		return nil, "", err
-	}
+	req.SetBasicAuth(username, password)
+	req.Header.Set("Content-Type", "application/json")
 
-	if _, err := io.Copy(part, file); err != nil {
-		return nil, "", err
-	}
-	if err := file.Close(); err != nil {
-		return nil, "", err
-	}
-	if err := writer.Close(); err != nil {
-		return nil, "", err
-	}
+	client := &http.Client{}
 
-	return body, writer.FormDataContentType(), nil
-}
-
-func (service *ValidateFacesService) sendRequest(body io.Reader, contentTypeValue string) (*http.Response, error) {
-	url := os.Getenv("PARSIV_FACE_VALIDATE_URL")
-
-	r, err := http.NewRequest("POST", url, body)
-	if err != nil {
-		return nil, fmt.Errorf("sendRequest: %v", err)
-	}
-
-	r.Header.Add("Content-Type", contentTypeValue)
-	client := http.Client{}
-
-	return client.Do(r)
+	return client.Do(req)
 }
