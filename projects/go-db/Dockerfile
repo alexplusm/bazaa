@@ -11,7 +11,7 @@
 FROM gocv/opencv:4.5.0
 
 # INFO: for production on server
-ENV http_proxy http://10.200.81.56:3128/
+#ENV http_proxy http://10.200.81.56:3128/
 
 LABEL maintainer="Alex Mogilevskiy <dark.qvark@gmail.com>"
 
@@ -20,13 +20,15 @@ WORKDIR /app
 COPY go.mod .
 COPY go.sum .
 COPY Makefile .
-RUN make install-deps
+RUN export http_proxy="http://10.200.81.56:3128/" \
+    && make install-deps \
+    && unset http_proxy
 
 COPY . .
 
 RUN make build
 
-RUN unset http_proxy
+#RUN unset http_proxy
 
 CMD ["make", "runserver"]
 
