@@ -26,6 +26,8 @@ COPY . .
 
 RUN make build
 
+RUN unset http_proxy
+
 CMD ["make", "runserver"]
 
 # TODO: Docker readme in my repo !!!
