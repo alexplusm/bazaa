@@ -73,6 +73,8 @@ func (service *ValidateFacesService) Validate(filePath string) (bool, error) {
 
 	kekBody := bytes.NewBuffer(requestBody)
 
+	fmt.Println("parsiv: ", filePath)
+
 	resp, err := sendRequest(kekBody)
 	//fmt.Printf("Resp: %+v\n", resp)
 	if err != nil {
