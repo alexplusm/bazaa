@@ -26,6 +26,7 @@ type AttachSourceToGameService struct {
 func (service *AttachSourceToGameService) AttachArchives(
 	gameID string, archives []*multipart.FileHeader,
 ) error {
+	fmt.Println("AttachArchives start!")
 	archivesPaths, err := service.FileService.SaveFiles(archives, consts.MediaTempDir)
 	if err != nil {
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
@@ -36,11 +37,14 @@ func (service *AttachSourceToGameService) AttachArchives(
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
+	fmt.Println("Files: ", len(files))
 	files = service.ImageFilterService.Filter(files)
 
 	// TODO: remove filtered screenshots (or not ? )
 
 	sourceValue := strings.Join(fileutils.GetFileNames(archives), ",")
+
+	fmt.Println("New source value: ", sourceValue)
 
 	sourceID, err := service.SourceService.Create(gameID, sourceValue, consts.ArchiveSourceType)
 	if err != nil {
