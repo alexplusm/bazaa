@@ -101,6 +101,7 @@ func (service *ValidateFacesService) Validate(filePath string) (bool, error) {
 	if responseBb[0].Error.Code == -3000 {
 		return true, nil
 	}
+	fmt.Println("base64: ", value)
 	return false, nil
 }
 
