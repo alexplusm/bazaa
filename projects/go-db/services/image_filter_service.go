@@ -95,5 +95,7 @@ func (service *ImageFilterService) cropFilter(files []zip.File) []zip.File {
 		})
 	}
 
+	wp.StopWait()
+
 	return filteredFiles
 }
