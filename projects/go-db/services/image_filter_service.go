@@ -76,26 +76,17 @@ func (service *ImageFilterService) faceFilter(files []zip.File) []zip.File {
 func (service *ImageFilterService) cropFilter(files []zip.File) []zip.File {
 	filteredFiles := make([]zip.File, 0, len(files))
 
-	wp := workerpool.New(500)
-	var mx sync.Mutex
-
 	for _, file := range files {
 		filePath := path.Join(consts.MediaRoot, file.FileInfo().Name())
 
-		wp.Submit(func() {
-			err := service.ImageService.Crop(filePath)
-			if err != nil {
-				// TODO: log
-				log.Error("error", err)
-			}
+		err := service.ImageService.Crop(filePath)
+		if err != nil {
+			// TODO: log
+			log.Error("error", err)
+		}
 
-			mx.Lock()
-			filteredFiles = append(filteredFiles, file)
-			mx.Unlock()
-		})
+		filteredFiles = append(filteredFiles, file)
 	}
-
-	wp.StopWait()
 
 	return filteredFiles
 }
