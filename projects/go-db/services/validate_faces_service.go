@@ -91,6 +91,8 @@ func (service *ValidateFacesService) Validate(filePath string) (bool, error) {
 	var responseBb DetectFaceResponseBody
 	err = json.Unmarshal(respbody, &responseBb)
 
+	fmt.Printf("body: %+v\n", responseBb)
+
 	if resp.StatusCode != http.StatusOK {
 		// TODO: log error
 		return false, nil

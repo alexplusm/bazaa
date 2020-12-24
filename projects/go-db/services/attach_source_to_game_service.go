@@ -104,7 +104,7 @@ func (service *AttachSourceToGameService) AttachGameResults(gameID string, param
 
 // todo: не интересно - желательно удалить
 func setExpertAnswer(images []bo.ImageParsingResult, gameID, sourceID string) []dao.ScreenshotCreateDAO {
-	// INFO: Когда загружаем несколько архивов могут быть одинаковые файлы
+	// INFO: Когда загружаем несколько архивов могут быть одинаковые файлы | ->  TODO: нет ! ! !
 	imageExistMap := make(map[string]bool)
 	screenshots := make([]dao.ScreenshotCreateDAO, 0, len(images))
 
