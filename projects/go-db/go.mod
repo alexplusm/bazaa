@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+	github.com/gammazero/workerpool v1.1.1
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/go-redis/redis/v8 v8.3.3
 	github.com/jackc/pgx/v4 v4.9.2
