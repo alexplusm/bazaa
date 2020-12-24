@@ -37,10 +37,9 @@ func (service *AttachSourceToGameService) AttachArchives(
 		return fmt.Errorf("%v AttachArchives: %v", logutils.GetStructName(service), err)
 	}
 
-	fmt.Println("Files: ", len(files))
 	files = service.ImageFilterService.Filter(files)
 
-	// TODO: remove filtered screenshots (or not ? )
+	// TODO: remove filtered screenshots (or not ?)
 
 	sourceValue := strings.Join(fileutils.GetFileNames(archives), ",")
 
