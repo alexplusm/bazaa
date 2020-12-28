@@ -39,8 +39,9 @@ type IInjector interface {
 }
 
 type kernel struct {
-	pool        *pgxpool.Pool
-	redisClient *redis.Client
+	pool           *pgxpool.Pool
+	redisClient    *redis.Client
+	rabbitMQClient *RabbitMQClient
 }
 
 var (
@@ -58,7 +59,13 @@ func Injector() (IInjector, error) {
 				err = fmt.Errorf("injector: database connection: %v", pqslErr)
 			}
 			redisClient := initRedis()
-			k = &kernel{pool, redisClient}
+
+			rabbitMq, err := initRabbitMQ()
+			if err != nil {
+				err = fmt.Errorf("injector: rabbitMQ connection: %v", err)
+			}
+
+			k = &kernel{pool, redisClient, rabbitMq}
 		})
 	}
 	return k, err
