@@ -16,3 +16,7 @@ SRCS = ft_printf.c \
 
 CC		= gcc
 RM		= rm -f
+
+build_lib:
+	cd libft && $(MAKE) bonus
+
