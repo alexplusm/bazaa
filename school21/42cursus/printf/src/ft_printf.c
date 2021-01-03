@@ -7,10 +7,28 @@
 // TODO: into header
 #include <stdarg.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 
 // FROM LIBFT
 // ----------
+
+//void	*ft_memcpy(void *dst, const void *src, size_t len)
+//{
+//    unsigned char		*ptr_d;
+//    unsigned char		*ptr_s;
+//
+//    if (len <= 0 || (dst == NULL && src == NULL))
+//        return (dst);
+//    ptr_d = (unsigned char *)dst;
+//    ptr_s = (unsigned char *)src;
+//    while (len > 0)
+//    {
+//        *ptr_d++ = *ptr_s++;
+//        len -= 1;
+//    }
+//    return (dst);
+//}
 
 size_t	ft_strlen(const char *s)
 {
@@ -83,7 +101,6 @@ int		ft_atoi(const char *str)
 // ----------
 
 
-
 char *flags = "-0.*";
 //char *format = "diouxXfFeEgGaAcsb"; // FROM MAN
 char *specifiers = "cspdiuxX%";
@@ -115,7 +132,7 @@ int is_specifier(char c)
 
 typedef struct  f_arg {
     char        *flags;
-    int         width; // '*' is -1
+    int         width;      // '*' is -1
     int         precision;  // '*' is -1
     char        specifier;
 }               t_arg;
@@ -140,28 +157,62 @@ void debug_t_arg(t_arg *value)
            value->flags, value->width, value->precision, value->specifier);
 }
 
-// ---
+size_t ft_get_fmt_specifiers_count(char *str)
+{
+    size_t i;
+    size_t count;
+
+    i = 0;
+    count = 0;
+//     TODO: выделить в функцию !
+    while (str[i] != '\0')
+    {
+        if (str[i] == '%') {
+            i++;
+            while (is_flag(str[i]))
+                i++;
+            if (str[i] == '*')
+                i++;
+            else
+                while (ft_isdigit(str[i]))
+                    i++;
+            if (str[i] == '.')
+            {
+                str++;
+                if (str[i] == '*')
+                    str++;
+                else
+                    while(ft_isdigit(str[i]))
+                        i++;
+            }
+            if (str[i] != '%')
+                count++;
+        }
+        i++;
+    }
+    return (count);
+}
 
 int parse_width_or_precision(char *str, size_t *cursor)
 {
     int value;
     char *num_str;
-//     TODO: inner cursor ?
+    size_t inner_cursor;
 
-    value = 0; // TODO: default value for width and precision ! ! !
-    if (str[*cursor] == '*')
+    inner_cursor = *cursor;
+    value = 0;
+    if (str[inner_cursor] == '*')
         return (-1); // '*' symbol
-
-    size_t start = *cursor;
-    while (ft_isdigit(str[*cursor]))
-        (*cursor)++;
-    if (start < *cursor)
+    size_t start = inner_cursor;
+    while (ft_isdigit(str[inner_cursor]))
+        inner_cursor++;
+    if (start < inner_cursor)
     {
-        num_str = ft_substr(str, start, *cursor);
+        num_str = ft_substr(str, start, inner_cursor);
         value = ft_atoi(num_str);
         free(num_str);
     }
-//    printf("w|p: %d\n", value);
+    *cursor = inner_cursor;
     return (value);
 }
 
@@ -182,49 +233,30 @@ t_arg *ft_parse_one(char *str, size_t *size)
     if (cursor > 0) {
         flags = ft_substr(str,0, cursor);
     }
-
-    // width
-    width = parse_width_or_precision(str, &cursor);
-
-    // precision
-    if (str[cursor] == '.')
+    width = parse_width_or_precision(str, &cursor); // width
+    if (str[cursor] == '.') // precision
     {
         cursor++;
         precision = parse_width_or_precision(str, &cursor);
     }
-
     if (is_specifier(str[cursor]))
-    {
-        specifier = str[cursor];
-        cursor++;
-    }
-
-    // TODO: if error -> free(flags);
-
-    *size = cursor;
-
+        specifier = str[cursor++];
+    *size = cursor;     // TODO: if error -> free(flags); ? ? ?
     return create_arg(flags, width, precision, specifier);
 }
 
 int ft_printf(const char *f_str, ...)
 {
-//    int args_count;
-//    va_list valist;
-//
-//    args_count = ft_parse(f_str);
-//    va_start(valist, args_count);
-//    int i = 0;
-//    while (i < args_count) {
-//        printf("%d : %d\n", i, va_arg(valist, int) );
-//        i++;
-//    }
-//    va_end(valist);
-//    return 0;
+    va_list valist;
+    char    *str;
 
-    char *str;
     size_t format_str_len;
-
     str = (char *)f_str;
+
+    size_t fmt_specifiers_count = ft_get_fmt_specifiers_count(str);
+    va_start(valist, fmt_specifiers_count);
+
+    printf("### COUNT: %zu\n", fmt_specifiers_count);
 
     while (*str != '\0')
     {
@@ -234,16 +266,22 @@ int ft_printf(const char *f_str, ...)
             format_str_len = 0;
             t_arg *val = ft_parse_one(str, &format_str_len);
 
+
+            if (val->specifier != '%')
+                printf("AARRGG: %d\n", va_arg(valist, int));  // todo: info  if specifier != '%';
+
             debug_t_arg(val);
 
             printf("count: %zu\n", format_str_len);
 
             str += format_str_len;
         } else {
+            write(0, str, 1);
             str++;
         }
     }
 
+    va_end(valist);
     return (0);
 }
 
@@ -256,7 +294,7 @@ int main() {
 //    a = create_arg("123", 2, 0, 'a');
 //    debug_t_arg(a);
 
-    ft_printf("%-010c    %-09999999.11d   %123%", 1, 2);
+    ft_printf("abcd kekus %-010c  looool  %-09999999.11d   %123%", 1, 2);
 
-//    printf("%166d\n", 10000000);
+//    printf("%123%\n", 10000000);
 }
