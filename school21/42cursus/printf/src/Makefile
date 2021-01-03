@@ -14,9 +14,16 @@ NAME = libftprintf.a
 
 SRCS = ft_printf.c \
 
+OBJS = ${SRCS:.c=.o}
+
 CC		= gcc
 RM		= rm -f
 
-build_lib:
-	cd libft && $(MAKE) bonus
+#build_lib:
+#	cd libft && $(MAKE) bonus
 
+.c.o:
+		${CC} ${CFLAGS} -g -c $< -o ${<:.c=.o}
+
+$(NAME): ${OBJS}
+		ar rcs ${NAME} ${OBJS}

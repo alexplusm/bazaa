@@ -5,5 +5,5 @@
 #ifndef FT_PRINTF
 #define FT_PRINTF
 
-
+int ft_printf(const char *f_str, ...);
 #endif //BAZAA_FT_PRINTF_H

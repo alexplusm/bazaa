@@ -2,7 +2,7 @@
 // Created by Alexander Mogilevskiy on 27.12.2020.
 //
 
-#include <stdio.h>
+//#include <stdio.h>
 
 // TODO: into header
 #include <stdarg.h>
@@ -226,8 +226,8 @@ t_fmt_specifier *create_arg(char *flags, int width, int precision, char specifie
 
 void debug_t_fmt_specifier(t_fmt_specifier *value)
 {
-    printf("t_fmt_specifier: FLAGS: %s | WIDTH: %d | PREC: %d | SPECIFIER: %c\n",
-           value->flags, value->width, value->precision, value->specifier);
+//    printf("t_fmt_specifier: FLAGS: %s | WIDTH: %d | PREC: %d | SPECIFIER: %c\n",
+//           value->flags, value->width, value->precision, value->specifier);
 }
 
 size_t ft_get_fmt_specifiers_count(char *str)
@@ -399,7 +399,7 @@ int ft_printf(const char *f_str, ...)
     size_t fmt_specifiers_count = ft_get_fmt_specifiers_count(str);
     va_start(valist, fmt_specifiers_count);
 
-    printf("### COUNT: %zu\n", fmt_specifiers_count);
+//    printf("### COUNT: %zu\n", fmt_specifiers_count);
 
     while (*str != '\0')
     {
@@ -419,13 +419,12 @@ int ft_printf(const char *f_str, ...)
             str++;
         }
     }
-
     va_end(valist);
     return (0);
 }
 
 
-int main() {
+//int main() {
 //    int res = ft_printf("hello %d %d %d", 100, 99, -1);
 //    printf("\n\nres: %d %% %% %% %\n", res);
 
@@ -449,14 +448,14 @@ int main() {
 //    printf("3lol %-010d", 123);
 //    printf("|\n");
 //    ---
-    ft_printf("4: %-*d", 10, 123);
-    printf("|\n");
-    printf("4: %-*d",10, 123);
-    printf("|\n");
+//    ft_printf("4: %-*d", 10, 123);
+//    printf("|\n");
+//    printf("4: %-*d",10, 123);
+//    printf("|\n");
 //    ---
 //    printf("%.*s", 3, "abcdef");
 //    printf("\n");
 //    printf("%.3s", "abcdef");
 
 //    printf("%9%, %d\n", 40404040400404);
-}
+//}

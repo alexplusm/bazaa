@@ -2,3 +2,4 @@
 *.out
 libft.a
 *.o
+libftprintf.a
