@@ -36,7 +36,6 @@ static t_fmt_specifier *ft_create_fmt_specifier(char *flags, int width, int prec
     return item;
 }
 
-// TODO: rename ft_
 static int ft_parse_width_or_precision(char *str, size_t *cursor)
 {
     int value;
@@ -72,7 +71,7 @@ t_fmt_specifier *ft_parse_fmt_specifier(char *str, size_t *size)
     char specifier;
     size_t cursor;
 
-    precision = 0;
+    precision = -2; // undefined value
     cursor = 0;
     flags = NULL;
     specifier = '0';

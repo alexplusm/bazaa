@@ -50,48 +50,10 @@ void debug_t_fmt_specifier(t_fmt_specifier *value)
            value->flags, value->width, value->precision, value->specifier);
 }
 
-// TODO: why this func not need ?
-//size_t ft_get_fmt_specifiers_count(char *str)
-//{
-//    size_t i;
-//    size_t count;
-//
-//    i = 0;
-//    count = 0;
-////     TODO: выделить в функцию !
-//    while (str[i] != '\0')
-//    {
-//        if (str[i] == '%') {
-//            i++;
-//            while (is_flag(str[i]))
-//                i++;
-//            if (str[i] == '*')
-//                i++;
-//            else
-//                while (ft_isdigit(str[i]))
-//                    i++;
-//            if (str[i] == '.')
-//            {
-//                str++;
-//                if (str[i] == '*')
-//                    str++;
-//                else
-//                    while(ft_isdigit(str[i]))
-//                        i++;
-//            }
-//            if (str[i] != '%')
-//                count++;
-//        }
-//        i++;
-//    }
-//    return (count);
-//}
-// --------
-
 void ft_put_char_by(char c, size_t count)
 {
     while(count-- > 0)
-        write(0, &c, 1);
+        ft_putchar_fd(c, 1); // write(0, &c, 1);
 }
 
 size_t print_fmt_specifier(va_list *valist, t_fmt_specifier *fmt_specifier)
@@ -101,49 +63,62 @@ size_t print_fmt_specifier(va_list *valist, t_fmt_specifier *fmt_specifier)
     char *value_str;
     size_t fmt_value_size;
 
+//    size_t real_width;
+
     write_bites = 0;
+
+//    real_width = fmt_specifier->width > fmt_specifier->precision ? fmt_specifier->width : fmt_specifier->precision;
 
     if (fmt_specifier->specifier == 'd')
     {
         value = va_arg(*valist, int);
         value_str = ft_itoa(value);
+
+
+        if (value == 0 && fmt_specifier->precision == 0)
+        {
+            free(value_str);
+            value_str = malloc(sizeof(char) * 1);
+            if (value_str == NULL)
+                return (0);
+            value_str[0] = '\0';
+        }
+
         fmt_value_size = ft_strlen(value_str);
 
-        if (fmt_specifier->width > (int)fmt_value_size)
+//        printf("Prec: %d\n", fmt_specifier->precision);
+
+        if (fmt_specifier->width > (int)fmt_value_size) // TODO
         {
             if (fmt_specifier->flags != NULL)
             {
                 if (ft_includes('-', fmt_specifier->flags))
                 {
                     write_bites = fmt_specifier->width; // TODO : ?
-                    write(0, value_str, fmt_value_size);
-                    ft_put_char_by(' ', fmt_specifier->width - fmt_value_size);
+                    write(1, value_str, fmt_value_size);
+                    ft_put_char_by(32, fmt_specifier->width - fmt_value_size); // TODO: define SPACE_CONST
                 }
                 else if (ft_includes('0', fmt_specifier->flags))
                 {
                     write_bites = fmt_specifier->width; // TODO : ?
                     ft_put_char_by('0', fmt_specifier->width - fmt_value_size);
-                    write(0, value_str, fmt_value_size);
+                    write(1, value_str, fmt_value_size);
                 }
             }
             else
             {
                 write_bites = fmt_specifier->width; // TODO : ?
                 ft_put_char_by(' ', fmt_specifier->width - fmt_value_size);
-                write(0, value_str, fmt_value_size);
+                write(1, value_str, fmt_value_size);
             }
         }
         else
         {
             write_bites = fmt_value_size; // TODO : ?
-            write(0, value_str, fmt_value_size);
+            write(1, value_str, fmt_value_size);
         }
-
-
         free(value_str);
-
     }
-
     return (write_bites);
 
     //            if (val->specifier != '%')
@@ -193,7 +168,7 @@ int ft_printf(const char *f_str, ...)
             write_bytes += print_fmt_specifier(&valist, fmt_specifier);
             str += fmt_str_len;
         } else {
-            write(0, str, 1);
+            write(1, str, 1);
             str++;
             write_bytes++;
         }
@@ -201,3 +176,11 @@ int ft_printf(const char *f_str, ...)
     va_end(valist);
     return (write_bytes);
 }
+
+//int ft_printf(const char *f_str, ...)
+//{
+//    (void)f_str;
+//    write(1, "this 17 number", 14);
+//    return 14;
+////    return printf("this 17 number");
+//}

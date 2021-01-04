@@ -2,10 +2,34 @@
 
 #include "ft_printf.h"
 
+void test1()
+{
+//    int lr, mr;
+//
+//    mr = ft_printf("%5.0d", 0);
+//    printf("|");
+//    printf("\n");
+//    lr = printf("%5.0d", 0);
+//    printf("|");
+//    printf("\n mine: %d | lib: %d\n", mr, lr);
+
+
+    // ---
+
+    ft_printf("this %d number", 17);
+    printf("\n");
+    printf("this %d number", 17);
+
+
+//    printf("%5.0d|\n", 0);
+//    ft_printf("%5.0d\n", -1);
+//
+//    printf("%5.d|\n", 0);
+}
+
 int main()
 {
-    int r = ft_printf("kek");
-    printf("res: %d\n", r);
+    test1();
 }
 
 
