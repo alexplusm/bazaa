@@ -10,20 +10,37 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = libftprintf.a
+NAME 		= libftprintf.a
 
-SRCS = ft_printf.c \
+LIB_DIR		= libft
+LIB_NAME 	= libft.a
 
-OBJS = ${SRCS:.c=.o}
+SRCS 		= ft_printf.c
+OBJS 		= ${SRCS:.c=.o}
 
-CC		= gcc
-RM		= rm -f
+CFLAGS		=	-Wall -Wextra -Werror
 
-#build_lib:
-#	cd libft && $(MAKE) bonus
+CC			= gcc
+RM			= rm -f
+
+INCLUDE		=	-I ft_printf.h -I $(LIB_DIR)
+
+all: $(NAME)
 
 .c.o:
-		${CC} ${CFLAGS} -g -c $< -o ${<:.c=.o}
+	${CC} ${CFLAGS} $(INCLUDE) -g -c $< -o ${<:.c=.o}
 
-$(NAME): ${OBJS}
-		ar rcs ${NAME} ${OBJS}
+$(NAME): $(OBJS)
+	make -C $(LIB_DIR)
+	cp $(LIB_DIR)/$(LIB_NAME) $(NAME)
+	ar rcs ${NAME} ${OBJS}
+
+clean:
+	make clean -C $(LIB_DIR)
+	rm -f $(OBJS)
+
+fclean: clean
+	make fclean -C $(LIB_DIR)
+	rm -f $(NAME)
+
+re: fclean all

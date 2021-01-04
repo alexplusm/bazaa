@@ -1,152 +1,11 @@
-//
-// Created by Alexander Mogilevskiy on 27.12.2020.
-//
+// TODO: test
+#include <stdio.h>
 
-//#include <stdio.h>
+#include "ft_printf.h"
 
-// TODO: into header
-#include <stdarg.h>
-#include <stdlib.h>
-#include <unistd.h>
-
-
-// FROM LIBFT
-// ----------
-
-//void	*ft_memcpy(void *dst, const void *src, size_t len)
-//{
-//    unsigned char		*ptr_d;
-//    unsigned char		*ptr_s;
-//
-//    if (len <= 0 || (dst == NULL && src == NULL))
-//        return (dst);
-//    ptr_d = (unsigned char *)dst;
-//    ptr_s = (unsigned char *)src;
-//    while (len > 0)
-//    {
-//        *ptr_d++ = *ptr_s++;
-//        len -= 1;
-//    }
-//    return (dst);
-//}
-
-
-static int	ft_digits_cnt(unsigned int n)
-{
-    int res;
-
-    res = 1;
-    while (n /= 10)
-        res++;
-    return (res);
-}
-
-char		*ft_itoa(int n)
-{
-    unsigned int	num;
-    int				negative;
-    int				cnt;
-    size_t			mem_cnt;
-    char			*res;
-
-    negative = (n < 0) ? 1 : 0;
-    num = (n < 0) ? -n : n;
-    cnt = ft_digits_cnt(num);
-    mem_cnt = (negative) ? cnt + 2 : cnt + 1;
-    if ((res = malloc(sizeof(char) * mem_cnt)) == NULL)
-        return (NULL);
-    if (negative)
-        res[0] = '-';
-    res[cnt + negative] = '\0';
-    if (num == 0)
-        res[0] = '0';
-    while (num)
-    {
-        res[cnt + negative - 1] = (num % 10) + '0';
-        num /= 10;
-        cnt--;
-    }
-    return (res);
-}
-
-
-size_t	ft_strlen(const char *s)
-{
-    size_t	len;
-
-    len = 0;
-    while (s[len] != '\0')
-        len += 1;
-    return (len);
-}
-
-char	*ft_substr(char const *s, unsigned int start, size_t len)
-{
-    size_t	i;
-    char	*str;
-
-    i = 0;
-    if (!s)
-        return (NULL);
-    if (start >= ft_strlen(s))
-        start = ft_strlen(s);
-    if (len > ft_strlen(s) - start)
-        len = ft_strlen(s) - start;
-    if (!(str = (char *)malloc(sizeof(char) * len + 1)))
-        return (NULL);
-    while (s[start + i] != '\0' && i < len)
-    {
-        str[i] = s[start + i];
-        i++;
-    }
-    str[i] = '\0';
-    return (str);
-}
-
-int	ft_isdigit(int c)
-{
-    return (c >= '0' && c <= '9');
-}
-
-int	ft_isspace_bonus(char c)
-{
-    return ((c >= 9 && c <= 13) || c == 32);
-}
-
-int		ft_atoi(const char *str)
-{
-    unsigned long	result;
-    size_t			i;
-    int				sign;
-
-    result = 0;
-    i = 0;
-    while (ft_isspace_bonus(str[i]))
-        i++;
-    sign = (str[i] == '-') ? -1 : 1;
-    if (str[i] == '-' || str[i] == '+')
-        i++;
-    while (ft_isdigit(str[i]))
-    {
-        result = result * 10 + (str[i++] - '0');
-        if (result >= __LONG_MAX__ && sign == 1)
-            return (-1);
-        if ((result >= (unsigned long)__LONG_MAX__ + 1) && sign == -1)
-            return (0);
-    }
-    return ((int)(result * sign));
-}
-
-// FROM LIBFT
-// ----------
-
-
-//char *flags = "-0.*";
+/* %[flags][width][.precision][length]specifier */
 char *flags = "-0";
-//char *format = "diouxXfFeEgGaAcsb"; // FROM MAN
 char *specifiers = "cspdiuxX%";
-
-// %[flags][width][.precision][length]specifier
 
 int ft_includes(char c, char *str) {
     int i;
@@ -226,8 +85,8 @@ t_fmt_specifier *create_arg(char *flags, int width, int precision, char specifie
 
 void debug_t_fmt_specifier(t_fmt_specifier *value)
 {
-//    printf("t_fmt_specifier: FLAGS: %s | WIDTH: %d | PREC: %d | SPECIFIER: %c\n",
-//           value->flags, value->width, value->precision, value->specifier);
+    printf("t_fmt_specifier: FLAGS: %s | WIDTH: %d | PREC: %d | SPECIFIER: %c\n",
+           value->flags, value->width, value->precision, value->specifier);
 }
 
 size_t ft_get_fmt_specifiers_count(char *str)
@@ -328,11 +187,14 @@ void ft_put_char_by(char c, size_t count)
         write(0, &c, 1);
 }
 
-void print_fmt_specifier(va_list *valist, t_fmt_specifier *fmt_specifier)
+size_t print_fmt_specifier(va_list *valist, t_fmt_specifier *fmt_specifier)
 {
+    size_t write_bites;
     int value;
     char *value_str;
     size_t fmt_value_size;
+
+    write_bites = 0;
 
     if (fmt_specifier->specifier == 'd')
     {
@@ -340,32 +202,42 @@ void print_fmt_specifier(va_list *valist, t_fmt_specifier *fmt_specifier)
         value_str = ft_itoa(value);
         fmt_value_size = ft_strlen(value_str);
 
-        if (fmt_specifier->width > fmt_value_size)
+        if (fmt_specifier->width > (int)fmt_value_size)
         {
             if (fmt_specifier->flags != NULL)
             {
                 if (ft_includes('-', fmt_specifier->flags))
                 {
+                    write_bites = fmt_specifier->width; // TODO : ?
                     write(0, value_str, fmt_value_size);
                     ft_put_char_by(' ', fmt_specifier->width - fmt_value_size);
                 }
                 else if (ft_includes('0', fmt_specifier->flags))
                 {
+                    write_bites = fmt_specifier->width; // TODO : ?
                     ft_put_char_by('0', fmt_specifier->width - fmt_value_size);
                     write(0, value_str, fmt_value_size);
                 }
             }
             else
             {
+                write_bites = fmt_specifier->width; // TODO : ?
                 ft_put_char_by(' ', fmt_specifier->width - fmt_value_size);
                 write(0, value_str, fmt_value_size);
             }
         }
         else
+        {
+            write_bites = fmt_value_size; // TODO : ?
             write(0, value_str, fmt_value_size);
+        }
+
 
         free(value_str);
+
     }
+
+    return (write_bites);
 
     //            if (val->specifier != '%')
     //                printf("AARRGG: %d\n", va_arg(valist, int)); // TODO: print arg
@@ -387,17 +259,27 @@ void update_fmt_specifier(va_list *valist, t_fmt_specifier *fmt_specifier)
     }
 }
 
+//void kek(va_list *valist, size_t size, ...)
+//{
+//    va_start(*valist, size);
+//}
+
 int ft_printf(const char *f_str, ...)
 {
     va_list valist;
     t_fmt_specifier *fmt_specifier;
     char    *str;
+    size_t write_bytes;
+
+    write_bytes = 0;
 
     size_t fmt_str_len;
     str = (char *)f_str;
 
-    size_t fmt_specifiers_count = ft_get_fmt_specifiers_count(str);
-    va_start(valist, fmt_specifiers_count);
+//    size_t fmt_specifiers_count = ft_get_fmt_specifiers_count(str);
+//    va_start(valist, fmt_specifiers_count);
+    va_start(valist, f_str); // TODO: wtf?
+//    kek(&valist, fmt_specifiers_count);
 
 //    printf("### COUNT: %zu\n", fmt_specifiers_count);
 
@@ -412,15 +294,16 @@ int ft_printf(const char *f_str, ...)
 
 //            debug_t_fmt_specifier(fmt_specifier);
 
-            print_fmt_specifier(&valist, fmt_specifier);
+            write_bytes += print_fmt_specifier(&valist, fmt_specifier);
             str += fmt_str_len;
         } else {
             write(0, str, 1);
             str++;
+            write_bytes++;
         }
     }
     va_end(valist);
-    return (0);
+    return (write_bytes);
 }
 
 
