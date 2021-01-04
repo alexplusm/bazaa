@@ -37,7 +37,7 @@ static t_fmt_specifier *ft_create_fmt_specifier(char *flags, int width, int prec
 }
 
 // TODO: rename ft_
-static int parse_width_or_precision(char *str, size_t *cursor)
+static int ft_parse_width_or_precision(char *str, size_t *cursor)
 {
     int value;
     char *num_str;
@@ -81,11 +81,11 @@ t_fmt_specifier *ft_parse_fmt_specifier(char *str, size_t *size)
     if (cursor > 0) {
         flags = ft_substr(str,0, cursor);
     }
-    width = parse_width_or_precision(str, &cursor); // width
+    width = ft_parse_width_or_precision(str, &cursor); // width
     if (str[cursor] == '.') // precision
     {
         cursor++;
-        precision = parse_width_or_precision(str, &cursor);
+        precision = ft_parse_width_or_precision(str, &cursor);
     }
     if (is_specifier(str[cursor]))
         specifier = str[cursor++];

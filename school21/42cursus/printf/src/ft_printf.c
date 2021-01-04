@@ -171,19 +171,15 @@ int ft_printf(const char *f_str, ...)
     va_list valist;
     t_fmt_specifier *fmt_specifier;
     char    *str;
+    size_t fmt_str_len;
     size_t write_bytes;
 
-    write_bytes = 0;
-
-    size_t fmt_str_len;
-    str = (char *)f_str;
-
-//    size_t fmt_specifiers_count = ft_get_fmt_specifiers_count(str);
-//    va_start(valist, fmt_specifiers_count);
+    // size_t fmt_specifiers_count = ft_get_fmt_specifiers_count(str);
+    // va_start(valist, fmt_specifiers_count);
     va_start(valist, f_str); // TODO: wtf?
-//    kek(&valist, fmt_specifiers_count);
 
-//    printf("### COUNT: %zu\n", fmt_specifiers_count);
+    write_bytes = 0;
+    str = (char *)f_str;
 
     while (*str != '\0')
     {
