@@ -3,3 +3,11 @@
 libft.a
 *.o
 libftprintf.a
+
+# test
+pft/test
+pft/results.txt
+pft/history.csv
+pft/test.libc
+pft/test.mine
+pft/test.dSYM/
