@@ -3,7 +3,7 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cdeon <marvin@42.fr>                       +#+  +:+       +#+         #
+#    By: cdeon <cdeon@student.21-school.ru>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/27 09:16:13 by cdeon             #+#    #+#              #
 #    Updated: 2020/12/27 09:16:15 by cdeon            ###   ########.fr        #
@@ -44,3 +44,8 @@ fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
+
+# TODO: for test
+test: $(NAME)
+	$(CC) $(NAME) main.c -o main.out
+	./main.out

@@ -1,5 +1,14 @@
-// TODO: test
-#include <stdio.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cdeon <cdeon@student.21-school.ru>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/01/02 09:08:22 by cdeon             #+#    #+#             */
+/*   Updated: 2021/01/02 09:08:27 by cdeon            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "ft_printf.h"
 
@@ -259,11 +268,6 @@ void update_fmt_specifier(va_list *valist, t_fmt_specifier *fmt_specifier)
     }
 }
 
-//void kek(va_list *valist, size_t size, ...)
-//{
-//    va_start(*valist, size);
-//}
-
 int ft_printf(const char *f_str, ...)
 {
     va_list valist;
@@ -305,40 +309,3 @@ int ft_printf(const char *f_str, ...)
     va_end(valist);
     return (write_bytes);
 }
-
-
-//int main() {
-//    int res = ft_printf("hello %d %d %d", 100, 99, -1);
-//    printf("\n\nres: %d %% %% %% %\n", res);
-
-//    t_fmt_specifier *a;
-//    a = create_arg("123", 2, 0, 'a');
-//    debug_t_fmt_specifier(a);
-
-//    ft_printf("abcd kekus %-010c  looool  %-09999999.11d   %123%", 1, 2);
-//    ft_printf("1lol %-10d", 123);
-//    printf("|\n");
-//    printf("1lol %-10d", 123);
-//    printf("|\n");
-////    ---
-//    ft_printf("2lol %10d", 123);
-//    printf("|\n");
-//    printf("2lol %10d", 123);
-//    printf("|\n");
-////    ---
-//    ft_printf("3lol %-010d", 123);
-//    printf("|\n");
-//    printf("3lol %-010d", 123);
-//    printf("|\n");
-//    ---
-//    ft_printf("4: %-*d", 10, 123);
-//    printf("|\n");
-//    printf("4: %-*d",10, 123);
-//    printf("|\n");
-//    ---
-//    printf("%.*s", 3, "abcdef");
-//    printf("\n");
-//    printf("%.3s", "abcdef");
-
-//    printf("%9%, %d\n", 40404040400404);
-//}
