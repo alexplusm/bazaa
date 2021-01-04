@@ -12,36 +12,6 @@
 
 #include "ft_printf.h"
 
-
-
-// TODO: in HEADER
-//char *flags1 = "-0";
-//char *specifiers = "cspdiuxX%";
-
-// TODO: utils
-int ft_includes_1(char c, char *str) {
-    int i;
-
-    i = 0;
-    while (str[i] != '\0')
-    {
-        if (str[i] == c)
-            return (1);
-        i++;
-    }
-    return (0);
-}
-//
-//int is_flag(char c)
-//{
-//    return ft_includes(c, flags);
-//}
-//
-//int is_specifier(char c)
-//{
-//    return ft_includes(c, specifiers);
-//}
-
 char *ft_prepare_flags(char *flags)
 {
     char *new_flags;
@@ -50,7 +20,7 @@ char *ft_prepare_flags(char *flags)
 
     if (flags == NULL)
         return (flags);
-    if (ft_includes_1('-', flags) && ft_includes_1('0', flags))
+    if (ft_includes('-', flags) && ft_includes('0', flags))
     {
         new_flags = malloc(sizeof(char) * ft_strlen(flags));
         if (new_flags == NULL)
@@ -118,64 +88,6 @@ void debug_t_fmt_specifier(t_fmt_specifier *value)
 //}
 // --------
 
-
-
-//int parse_width_or_precision(char *str, size_t *cursor)
-//{
-//    int value;
-//    char *num_str;
-//    size_t inner_cursor;
-//
-//    inner_cursor = *cursor;
-//    value = 0;
-//    if (str[inner_cursor] == '*')
-//    {
-//        *cursor = inner_cursor + 1;
-//        return (-1); // '*' symbol
-//    }
-//
-//    size_t start = inner_cursor;
-//    while (ft_isdigit(str[inner_cursor]))
-//        inner_cursor++;
-//    if (start < inner_cursor)
-//    {
-//        num_str = ft_substr(str, start, inner_cursor);
-//        value = ft_atoi(num_str);
-//        free(num_str);
-//    }
-//    *cursor = inner_cursor;
-//    return (value);
-//}
-
-//t_fmt_specifier *ft_parse_one(char *str, size_t *size)
-//{
-//    char* flags;
-//    int width;
-//    int precision;
-//    char specifier;
-//    size_t cursor;
-//
-//    precision = 0;
-//    cursor = 0;
-//    flags = NULL;
-//    specifier = '0';
-//    while (is_flag(str[cursor]))
-//        cursor++;
-//    if (cursor > 0) {
-//        flags = ft_substr(str,0, cursor);
-//    }
-//    width = parse_width_or_precision(str, &cursor); // width
-//    if (str[cursor] == '.') // precision
-//    {
-//        cursor++;
-//        precision = parse_width_or_precision(str, &cursor);
-//    }
-//    if (is_specifier(str[cursor]))
-//        specifier = str[cursor++];
-//    *size = cursor;     // TODO: if error -> free(flags); ? ? ?
-//    return ft_create_fmt_specifier(flags, width, precision, specifier);
-//}
-
 void ft_put_char_by(char c, size_t count)
 {
     while(count-- > 0)
@@ -201,13 +113,13 @@ size_t print_fmt_specifier(va_list *valist, t_fmt_specifier *fmt_specifier)
         {
             if (fmt_specifier->flags != NULL)
             {
-                if (ft_includes_1('-', fmt_specifier->flags))
+                if (ft_includes('-', fmt_specifier->flags))
                 {
                     write_bites = fmt_specifier->width; // TODO : ?
                     write(0, value_str, fmt_value_size);
                     ft_put_char_by(' ', fmt_specifier->width - fmt_value_size);
                 }
-                else if (ft_includes_1('0', fmt_specifier->flags))
+                else if (ft_includes('0', fmt_specifier->flags))
                 {
                     write_bites = fmt_specifier->width; // TODO : ?
                     ft_put_char_by('0', fmt_specifier->width - fmt_value_size);

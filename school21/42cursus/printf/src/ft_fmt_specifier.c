@@ -12,23 +12,6 @@
 
 #include "ft_printf.h"
 
-char *flags = "-0";
-char *specifiers = "cspdiuxX%";
-
-// TODO: utils !!!
-int ft_includes(char c, char *str) {
-    int i;
-
-    i = 0;
-    while (str[i] != '\0')
-    {
-        if (str[i] == c)
-            return (1);
-        i++;
-    }
-    return (0);
-}
-
 int is_flag(char c)
 {
     return ft_includes(c, flags);

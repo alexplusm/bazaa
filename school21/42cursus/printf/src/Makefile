@@ -15,7 +15,7 @@ NAME 		= libftprintf.a
 LIB_DIR		= libft
 LIB_NAME 	= libft.a
 
-SRCS 		= ft_fmt_specifier.c ft_printf.c
+SRCS 		= ft_printf.c ft_fmt_specifier.c ft_utils.c
 OBJS 		= ${SRCS:.c=.o}
 
 CFLAGS		=	-Wall -Wextra -Werror
