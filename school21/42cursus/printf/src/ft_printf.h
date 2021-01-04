@@ -22,6 +22,19 @@
 
 # include "libft/libft.h"
 
+typedef struct  s_fmt_specifier {
+    char        *flags;
+    int         width;      // '*' is -1
+    int         precision;  // '*' is -1
+    char        specifier;
+}               t_fmt_specifier;
+
 int ft_printf(const char *f_str, ...);
+
+
+//t_fmt_specifier *ft_create_fmt_specifier(char *flags, int width, int precision, char specifier);
+
+// TODO: remove?
+t_fmt_specifier *ft_parse_fmt_specifier(char *str, size_t *size);
 
 #endif
