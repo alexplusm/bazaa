@@ -43,7 +43,7 @@ static int ft_parse_width_or_precision(char *str, size_t *cursor)
     size_t inner_cursor;
 
     inner_cursor = *cursor;
-    value = 0;
+    value = 0; // default value
     if (str[inner_cursor] == '*')
     {
         *cursor = inner_cursor + 1;

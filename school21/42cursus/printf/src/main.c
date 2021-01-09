@@ -13,12 +13,7 @@ void test1()
 //    printf("|");
 //    printf("\n mine: %d | lib: %d\n", mr, lr);
 
-
-    // ---
-
-    ft_printf("this %d number", 17);
-    printf("\n");
-    printf("this %d number", 17);
+    printf("%.5d", 2);
 
 
 //    printf("%5.0d|\n", 0);
